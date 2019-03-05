@@ -63,7 +63,7 @@ class AquaThread(threading.Thread):
         try:
             algorithms_directory = os.path.dirname(os.path.realpath(__file__))
             algorithms_directory = os.path.abspath(
-                os.path.join(algorithms_directory, '../../command_line'))
+                os.path.join(algorithms_directory, '../command_line'))
             input_file = self.model.get_filename()
             if input_file is None or self.model.is_modified():
                 fd, input_file = tempfile.mkstemp(suffix='.in')

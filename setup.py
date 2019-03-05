@@ -60,8 +60,8 @@ setuptools.setup(
                 'qiskit_chemistry_cmd=qiskit_aqua_uis.chemistry.command_line.command_line:main'
         ],
         'gui_scripts': [
-                'qiskit_aqua_ui=qiskit_aqua_uis.aqua.user_interface.app.command_line:main',
-                'qiskit_aqua_browser=qiskit_aqua_uis.aqua.user_interface.browser.command_line:main',
+                'qiskit_aqua_ui=qiskit_aqua_uis.aqua.user_interface.command_line:main',
+                'qiskit_aqua_browser=qiskit_aqua_uis.aqua.browser.command_line:main',
                 'qiskit_chemistry_ui=qiskit_aqua_uis.chemistry.user_interface.command_line:main'
         ]
     }

@@ -15,6 +15,7 @@
 # limitations under the License.
 # =============================================================================
 
+from qiskit_aqua_uis import __version__
 from qiskit_aqua_uis.aqua.user_interface import GUIProvider
 from qiskit_aqua_uis.aqua.user_interface._uipreferences import UIPreferences
 from ._sectionpropertiesview import SectionPropertiesView
@@ -39,7 +40,6 @@ class AquaGUIProvider(GUIProvider):
     @property
     def version(self):
         """Return provider version."""
-        from qiskit.aqua import __version__
         return __version__
 
     @property

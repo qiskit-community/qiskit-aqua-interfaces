@@ -116,14 +116,6 @@ class PreferencesDialog(Dialog):
 
     def apply(self):
         try:
-            if self._credentialsview:
-                from qiskit.aqua import Preferences
-                from qiskit.aqua import disable_ibmq_account
-                preferences = Preferences()
-                disable_ibmq_account(preferences.get_url(), preferences.get_token(), preferences.get_proxies({}))
-                self._credentialsview.apply(preferences)
-                preferences.save()
-
             level_name = self._levelCombo.get()
             levels = [key for key, value in PreferencesDialog._LOG_LEVELS.items() if value == level_name]
             loglevel = levels[0]
@@ -136,6 +128,14 @@ class PreferencesDialog(Dialog):
             preferences.save()
 
             self._guiprovider.set_logging_config(logging_config)
+
+            if self._credentialsview:
+                from qiskit.aqua import Preferences
+                from qiskit.aqua import disable_ibmq_account
+                preferences = Preferences()
+                disable_ibmq_account(preferences.get_url(), preferences.get_token(), preferences.get_proxies({}))
+                self._credentialsview.apply(preferences)
+                preferences.save()
 
             self._controller.model.get_available_providers()
         except Exception as e:

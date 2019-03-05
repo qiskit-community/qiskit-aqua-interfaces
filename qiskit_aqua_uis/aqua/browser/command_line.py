@@ -18,7 +18,7 @@
 import sys
 import logging
 import tkinter as tk
-from qiskit_aqua_uis.aqua.user_interface._uipreferences import UIPreferences
+from qiskit_aqua_uis.aqua.user_interface import UIPreferences
 from ._mainview import MainView
 
 
@@ -45,7 +45,7 @@ def main():
         bundle = NSBundle.mainBundle()
         if bundle:
             info = bundle.localizedInfoDictionary() or bundle.infoDictionary()
-            info['CFBundleName'] = 'Qiskit Aqua'
+            info['CFBundleName'] = 'Qiskit Aqua Browser'
 
     root = tk.Tk()
     root.withdraw()

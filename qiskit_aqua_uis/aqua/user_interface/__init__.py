@@ -17,12 +17,12 @@
 
 from .guiprovider import GUIProvider
 from ._uipreferences import UIPreferences
-from .app.base_controller import BaseController
-from .app.base_model import BaseModel
-from .app._customwidgets import (EntryPopup, ComboboxPopup, TextPopup)
-from .app._sectionsview import SectionsView
-from .app._sectionpropertiesview import SectionPropertiesView
-from .app._mainview import MainView
+from .base_controller import BaseController
+from .base_model import BaseModel
+from ._customwidgets import (EntryPopup, ComboboxPopup, TextPopup)
+from ._sectionsview import SectionsView
+from ._sectionpropertiesview import SectionPropertiesView
+from ._mainview import MainView
 
 __all__ = ['GUIProvider',
            'UIPreferences',
