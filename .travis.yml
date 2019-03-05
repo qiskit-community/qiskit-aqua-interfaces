@@ -1,0 +1,77 @@
+# Copyright 2018, IBM.
+#
+# This source code is licensed under the Apache License, Version 2.0 found in
+# the LICENSE.txt file in the root directory of this source tree.
+
+notifications:
+    on_success: change
+    on_failure: always
+
+cache: pip
+os: linux
+dist: trusty
+
+language: python
+python:
+    - "3.6"
+
+# Install Qiskit Terra from master branch
+# The env. variable MASTER_BRANCH_DEPENDENCIES forces dependencies used from master 
+env: 
+    - >
+      MASTER_BRANCH_DEPENDENCIES=true
+      DEP_BRANCH=$(if [ ${MASTER_BRANCH_DEPENDENCIES} = "true" ] || [ ${TRAVIS_BRANCH} != "stable" ]; then echo "master"; else echo "stable"; fi)
+addons:
+    apt:
+      sources:
+        - ubuntu-toolchain-r-test
+      packages:
+        - libopenblas-dev
+        - g++-7
+
+before_install:
+    # download Qiskit Terra master and unzip it only if forced from master or not stable branch, otherwise use the pypi version
+    - |
+      if [ ${MASTER_BRANCH_DEPENDENCIES} = "true" ] || [ ${TRAVIS_BRANCH} != "stable" ]; then
+        wget https://codeload.github.com/Qiskit/qiskit-terra/zip/master -O /tmp/qiskit-terra.zip
+        unzip /tmp/qiskit-terra.zip -d /tmp/
+        # Install Qiskit Terra requirements.
+        pip install -U -r /tmp/qiskit-terra-master/requirements.txt
+        pip install -U -r /tmp/qiskit-terra-master/requirements-dev.txt
+        # Install local Qiskit Terra
+        pip install -e /tmp/qiskit-terra-master
+      fi
+    # download Qiskit Aqua and unzip it
+    - wget https://codeload.github.com/Qiskit/qiskit-aqua/zip/$DEP_BRANCH -O /tmp/qiskit-aqua.zip
+    - unzip /tmp/qiskit-aqua.zip -d /tmp/
+    # Install Qiskit Aqua dependencies.
+    - pip install -U -r /tmp/qiskit-aqua-$DEP_BRANCH/requirements.txt
+    - pip install -U -r /tmp/qiskit-aqua-$DEP_BRANCH/requirements-dev.txt
+    # Install local Qiskit Aqua
+    - pip install -e /tmp/qiskit-aqua-$DEP_BRANCH
+    # download PyQuante master and unzip it
+    - wget https://codeload.github.com/rpmuller/pyquante2/zip/master -O /tmp/pyquante2.zip
+    - unzip /tmp/pyquante2.zip -d /tmp/
+    # Install pyQuante  dependencies.
+    - pip install -U -r /tmp/pyquante2-master/requirements.txt
+    # Install local PyQuante
+    - pip install -e /tmp/pyquante2-master
+    # Install pyscf
+    - pip install pyscf
+     # download Qiskit Chemistry and unzip it
+    - wget https://codeload.github.com/Qiskit/qiskit-chemistry/zip/$DEP_BRANCH -O /tmp/qiskit-chemistry.zip
+    - unzip /tmp/qiskit-chemistry.zip -d /tmp/
+    # Install Qiskit Chemistry dependencies.
+    - pip install -U -r /tmp/qiskit-chemistry-$DEP_BRANCH/requirements.txt
+    - pip install -U -r /tmp/qiskit-chemistry-$DEP_BRANCH/requirements-dev.txt
+    # Install local Qiskit Chemistry
+    - pip install -e /tmp/qiskit-chemistry-$DEP_BRANCH
+   
+# Test 
+install:
+    # install library and dev requirements
+    - pip install -U -r requirements-dev.txt
+    - pip install -e $TRAVIS_BUILD_DIR
+script:
+    - python -m unittest discover -v test
+    
