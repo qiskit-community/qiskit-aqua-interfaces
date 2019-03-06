@@ -15,6 +15,6 @@
 # limitations under the License.
 # =============================================================================
 
-from qiskit_aqua_uis.chemistry.command_line.command_line import main
+from qiskit_aqua_interfaces.chemistry.user_interface.command_line import main
 
 main()

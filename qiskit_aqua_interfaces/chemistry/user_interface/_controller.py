@@ -15,9 +15,9 @@
 # limitations under the License.
 # =============================================================================
 
-from qiskit_aqua_uis.aqua.user_interface import BaseController
+from qiskit_aqua_interfaces.aqua.user_interface import BaseController
 from ._model import Model
-from qiskit_aqua_uis.aqua.user_interface import (EntryPopup, ComboboxPopup, TextPopup)
+from qiskit_aqua_interfaces.aqua.user_interface import (EntryPopup, ComboboxPopup, TextPopup)
 import tkinter as tk
 from tkinter import messagebox
 import json

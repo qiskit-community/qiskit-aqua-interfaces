@@ -22,7 +22,7 @@ import queue
 import tkinter as tk
 from tkinter import messagebox
 import logging
-from qiskit_aqua_uis.aqua.user_interface import GUIProvider
+from qiskit_aqua_interfaces.aqua.user_interface import GUIProvider
 
 logger = logging.getLogger(__name__)
 

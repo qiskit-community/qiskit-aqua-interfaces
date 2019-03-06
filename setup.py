@@ -28,7 +28,7 @@ requirements = [
 ]
 
 setuptools.setup(
-    name='qiskit-aqua-uis',
+    name='qiskit_aqua_interfaces',
     version="0.1.0",  # this should match __init__.__version__
     description='Qiskit Aqua Interfaces',
     long_description=long_description,
@@ -56,13 +56,13 @@ setuptools.setup(
     python_requires=">=3.5",
     entry_points={
         'console_scripts': [
-                'qiskit_aqua_cmd=qiskit_aqua_uis.aqua.command_line.command_line:main',
-                'qiskit_chemistry_cmd=qiskit_aqua_uis.chemistry.command_line.command_line:main'
+                'qiskit_aqua_cmd=qiskit_aqua_interfaces.aqua.command_line.command_line:main',
+                'qiskit_chemistry_cmd=qiskit_aqua_interfaces.chemistry.command_line.command_line:main'
         ],
         'gui_scripts': [
-                'qiskit_aqua_ui=qiskit_aqua_uis.aqua.user_interface.command_line:main',
-                'qiskit_aqua_browser=qiskit_aqua_uis.aqua.browser.command_line:main',
-                'qiskit_chemistry_ui=qiskit_aqua_uis.chemistry.user_interface.command_line:main'
+                'qiskit_aqua_ui=qiskit_aqua_interfaces.aqua.user_interface.command_line:main',
+                'qiskit_aqua_browser=qiskit_aqua_interfaces.aqua.browser.command_line:main',
+                'qiskit_chemistry_ui=qiskit_aqua_interfaces.chemistry.user_interface.command_line:main'
         ]
     }
 )

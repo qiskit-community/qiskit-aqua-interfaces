@@ -21,7 +21,7 @@ InputParser test.
 
 import unittest
 from test.common import QiskitAquaUisTestCase
-from qiskit_aqua_uis.chemistry.user_interface._model import Model
+from qiskit_aqua_interfaces.chemistry.user_interface._model import Model
 from qiskit.aqua import AquaError
 
 

@@ -25,8 +25,8 @@ from ._controller import Controller
 from ._sectionsview import SectionsView
 from ._sectionpropertiesview import SectionPropertiesView
 from ._emptyview import EmptyView
-from qiskit_aqua_uis import __version__
-from qiskit_aqua_uis.aqua.user_interface import UIPreferences
+from qiskit_aqua_interfaces import __version__
+from qiskit_aqua_interfaces.aqua.user_interface import UIPreferences
 
 
 class MainView(ttk.Frame):

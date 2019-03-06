@@ -23,13 +23,13 @@ import logging
 import os
 import unittest
 
-from qiskit_aqua_uis import __path__ as qiskit_aqua_uis_path
+from qiskit_aqua_interfaces import __path__ as qiskit_aqua_interfaces_path
 
 
 class Path(Enum):
     """Helper with paths commonly used during the tests."""
-    # Main SDK path:    qiskit_aqua_uis/
-    SDK = qiskit_aqua_uis_path[0]
+    # Main SDK path:    qiskit_aqua_interfaces/
+    SDK = qiskit_aqua_interfaces_path[0]
     # test.python path: test/
     TEST = os.path.dirname(__file__)
 

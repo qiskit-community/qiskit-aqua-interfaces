@@ -15,7 +15,7 @@
 # limitations under the License.
 # =============================================================================
 
-from qiskit_aqua_uis.aqua.user_interface import BaseModel
+from qiskit_aqua_interfaces.aqua.user_interface import BaseModel
 import os
 from ._uipreferences import UIPreferences
 from qiskit.aqua.parser import JSONSchema

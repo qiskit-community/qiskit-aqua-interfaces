@@ -22,7 +22,7 @@ from qiskit.aqua import QiskitAqua
 from collections import OrderedDict
 import textwrap
 import logging
-from qiskit_aqua_uis.chemistry.user_interface import UIPreferences
+from qiskit_aqua_interfaces.chemistry.user_interface import UIPreferences
 
 logger = logging.getLogger(__name__)
 
