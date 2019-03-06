@@ -27,7 +27,7 @@ def main():
                                       build_logging_config,
                                       set_logging_config,
                                       set_aqua_logging)
-    from qiskit_aqua_uis.aqua.user_interface import UIPreferences
+    from qiskit_aqua_interfaces.aqua.user_interface import UIPreferences
     from qiskit.aqua import run_algorithm
     from qiskit.aqua.utils import convert_json_to_dict
 

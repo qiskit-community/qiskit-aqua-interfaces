@@ -19,7 +19,7 @@ import sys
 import logging
 import tkinter as tk
 from tkinter import messagebox
-from qiskit_aqua_uis.aqua.user_interface import MainView
+from qiskit_aqua_interfaces.aqua.user_interface import MainView
 
 
 def set_preferences_logging():

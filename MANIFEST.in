@@ -1,1 +1,1 @@
-recursive-include qiskit_aqua_uis *.json
+recursive-include qiskit_aqua_interfaces *.json

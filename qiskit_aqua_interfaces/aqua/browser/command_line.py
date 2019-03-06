@@ -18,7 +18,7 @@
 import sys
 import logging
 import tkinter as tk
-from qiskit_aqua_uis.aqua.user_interface import UIPreferences
+from qiskit_aqua_interfaces.aqua.user_interface import UIPreferences
 from ._mainview import MainView
 
 

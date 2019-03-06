@@ -17,7 +17,7 @@
 
 from .base_model import BaseModel
 import os
-from qiskit_aqua_uis.aqua.user_interface._uipreferences import UIPreferences
+from qiskit_aqua_interfaces.aqua.user_interface._uipreferences import UIPreferences
 import logging
 
 logger = logging.getLogger(__name__)

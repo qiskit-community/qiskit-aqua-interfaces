@@ -22,7 +22,7 @@ import threading
 import tempfile
 import sys
 import logging
-from qiskit_aqua_uis.aqua.user_interface import GUIProvider
+from qiskit_aqua_interfaces.aqua.user_interface import GUIProvider
 import io
 import platform
 

@@ -15,6 +15,6 @@
 # limitations under the License.
 # =============================================================================
 
-from qiskit_aqua_uis.aqua.browser.command_line import main
+from qiskit_aqua_interfaces.aqua.command_line.command_line import main
 
 main()
