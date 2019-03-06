@@ -1,4 +1,4 @@
-# qiskit-aqua-uis
+# qiskit-aqua-interfaces
 [Qiskit](https://github.com/Qiskit/qiskit) is an open-source framework for working with noisy intermediate-scale quantum
 (NISQ) computers at the level of pulses, circuits, algorithms, and applications.
 
