@@ -376,9 +376,3 @@ class BaseModel(ABC):
             raise Exception('Input not initialized.')
 
         self._parser.set_section_data(section_name, value)
-
-    def delete_section_text(self, section_name):
-        if self._parser is None:
-            raise Exception('Input not initialized.')
-
-        self._parser.delete_section_text(section_name)
