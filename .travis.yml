@@ -56,8 +56,6 @@ before_install:
     - pip install -U -r /tmp/pyquante2-master/requirements.txt
     # Install local PyQuante
     - pip install -e /tmp/pyquante2-master
-    # Install pyscf
-    - pip install pyscf
      # download Qiskit Chemistry and unzip it
     - wget https://codeload.github.com/Qiskit/qiskit-chemistry/zip/$DEP_BRANCH -O /tmp/qiskit-chemistry.zip
     - unzip /tmp/qiskit-chemistry.zip -d /tmp/
