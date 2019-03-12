@@ -93,6 +93,10 @@ class BaseModel(ABC):
         try:
             self._parser = parser_class(filename)
             self._parser.parse()
+            # check if there was any data, if there is no data, just return empty file
+            if len(self.get_section_names()) == 0:
+                return
+
             # before merging defaults attempts to find a provider for the backend
             provider = self._parser.get_section_property(JSONSchema.BACKEND, JSONSchema.PROVIDER)
             if provider is None:

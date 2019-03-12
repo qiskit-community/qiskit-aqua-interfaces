@@ -151,7 +151,7 @@ class MainView(ttk.Frame):
 
     def _save_file_as(self):
         if self._guiprovider.controller.is_empty():
-            self._guiprovider.controller._outputView.write_line("No data to save.")
+            self._guiprovider.controller.outputview.write_line("No data to save.")
             return
 
         preferences = self._guiprovider.create_uipreferences()
@@ -216,13 +216,13 @@ class MainView(ttk.Frame):
         self._guiprovider.controller._emptyView.tkraise()
         top_pane.add(main_container, weight=1)
 
-        self._guiprovider.controller._outputView = ThreadSafeOutputView(main_pane)
-        self._guiprovider.controller._outputView.pack(expand=tk.YES, fill=tk.BOTH)
-        main_pane.add(self._guiprovider.controller._outputView)
+        self._guiprovider.controller.outputview = ThreadSafeOutputView(main_pane)
+        self._guiprovider.controller.outputview.pack(expand=tk.YES, fill=tk.BOTH)
+        main_pane.add(self._guiprovider.controller.outputview)
 
         # redirect output
-        sys.stdout = self._guiprovider.controller._outputView
-        sys.stderr = self._guiprovider.controller._outputView
+        sys.stdout = self._guiprovider.controller.outputview
+        sys.stderr = self._guiprovider.controller.outputview
         # reupdate logging after redirect
         self.after(0, self._set_preferences_logging)
 

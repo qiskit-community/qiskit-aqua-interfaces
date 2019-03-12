@@ -32,6 +32,13 @@ class Controller(BaseController):
     def __init__(self, guiprovider):
         super().__init__(guiprovider, Model())
 
+    def open_file(self, filename):
+        ret = super().open_file(filename)
+        if ret and len(self.model.get_section_names()) == 0:
+            self.outputview.write_line('The file appears not to be a qiskit chemistry input file; no begin/end sections found.')
+
+        return ret
+
     def on_section_select(self, section_name):
         self._sectionsView.show_remove_button(True)
         self._sectionView_title.set(section_name)
@@ -100,7 +107,7 @@ class Controller(BaseController):
             self._propertiesView.show_remove_button(False)
             self._propertiesView.show_defaults_button(not self.model.default_properties_equals_properties(section_name))
         except Exception as e:
-            self._outputView.write_line(str(e))
+            self.outputview.write_line(str(e))
 
     def create_popup(self, section_name, property_name, parent, value):
         from qiskit.chemistry.parser import InputParser
