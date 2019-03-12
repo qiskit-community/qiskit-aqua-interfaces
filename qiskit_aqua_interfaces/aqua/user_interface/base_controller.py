@@ -42,7 +42,7 @@ class BaseController(ABC):
         self._sectionView_title = tk.StringVar()
         self._propertiesView = None
         self._textView = None
-        self._outputView = None
+        self._outputview = None
         self._progress = None
         self._button_text = None
         self._start_button = None
@@ -121,16 +121,21 @@ class BaseController(ABC):
 
     @property
     def outputview(self):
-        return self._outputView
+        return self._outputview
+
+    @outputview.setter
+    def outputview(self, outputview):
+        self._outputview = outputview
 
     @property
     def model(self):
         return self._model
 
     def new_input(self):
+        rc = True
         try:
             self.stop()
-            self._outputView.clear()
+            self.outputview.clear()
             self._start_button.state(['disabled'])
             self._title.set('')
             self._sectionsView.clear()
@@ -147,17 +152,18 @@ class BaseController(ABC):
             self._start_button.state(['!disabled'])
             missing = self.get_sections_names_missing()
             self._sectionsView.show_add_button(True if missing else False)
-            return True
         except Exception as e:
-            self._outputView.clear()
-            self._outputView.write_line(str(e))
+            self.outputview.clear()
+            self.outputview.write_line(str(e))
+            rc = False
 
-        return False
+        return rc
 
     def open_file(self, filename):
+        rc = True
         try:
             self.stop()
-            self._outputView.clear()
+            self.outputview.clear()
             self._start_button.state(['disabled'])
             self._title.set('')
             self._sectionsView.clear()
@@ -168,29 +174,25 @@ class BaseController(ABC):
             self._propertiesView.clear()
             self._propertiesView.show_remove_button(False)
             self._emptyView.tkraise()
-
             try:
                 self.model.load_file(filename)
             except Exception as e:
-                self._outputView.clear()
+                self.outputview.clear()
                 messagebox.showerror("Error", str(e))
+                rc = False
 
-            section_names = self.model.get_section_names()
             self._title.set(os.path.basename(filename))
-            if len(section_names) == 0:
-                self._outputView.write_line('No sections found on file')
-                return
-
+            section_names = self.model.get_section_names()
             self._sectionsView.populate(section_names)
             self._start_button.state(['!disabled'])
             missing = self.get_sections_names_missing()
             self._sectionsView.show_add_button(True if missing else False)
-            return True
         except Exception as e:
-            self._outputView.clear()
-            self._outputView.write_line(str(e))
+            self.outputview.clear()
+            self.outputview.write_line(str(e))
+            rc = False
 
-        return False
+        return rc
 
     def is_empty(self):
         return self.model.is_empty()
@@ -198,12 +200,12 @@ class BaseController(ABC):
     def save_file(self):
         filename = self.model.get_filename()
         if filename is None or len(filename) == 0:
-            self._outputView.write_line("No file to save.")
+            self.outputview.write_line("No file to save.")
             return False
 
         try:
             self.model.save_to_file(filename)
-            self._outputView.write_line("Saved file: {}".format(filename))
+            self.outputview.write_line("Saved file: {}".format(filename))
             return True
         except Exception as e:
             messagebox.showerror("Error", str(e))
@@ -282,7 +284,7 @@ class BaseController(ABC):
             default_sections = self.model.get_default_sections()
             return list(set(default_sections.keys()) - set(section_names))
         except Exception as e:
-            self._outputView.write_line(str(e))
+            self.outputview.write_line(str(e))
 
     def get_property_names_missing(self, section_name):
         try:
@@ -293,7 +295,7 @@ class BaseController(ABC):
                 return None
             return list(set(default_properties.keys()) - set(properties.keys()))
         except Exception as e:
-            self._outputView.write_line(str(e))
+            self.outputview.write_line(str(e))
 
     def shows_add_button(self, section_name):
         if self.model.allows_additional_properties(section_name):
@@ -335,7 +337,7 @@ class BaseController(ABC):
             self.model.set_section_text(section_name, value)
             self._textView.show_defaults_button(not self.model.default_properties_equals_properties(section_name))
         except Exception as e:
-            self._outputView.write_line(str(e))
+            self.outputview.write_line(str(e))
             return False
 
         return True
@@ -346,7 +348,7 @@ class BaseController(ABC):
 
     def toggle(self):
         if self.model.is_empty():
-            self._outputView.write_line("Missing Input")
+            self.outputview.write_line("Missing Input")
             return
 
         self._start_button.state(['disabled'])
@@ -356,8 +358,8 @@ class BaseController(ABC):
         self._view.after(100, self._process_thread_queue)
         try:
             if self._command is GUIProvider.START:
-                self._outputView.clear()
-                self._thread = self._guiprovider.create_run_thread(self.model, self._outputView, self._thread_queue)
+                self.outputview.clear()
+                self._thread = self._guiprovider.create_run_thread(self.model, self.outputview, self._thread_queue)
                 if self._thread is not None:
                     self._thread.daemon = True
                     self._thread.start()
@@ -372,7 +374,7 @@ class BaseController(ABC):
         except Exception as e:
             self._thread = None
             self._thread_queue.put(None)
-            self._outputView.write_line("Failure: {}".format(str(e)))
+            self.outputview.write_line("Failure: {}".format(str(e)))
             self._start_button.state(['!disabled'])
             self._filemenu.entryconfig(0, state='normal')
             self._filemenu.entryconfig(1, state='normal')
@@ -385,7 +387,7 @@ class BaseController(ABC):
                                           name='Stop thread')
             stopthread.daemon = True
             stopthread.start()
-            self._outputView.clear_buffer()
+            self.outputview.clear_buffer()
             self._thread = None
             self._process_stop = True
             self._thread_queue.put(GUIProvider.STOP)
@@ -409,7 +411,7 @@ class BaseController(ABC):
                 self._button_text.set(self._command)
                 self._start_button.state(['!disabled'])
             elif line is GUIProvider.STOP:
-                if not self._outputView.buffer_empty():
+                if not self.outputview.buffer_empty():
                     # repost stop
                     self._thread_queue.put(GUIProvider.STOP)
                 else:
@@ -423,7 +425,7 @@ class BaseController(ABC):
                     self._filemenu.entryconfig(2, state='normal')
                     if self._process_stop:
                         self._process_stop = False
-                        self._outputView.write_line('Process stopped.')
+                        self.outputview.write_line('Process stopped.')
                     return
 
             self._view.update_idletasks()
