@@ -26,7 +26,7 @@ def main():
     from qiskit.aqua._logging import (get_logging_level,
                                       build_logging_config,
                                       set_logging_config,
-                                      set_aqua_logging)
+                                      set_qiskit_aqua_logging)
     from qiskit_aqua_interfaces.aqua.user_interface import UIPreferences
     from qiskit.aqua import run_algorithm
     from qiskit.aqua.utils import convert_json_to_dict
@@ -63,7 +63,7 @@ def main():
     args = parser.parse_args()
 
     if args.l is not None:
-        set_aqua_logging(_LOG_LEVELS.get(args.l, logging.INFO))
+        set_qiskit_aqua_logging(_LOG_LEVELS.get(args.l, logging.INFO))
     else:
         # update logging setting with latest external packages
         logging_level = logging.INFO
