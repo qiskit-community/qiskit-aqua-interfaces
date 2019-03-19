@@ -54,15 +54,18 @@ setuptools.setup(
     install_requires=requirements,
     include_package_data=True,
     python_requires=">=3.5",
+    extras_require={
+        'qiskit-chemistry': ['qiskit-chemistry>=0.4.3']
+    },
     entry_points={
         'console_scripts': [
                 'qiskit_aqua_cmd=qiskit_aqua_interfaces.aqua.command_line.command_line:main',
-                'qiskit_chemistry_cmd=qiskit_aqua_interfaces.chemistry.command_line.command_line:main'
+                'qiskit_chemistry_cmd=qiskit_aqua_interfaces.chemistry.command_line.command_line:main [qiskit-chemistry]'
         ],
         'gui_scripts': [
                 'qiskit_aqua_ui=qiskit_aqua_interfaces.aqua.user_interface.command_line:main',
                 'qiskit_aqua_browser=qiskit_aqua_interfaces.aqua.browser.command_line:main',
-                'qiskit_chemistry_ui=qiskit_aqua_interfaces.chemistry.user_interface.command_line:main'
+                'qiskit_chemistry_ui=qiskit_aqua_interfaces.chemistry.user_interface.command_line:main [qiskit-chemistry]'
         ]
     }
 )
