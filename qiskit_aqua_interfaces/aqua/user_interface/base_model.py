@@ -188,7 +188,6 @@ class BaseModel(ABC):
         if self._parser is None:
             raise Exception('Input not initialized.')
 
-        self._parser.set_section(section_name)
         value = self._parser.get_section_default_properties(section_name)
         if isinstance(value, dict):
             for property_name, property_value in value.items():
