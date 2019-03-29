@@ -190,6 +190,14 @@ class BaseModel(ABC):
 
         value = self._parser.get_section_default_properties(section_name)
         if isinstance(value, dict):
+            from qiskit.aqua.parser import JSONSchema
+            # if there is no pluggable default name, use the first one found
+            if value.get(JSONSchema.NAME, '') == '' and BaseModel.is_pluggable_section(section_name):
+                from qiskit.aqua import local_pluggables
+                pluggable_names = local_pluggables(section_name)
+                if len(pluggable_names) > 0:
+                    value[JSONSchema.NAME] = pluggable_names[0]
+
             for property_name, property_value in value.items():
                 self._parser.set_section_property(section_name, property_name, property_value)
 
