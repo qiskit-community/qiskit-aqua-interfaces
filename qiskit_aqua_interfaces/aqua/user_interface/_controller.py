@@ -103,11 +103,14 @@ class Controller(BaseController):
             self.outputview.write_line(str(e))
 
     def create_popup(self, section_name, property_name, parent, value):
+        from qiskit.aqua import PluggableType
         from qiskit.aqua.parser import JSONSchema
         values = None
         types = ['string']
         combobox_state = 'readonly'
-        if JSONSchema.NAME == property_name and Model.is_pluggable_section(section_name):
+        if PluggableType.INPUT.value == section_name and JSONSchema.NAME == property_name:
+            values = self.model.get_input_section_names()
+        elif Model.is_pluggable_section(section_name) and JSONSchema.NAME == property_name:
             values = self.model.get_pluggable_section_names(section_name)
         elif JSONSchema.BACKEND == section_name and \
                 (JSONSchema.NAME == property_name or JSONSchema.PROVIDER == property_name):
