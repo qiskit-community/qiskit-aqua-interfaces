@@ -359,6 +359,14 @@ class BaseModel(ABC):
                     properties[JSONSchema.PROVIDER] = self._parser.get_section_property(section_name, JSONSchema.PROVIDER)
                     properties[JSONSchema.NAME] = self._parser.get_section_property(section_name, JSONSchema.NAME)
 
+                # move name to top
+                if JSONSchema.NAME in properties:
+                    properties.move_to_end(JSONSchema.NAME, last=False)
+
+                # move provider to top
+                if JSONSchema.PROVIDER in properties:
+                    properties.move_to_end(JSONSchema.PROVIDER, last=False)
+
                 properties[property_name] = value
                 self._parser.delete_section_properties(section_name)
                 for property_name, property_value in properties.items():
