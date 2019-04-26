@@ -17,6 +17,7 @@
 
 from qiskit_aqua_interfaces.aqua.user_interface import BaseModel
 import os
+from collections import OrderedDict
 from ._uipreferences import UIPreferences
 from qiskit.aqua.parser import JSONSchema
 import logging
@@ -86,12 +87,10 @@ class Model(BaseModel):
 
     def get_section_properties_with_substitution(self, section_name):
         properties = self.get_section_properties(section_name)
-        result_tuples = self._parser.check_if_substitution_key(
-            section_name, list(properties.keys()))
-        properties_with_substitution = {}
+        result_tuples = self._parser.check_if_substitution_key(section_name, list(properties.keys()))
+        properties_with_substitution = OrderedDict()
         for result_tuple in result_tuples:
-            properties_with_substitution[result_tuple[0]] = (
-                properties[result_tuple[0]], result_tuple[1])
+            properties_with_substitution[result_tuple[0]] = (properties[result_tuple[0]], result_tuple[1])
 
         return properties_with_substitution
 
