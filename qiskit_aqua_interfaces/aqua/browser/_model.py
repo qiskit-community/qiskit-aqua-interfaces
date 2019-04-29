@@ -35,10 +35,10 @@ class Model(object):
 
         self._schema_property_titles = OrderedDict()
         self._sections = OrderedDict()
-        for pluggable_type in local_pluggables_types():
+        for pluggable_type in sorted(local_pluggables_types(), key=lambda x: x.value):
             self._sections[pluggable_type.value] = OrderedDict()
             self._schema_property_titles[pluggable_type.value] = OrderedDict()
-            for pluggable_name in local_pluggables(pluggable_type):
+            for pluggable_name in sorted(local_pluggables(pluggable_type)):
                 config = copy.deepcopy(get_pluggable_configuration(pluggable_type, pluggable_name))
                 self._populate_section(pluggable_type.value, pluggable_name, config)
 
