@@ -33,7 +33,7 @@ with open(VERSION_PATH, "r") as version_file:
     VERSION = version_file.read().strip()
 
 setuptools.setup(
-    name='qiskit_aqua_interfaces',
+    name='qiskit-aqua-interfaces',
     version=VERSION,
     description='Qiskit Aqua Interfaces',
     long_description=long_description,
