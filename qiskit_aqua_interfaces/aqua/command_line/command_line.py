@@ -20,9 +20,11 @@ import json
 from collections import OrderedDict
 import textwrap
 import logging
+from qiskit_aqua_interfaces._extras_require import _check_extra_requires
 
 
 def main():
+    _check_extra_requires('console_scripts', 'qiskit_aqua_cmd')
     from qiskit.aqua._logging import (get_logging_level,
                                       build_logging_config,
                                       set_logging_config,

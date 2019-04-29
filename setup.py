@@ -16,20 +16,25 @@
 # =============================================================================
 
 import setuptools
+import os
 
 long_description = """Qiskit Aqua Interfaces, a set of user-interface components for
  <a href="https://github.com/Qiskit/qiskit-aqua" rel=nofollow>Qiskit Aqua</a> and
  <a href="https://github.com/Qiskit/qiskit-chemistry" rel=nofollow>Qiskit Chemistry</a>."""
 
 requirements = [
-    "qiskit-aqua>=0.4.2",
+    "qiskit-aqua>=0.5.0",
     "pyobjc-core; sys_platform == 'darwin'",
     "pyobjc-framework-Cocoa; sys_platform == 'darwin'"
 ]
 
+VERSION_PATH = os.path.join(os.path.dirname(__file__), "qiskit_aqua_interfaces", "VERSION.txt")
+with open(VERSION_PATH, "r") as version_file:
+    VERSION = version_file.read().strip()
+
 setuptools.setup(
     name='qiskit_aqua_interfaces',
-    version="0.1.0",  # this should match __init__.__version__
+    version=VERSION,
     description='Qiskit Aqua Interfaces',
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -55,17 +60,17 @@ setuptools.setup(
     include_package_data=True,
     python_requires=">=3.5",
     extras_require={
-        'qiskit-chemistry': ['qiskit-chemistry>=0.4.3']
+        'qiskit_chemistry': ['qiskit-chemistry>=0.5.0']
     },
     entry_points={
         'console_scripts': [
                 'qiskit_aqua_cmd=qiskit_aqua_interfaces.aqua.command_line.command_line:main',
-                'qiskit_chemistry_cmd=qiskit_aqua_interfaces.chemistry.command_line.command_line:main [qiskit-chemistry]'
+                'qiskit_chemistry_cmd=qiskit_aqua_interfaces.chemistry.command_line.command_line:main [qiskit_chemistry]'
         ],
         'gui_scripts': [
                 'qiskit_aqua_ui=qiskit_aqua_interfaces.aqua.user_interface.command_line:main',
                 'qiskit_aqua_browser=qiskit_aqua_interfaces.aqua.browser.command_line:main',
-                'qiskit_chemistry_ui=qiskit_aqua_interfaces.chemistry.user_interface.command_line:main [qiskit-chemistry]'
+                'qiskit_chemistry_ui=qiskit_aqua_interfaces.chemistry.user_interface.command_line:main [qiskit_chemistry]'
         ]
     }
 )

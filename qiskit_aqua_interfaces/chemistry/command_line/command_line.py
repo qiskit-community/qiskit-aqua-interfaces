@@ -18,16 +18,16 @@
 import argparse
 import json
 import pprint
-from qiskit.aqua import QiskitAqua
 from collections import OrderedDict
 import textwrap
 import logging
 from qiskit_aqua_interfaces.chemistry.user_interface import UIPreferences
+from qiskit_aqua_interfaces._extras_require import _check_extra_requires
 
 logger = logging.getLogger(__name__)
 
 
-def run_algorithm_from_json(params, output_file):
+def _run_algorithm_from_json(params, output_file):
     """
     Runs the Aqua Chemistry experiment from Qiskit Aqua json dictionary
 
@@ -35,6 +35,7 @@ def run_algorithm_from_json(params, output_file):
         params (dictionary): Qiskit Aqua json dictionary
         output_file (filename): Output file name to save results
     """
+    from qiskit.aqua import QiskitAqua
     from qiskit.chemistry import QiskitChemistryError
     qiskit_aqua = QiskitAqua(params)
     ret = qiskit_aqua.run()
@@ -49,6 +50,7 @@ def run_algorithm_from_json(params, output_file):
 
 
 def main():
+    _check_extra_requires('console_scripts', 'qiskit_chemistry_cmd')
     try:
         from qiskit.chemistry import run_experiment, run_driver_to_json
         from qiskit.chemistry._logging import (get_logging_level,
@@ -116,7 +118,7 @@ def main():
         pass
 
     if params is not None:
-        run_algorithm_from_json(params, args.o)
+        _run_algorithm_from_json(params, args.o)
     else:
         if args.jo is not None:
             run_driver_to_json(args.input, args.jo)

@@ -20,6 +20,7 @@ import logging
 import tkinter as tk
 from ._aquaguiprovider import AquaGUIProvider
 from ._mainview import MainView
+from qiskit_aqua_interfaces._extras_require import _check_extra_requires
 
 
 def set_preferences_logging():
@@ -41,6 +42,7 @@ def set_preferences_logging():
 
 
 def main():
+    _check_extra_requires('gui_scripts', 'qiskit_aqua_ui')
     guiProvider = AquaGUIProvider()
     if sys.platform == 'darwin':
         from Foundation import NSBundle
