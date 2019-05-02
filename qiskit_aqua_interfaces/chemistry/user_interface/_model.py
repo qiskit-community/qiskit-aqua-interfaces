@@ -16,7 +16,6 @@ from qiskit_aqua_interfaces.aqua.user_interface import BaseModel
 import os
 from collections import OrderedDict
 from ._uipreferences import UIPreferences
-from qiskit.aqua.parser import JSONSchema
 import logging
 
 logger = logging.getLogger(__name__)
@@ -41,6 +40,7 @@ class Model(BaseModel):
         return super().load_file(filename, InputParser, uipreferences.get_populate_defaults(True))
 
     def default_properties_equals_properties(self, section_name):
+        from qiskit.aqua.parser import JSONSchema
         if self.section_is_text(section_name):
             return self.get_section_default_properties(section_name) == self.get_section_text(section_name)
 
@@ -92,6 +92,7 @@ class Model(BaseModel):
         return properties_with_substitution
 
     def get_operator_section_names(self):
+        from qiskit.aqua.parser import JSONSchema
         from qiskit.chemistry.parser import InputParser
         from qiskit.chemistry.core import local_chemistry_operators
         problem_name = None
