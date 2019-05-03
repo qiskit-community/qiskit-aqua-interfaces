@@ -18,6 +18,9 @@ The format is based on `Keep a Changelog`_.
 `UNRELEASED`_
 =============
 
+`0.1.0`_ - 2019-05-02
+=====================
+
 Added
 -----
 
@@ -31,6 +34,7 @@ Changed
 - Updated qiskit minimum version in setup.py.
 - Fixed links in readme.me.
 
-.. _UNRELEASED: https://github.com/Qiskit/qiskit-aqua-uis/compare/b1d21f0...HEAD
+.. _UNRELEASED: https://github.com/Qiskit/qiskit-aqua-interfaces/compare/0.1.0...HEAD
+.. _0.1.0: https://github.com/Qiskit/qiskit-aqua-interfaces/compare/b1d21f0...0.1.0
 
 .. _Keep a Changelog: http://keepachangelog.com/en/1.0.0/
