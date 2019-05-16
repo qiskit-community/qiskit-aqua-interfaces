@@ -18,6 +18,11 @@ The format is based on `Keep a Changelog`_.
 `UNRELEASED`_
 =============
 
+Changed
+-------
+
+- Handle value with different schema types
+
 `0.1.0`_ - 2019-05-02
 =====================
 

@@ -20,7 +20,7 @@ long_description = """Qiskit Aqua Interfaces, a set of user-interface components
  <a href="https://github.com/Qiskit/qiskit-chemistry" rel=nofollow>Qiskit Chemistry</a>."""
 
 requirements = [
-    "qiskit-aqua>=0.5.0",
+    "qiskit-aqua>=0.5.1",
     "pyobjc-core; sys_platform == 'darwin'",
     "pyobjc-framework-Cocoa; sys_platform == 'darwin'"
 ]
@@ -57,7 +57,7 @@ setuptools.setup(
     include_package_data=True,
     python_requires=">=3.5",
     extras_require={
-        'qiskit_chemistry': ['qiskit-chemistry>=0.5.0']
+        'qiskit_chemistry': ['qiskit-chemistry>=0.5.1']
     },
     entry_points={
         'console_scripts': [
