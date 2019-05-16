@@ -18,8 +18,12 @@ import threading
 import queue
 import tkinter as tk
 from tkinter import messagebox
+import ast
+import json
 import logging
 from qiskit_aqua_interfaces.aqua.user_interface import GUIProvider
+from .base_model import BaseModel
+from ._customwidgets import (EntryPopup, ComboboxPopup, TextPopup)
 
 logger = logging.getLogger(__name__)
 
@@ -174,7 +178,6 @@ class BaseController(ABC):
             try:
                 self.model.load_file(filename)
             except Exception as e:
-                self.outputview.clear()
                 messagebox.showerror("Error", str(e))
                 rc = False
 
@@ -339,9 +342,82 @@ class BaseController(ABC):
 
         return True
 
-    @abstractmethod
+    def get_combobox_parameters(self, section_name, property_name):
+        from qiskit.aqua.parser import JSONSchema
+        values = None
+        types = ['string']
+        combobox_state = 'readonly'
+        if JSONSchema.NAME == property_name and BaseModel.is_pluggable_section(section_name):
+            values = self.model.get_pluggable_section_names(section_name)
+        elif JSONSchema.BACKEND == section_name and \
+                (JSONSchema.NAME == property_name or JSONSchema.PROVIDER == property_name):
+            values = []
+            if JSONSchema.PROVIDER == property_name:
+                combobox_state = 'normal'
+                for provider, _ in self.model.providers.items():
+                    values.append(provider)
+            else:
+                provider_name = self.model.get_section_property(JSONSchema.BACKEND, JSONSchema.PROVIDER)
+                values = self.model.providers.get(provider_name, [])
+        else:
+            values = self.model.get_property_default_values(section_name, property_name)
+            types = self.model.get_property_types(section_name, property_name)
+
+        return combobox_state, types, values
+
     def create_popup(self, section_name, property_name, parent, value):
-        pass
+        combobox_state, types, values = self.get_combobox_parameters(section_name, property_name)
+
+        if values is not None:
+            widget = ComboboxPopup(self, section_name,
+                                   property_name,
+                                   parent,
+                                   exportselection=0,
+                                   state=combobox_state,
+                                   values=values)
+            widget._text = '' if value is None else str(value)
+            if len(values) > 0:
+                if value in values:
+                    widget.current(values.index(value))
+                else:
+                    widget.current(0)
+
+            return widget
+
+        value = '' if value is None else value
+
+        if 'object' in types or 'array' in types:
+            try:
+                if isinstance(value, str):
+                    value = value.strip()
+                    if len(value) > 0:
+                        value = ast.literal_eval(value)
+
+                if isinstance(value, dict) or isinstance(value, list):
+                    value = json.dumps(value, sort_keys=True, indent=4)
+            except:
+                pass
+        elif 'number' in types or 'integer' in types:
+            vcmd = self._validate_integer_command if 'integer' in types else self._validate_float_command
+            vcmd = (vcmd, '%d', '%i', '%P', '%s', '%S', '%v', '%V', '%W')
+            widget = EntryPopup(self,
+                                section_name,
+                                property_name,
+                                parent,
+                                value,
+                                validate='all',
+                                validatecommand=vcmd,
+                                state=tk.NORMAL)
+            widget.selectAll()
+            return widget
+
+        widget = TextPopup(self,
+                           section_name,
+                           property_name,
+                           parent,
+                           value)
+        widget.selectAll()
+        return widget
 
     def toggle(self):
         if self.model.is_empty():

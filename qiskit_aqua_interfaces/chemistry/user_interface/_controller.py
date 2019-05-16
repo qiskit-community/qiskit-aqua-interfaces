@@ -14,11 +14,7 @@
 
 from qiskit_aqua_interfaces.aqua.user_interface import BaseController
 from ._model import Model
-from qiskit_aqua_interfaces.aqua.user_interface import (EntryPopup, ComboboxPopup, TextPopup)
-import tkinter as tk
 from tkinter import messagebox
-import json
-import ast
 import logging
 
 logger = logging.getLogger(__name__)
@@ -106,9 +102,9 @@ class Controller(BaseController):
         except Exception as e:
             self.outputview.write_line(str(e))
 
-    def create_popup(self, section_name, property_name, parent, value):
-        from qiskit.chemistry.parser import InputParser
+    def get_combobox_parameters(self, section_name, property_name):
         from qiskit.aqua.parser import JSONSchema
+        from qiskit.chemistry.parser import InputParser
         from qiskit.chemistry.drivers import local_drivers
         values = None
         types = ['string']
@@ -117,69 +113,7 @@ class Controller(BaseController):
             values = self.model.get_operator_section_names()
         elif InputParser.DRIVER == section_name and JSONSchema.NAME == property_name:
             values = local_drivers()
-        elif JSONSchema.NAME == property_name and Model.is_pluggable_section(section_name):
-            values = self.model.get_pluggable_section_names(section_name)
-        elif JSONSchema.BACKEND == section_name and \
-                (JSONSchema.NAME == property_name or JSONSchema.PROVIDER == property_name):
-            values = []
-            if JSONSchema.PROVIDER == property_name:
-                combobox_state = 'normal'
-                for provider, _ in self.model.providers.items():
-                    values.append(provider)
-            else:
-                provider_name = self.model.get_section_property(JSONSchema.BACKEND, JSONSchema.PROVIDER)
-                values = self.model.providers.get(provider_name, [])
         else:
-            values = self.model.get_property_default_values(section_name, property_name)
-            types = self.model.get_property_types(section_name, property_name)
+            combobox_state, types, values = super().get_combobox_parameters(section_name, property_name)
 
-        if values is not None:
-            widget = ComboboxPopup(self, section_name,
-                                   property_name,
-                                   parent,
-                                   exportselection=0,
-                                   state=combobox_state,
-                                   values=values)
-            widget._text = '' if value is None else str(value)
-            if len(values) > 0:
-                if value in values:
-                    widget.current(values.index(value))
-                else:
-                    widget.current(0)
-
-            return widget
-
-        value = '' if value is None else value
-        if 'number' in types or 'integer' in types:
-            vcmd = self._validate_integer_command if 'integer' in types else self._validate_float_command
-            vcmd = (vcmd, '%d', '%i', '%P', '%s', '%S', '%v', '%V', '%W')
-            widget = EntryPopup(self,
-                                section_name,
-                                property_name,
-                                parent,
-                                value,
-                                validate='all',
-                                validatecommand=vcmd,
-                                state=tk.NORMAL)
-            widget.selectAll()
-            return widget
-
-        if 'object' in types or 'array' in types:
-            try:
-                if isinstance(value, str):
-                    value = value.strip()
-                    if len(value) > 0:
-                        value = ast.literal_eval(value)
-
-                if isinstance(value, dict) or isinstance(value, list):
-                    value = json.dumps(value, sort_keys=True, indent=4)
-            except:
-                pass
-
-        widget = TextPopup(self,
-                           section_name,
-                           property_name,
-                           parent,
-                           value)
-        widget.selectAll()
-        return widget
+        return combobox_state, types, values
