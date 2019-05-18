@@ -12,6 +12,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
+import sys
 import argparse
 import json
 import pprint
@@ -21,7 +22,26 @@ import logging
 from qiskit_aqua_interfaces.chemistry.user_interface import UIPreferences
 from qiskit_aqua_interfaces._extras_require import _check_extra_requires
 
-logger = logging.getLogger(__name__)
+
+def main():
+    if sys.platform != 'darwin':
+        _run()
+        return
+
+    # On MacOSX avoid possible matplotlib error in case it is imported by other imported libraries
+    import tkinter as tk
+    root = tk.Tk()
+    root.withdraw()
+    root.after(0, _run_delay, root)
+    root.mainloop()
+
+
+def _run_delay(root):
+    try:
+        _run()
+    finally:
+        if root is not None:
+            root.destroy()
 
 
 def _run_algorithm_from_json(params, output_file):
@@ -46,7 +66,7 @@ def _run_algorithm_from_json(params, output_file):
             pprint(ret, stream=out, indent=4)
 
 
-def main():
+def _run():
     _check_extra_requires('console_scripts', 'qiskit_chemistry_cmd')
     try:
         from qiskit.chemistry import run_experiment, run_driver_to_json
