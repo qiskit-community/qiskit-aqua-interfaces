@@ -12,6 +12,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
+import sys
 import argparse
 import json
 from collections import OrderedDict
@@ -21,6 +22,27 @@ from qiskit_aqua_interfaces._extras_require import _check_extra_requires
 
 
 def main():
+    if sys.platform != 'darwin':
+        _run()
+        return
+
+    # On MacOSX avoid possible matplotlib error in case it is imported by other imported libraries
+    import tkinter as tk
+    root = tk.Tk()
+    root.withdraw()
+    root.after(0, _run_delay, root)
+    root.mainloop()
+
+
+def _run_delay(root):
+    try:
+        _run()
+    finally:
+        if root is not None:
+            root.destroy()
+
+
+def _run():
     _check_extra_requires('console_scripts', 'qiskit_aqua_cmd')
     from qiskit.aqua._logging import (get_logging_level,
                                       build_logging_config,
