@@ -70,6 +70,6 @@ class SectionsView(ToolbarView):
         for item in self._tree.selection():
             item_text = self._tree.item(item, 'text')
             if self._controller.on_section_remove(item_text):
-                self._tree.delete([item])
+                self.populate(self._controller.model.get_section_names())
                 self.show_remove_button(self.has_selection())
             break

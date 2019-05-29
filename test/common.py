@@ -19,6 +19,7 @@ import inspect
 import logging
 import os
 import unittest
+import time
 
 from qiskit_aqua_interfaces import __path__ as qiskit_aqua_interfaces_path
 
@@ -33,6 +34,14 @@ class Path(Enum):
 
 class QiskitAquaUisTestCase(unittest.TestCase):
     """Helper class that contains common functionality."""
+
+    def setUp(self):
+        self._started_at = time.time()
+
+    def tearDown(self):
+        elapsed = time.time() - self._started_at
+        if elapsed > 5.0:
+            print('({:.2f}s)'.format(round(elapsed, 2)), flush=True)
 
     @classmethod
     def setUpClass(cls):
