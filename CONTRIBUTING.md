@@ -103,7 +103,7 @@ please double check that:
     docstring accordingly.
 -   Your contribution passes the existing tests, and if developing a new
     feature, that you have added new tests that cover those changes.
--   You add a new line to the `CHANGELOG.rst` file, in the `UNRELEASED`
+-   You add a new line to the `CHANGELOG.md` file, in the `UNRELEASED`
     section, with the title of your pull request and its identifier (for
     example, \"`Replace OldComponent with FluxCapacitor (#123)`\".
 
