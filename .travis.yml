@@ -57,5 +57,6 @@ install:
   - pip install -U -r requirements-dev.txt --progress-bar off
   - pip install -e $TRAVIS_BUILD_DIR --progress-bar off
 script:
+  - make style && make lint
   - python -m unittest discover -v test
     
