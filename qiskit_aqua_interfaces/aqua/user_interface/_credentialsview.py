@@ -235,7 +235,7 @@ class CredentialsView(ttk.Frame):
             token = urllib.parse.urlparse(url)
             if not all([getattr(token, attr) for attr in min_attributes]):
                 valid = False
-        except:
+        except Exception:
             valid = False
 
         return valid

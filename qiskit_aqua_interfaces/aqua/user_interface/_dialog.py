@@ -84,8 +84,8 @@ class Dialog(tk.Toplevel):
         self.master.focus_set()
         self.destroy()
 
-    def body(self, parent):
-        pass
+    def body(self, parent, options):
+        return self  # override
 
     def validate(self):
         return True  # override

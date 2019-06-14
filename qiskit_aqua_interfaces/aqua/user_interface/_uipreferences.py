@@ -31,7 +31,7 @@ class UIPreferences(object):
         try:
             with open(self._filepath) as json_pref:
                 self._preferences = json.load(json_pref)
-        except:
+        except Exception:
             pass
 
     @property

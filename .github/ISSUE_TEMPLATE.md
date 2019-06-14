@@ -5,7 +5,7 @@
 
 ### Informations
 
-- **Qiskit Aqua version**:
+- **Qiskit Aqua Interfaces version**:
 - **Python version**:
 - **Operating system**:
 

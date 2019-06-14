@@ -51,12 +51,12 @@ class EntryCustom(ttk.Entry):
     def _event_paste(self, e):
         try:
             self.delete(tk.SEL_FIRST, tk.SEL_LAST)
-        except:
+        except Exception:
             pass
 
         try:
             self.insert(tk.INSERT, self.clipboard_get())
-        except:
+        except Exception:
             pass
 
         return 'break'
@@ -90,12 +90,12 @@ class TextCustom(tk.Text):
     def _event_paste(self, e):
         try:
             self.delete(tk.SEL_FIRST, tk.SEL_LAST)
-        except:
+        except Exception:
             pass
 
         try:
             self.insert(tk.INSERT, self.clipboard_get())
-        except:
+        except Exception:
             pass
 
         return 'break'

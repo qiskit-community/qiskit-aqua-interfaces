@@ -42,9 +42,6 @@ class Controller(object):
     def pluggable_names(self):
         return self.model.pluggable_names()
 
-    def get_property_titles(self, section_name):
-        return self.model.get_property_titles(section_name)
-
     def populate_sections(self):
         self._sectionsView.populate(self.model.get_sections())
 

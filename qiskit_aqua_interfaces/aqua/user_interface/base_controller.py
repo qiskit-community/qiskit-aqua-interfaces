@@ -254,7 +254,7 @@ class BaseController(ABC):
             if section_name in self.model.get_section_names():
                 return'Duplicate section name'
         except Exception as e:
-            return e.message
+            return str(e)
 
         return None
 
@@ -324,7 +324,7 @@ class BaseController(ABC):
             if value is not None:
                 return 'Duplicate property name'
         except Exception as e:
-            return e.message
+            return str(e)
 
         return None
 
@@ -395,7 +395,7 @@ class BaseController(ABC):
 
                 if isinstance(value, dict) or isinstance(value, list):
                     value = json.dumps(value, sort_keys=True, indent=4)
-            except:
+            except Exception:
                 pass
         elif 'number' in types or 'integer' in types:
             vcmd = self._validate_integer_command if 'integer' in types else self._validate_float_command
@@ -470,7 +470,7 @@ class BaseController(ABC):
         try:
             if thread is not None:
                 thread.stop()
-        except:
+        except Exception:
             pass
 
     def _process_thread_queue(self):
@@ -502,7 +502,7 @@ class BaseController(ABC):
                     return
 
             self._view.update_idletasks()
-        except:
+        except Exception:
             pass
 
         self._view.after(100, self._process_thread_queue)

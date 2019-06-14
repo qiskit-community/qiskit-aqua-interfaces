@@ -40,6 +40,7 @@ def set_preferences_logging():
 def main():
     _check_extra_requires('gui_scripts', 'qiskit_aqua_browser')
     if sys.platform == 'darwin':
+        # pylint: disable=no-name-in-module
         from Foundation import NSBundle
         bundle = NSBundle.mainBundle()
         if bundle:
