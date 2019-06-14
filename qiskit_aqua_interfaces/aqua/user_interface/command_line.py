@@ -42,7 +42,7 @@ def main():
     _check_extra_requires('gui_scripts', 'qiskit_aqua_ui')
     guiProvider = AquaGUIProvider()
     if sys.platform == 'darwin':
-        # pylint: disable=no-name-in-module
+        # pylint: disable=no-name-in-module, import-error
         from Foundation import NSBundle
         bundle = NSBundle.mainBundle()
         if bundle:

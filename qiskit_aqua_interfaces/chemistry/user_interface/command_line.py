@@ -48,7 +48,7 @@ def main():
         error_msg = 'Please install qiskit-chemistry before running.'
 
     if sys.platform == 'darwin' and guiProvider is not None:
-        # pylint: disable=no-name-in-module
+        # pylint: disable=no-name-in-module, import-error
         from Foundation import NSBundle
         bundle = NSBundle.mainBundle()
         if bundle:
