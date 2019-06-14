@@ -130,7 +130,7 @@ class ChemistryThread(threading.Thread):
                 if self._output is not None:
                     if platform.system() == "Windows":
                         line = line.replace('\r\n', '\n')
-                        
+
                     self._output.write(line)
 
             self._popen.stdout.close()

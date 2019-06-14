@@ -77,7 +77,7 @@ class BaseModel(ABC):
                 self._parser.commit_changes()
 
             return self._parser.get_section_names()
-        except:
+        except Exception:
             self._parser = None
             raise
 
@@ -99,14 +99,15 @@ class BaseModel(ABC):
             if provider is None:
                 backend_name = self._parser.get_section_property(JSONSchema.BACKEND, JSONSchema.NAME)
                 if backend_name is not None:
-                    self._parser.set_section_property(JSONSchema.BACKEND, JSONSchema.PROVIDER, get_provider_from_backend(backend_name))
+                    self._parser.set_section_property(JSONSchema.BACKEND, JSONSchema.PROVIDER,
+                                                      get_provider_from_backend(backend_name))
             else:
                 try:
                     if provider not in self.providers:
                         self._custom_providers[provider] = get_backends_from_provider(provider)
                 except Exception as e:
                     logger.debug(str(e))
-        except:
+        except Exception:
             self._parser = None
             raise
 
@@ -115,7 +116,7 @@ class BaseModel(ABC):
                 self._parser.validate_merge_defaults()
 
             return self.get_section_names()
-        except:
+        except Exception:
             raise
         finally:
             self._parser.commit_changes()

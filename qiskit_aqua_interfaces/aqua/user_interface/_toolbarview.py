@@ -20,7 +20,7 @@ from ._scrollbarview import ScrollbarView
 class ToolbarView(ScrollbarView):
 
     def __init__(self, parent, **options):
-        super(ScrollbarView, self).__init__(parent, **options)
+        super(ToolbarView, self).__init__(parent, **options)
         self._child = None
         self._toolbar = None
         self._add_button = None

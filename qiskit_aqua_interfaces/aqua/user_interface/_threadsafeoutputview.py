@@ -55,7 +55,7 @@ class ThreadSafeOutputView(ScrollbarView):
                     self._write(str(line), False)
 
                 self.update_idletasks()
-        except:
+        except Exception:
             pass
 
         self.after(ThreadSafeOutputView._DELAY, self._updateText)

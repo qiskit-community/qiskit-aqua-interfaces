@@ -81,7 +81,8 @@ class Model(object):
                             self._schema_property_titles[pluggable_type][pluggable_name][k] = None
                 continue
 
-        self._schema_property_titles[pluggable_type][pluggable_name] = list(self._schema_property_titles[pluggable_type][pluggable_name].keys())
+        self._schema_property_titles[pluggable_type][pluggable_name] = \
+            list(self._schema_property_titles[pluggable_type][pluggable_name].keys())
 
     def pluggable_names(self):
         self._load_data()

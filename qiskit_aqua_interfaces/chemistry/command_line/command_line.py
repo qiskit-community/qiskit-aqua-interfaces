@@ -15,7 +15,6 @@
 import sys
 import argparse
 import json
-import pprint
 from collections import OrderedDict
 import textwrap
 import logging
@@ -52,18 +51,21 @@ def _run_algorithm_from_json(params, output_file):
         params (dictionary): Qiskit Aqua json dictionary
         output_file (filename): Output file name to save results
     """
-    from qiskit.aqua import QiskitAqua
-    from qiskit.chemistry import QiskitChemistryError
-    qiskit_aqua = QiskitAqua(params)
-    ret = qiskit_aqua.run()
-    if not isinstance(ret, dict):
-        raise QiskitChemistryError('Algorithm run result should be a dictionary {}'.format(ret))
+    from qiskit.aqua import run_algorithm
+    from qiskit.aqua.utils import convert_json_to_dict
 
-    print('Output:')
-    pprint(ret, indent=4)
+    ret = run_algorithm(params, None, True)
     if output_file is not None:
-        with open(output_file, 'w') as out:
-            pprint(ret, stream=out, indent=4)
+        with open(output_file, 'w') as f:
+            print('{}'.format(ret), file=f)
+    else:
+        convert_json_to_dict(ret)
+        print('\n\n--------------------------------- R E S U L T ------------------------------------\n')
+        if isinstance(ret, dict):
+            for k, v in ret.items():
+                print("'{}': {}".format(k, v))
+        else:
+            print(ret)
 
 
 def _run():
@@ -131,7 +133,7 @@ def _run():
     try:
         with open(args.input) as json_file:
             params = json.load(json_file)
-    except:
+    except Exception:
         pass
 
     if params is not None:
