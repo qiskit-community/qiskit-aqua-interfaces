@@ -23,7 +23,7 @@ from tkinter import messagebox
 import ast
 import json
 import logging
-from qiskit_aqua_interfaces.aqua.user_interface import GUIProvider
+from .guiprovider import GUIProvider
 from .base_model import BaseModel
 from ._customwidgets import (EntryPopup, ComboboxPopup, TextPopup)
 
