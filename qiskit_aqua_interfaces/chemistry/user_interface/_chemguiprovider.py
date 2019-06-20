@@ -2,7 +2,7 @@
 
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM Corp. 2018, 2019.
+# (C) Copyright IBM 2018, 2019.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -11,6 +11,8 @@
 # Any modifications or derivative works of this code must retain this
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
+
+"""Chemistry User Interface Provider"""
 
 import tkinter as tk
 import tkinter.ttk as ttk
@@ -28,9 +30,7 @@ from ._controller import Controller
 
 
 class ChemistryGUIProvider(GUIProvider):
-    """
-    Chemistry GUIProvider
-    """
+    """Chemistry GUIProvider"""
 
     def __init__(self):
         super().__init__()
@@ -83,40 +83,30 @@ class ChemistryGUIProvider(GUIProvider):
         chem_set_logging_config(logging_config)
 
     def build_logging_config(self, level):
-        """
-         Creates a the configuration dict of the named loggers
-        """
+        """Creates a the configuration dict of the named loggers"""
         from qiskit.chemistry._logging import build_logging_config as chem_build_logging_config
         return chem_build_logging_config(level)
 
     def create_section_properties_view(self, parent):
-        """
-        Creates provider section properties view
-        """
+        """Creates provider section properties view"""
         return ChemSectionPropertiesView(self.controller, parent)
 
     def add_toolbar_items(self, toolbar):
-        """
-        Add items to toolbar
-        """
-        checkButton = ttk.Checkbutton(toolbar,
+        """Add items to toolbar"""
+        checkbutton = ttk.Checkbutton(toolbar,
                                       text="Generate Algorithm Input",
                                       variable=self.save_algo_json)
-        checkButton.pack(side=tk.LEFT)
+        checkbutton.pack(side=tk.LEFT)
 
     def add_file_menu_items(self, file_menu):
-        """
-        Add items to file menu
-        """
+        """Add items to file menu"""
         dict_menu = tk.Menu(file_menu, tearoff=False)
         file_menu.add_cascade(label="Export Dictionary", menu=dict_menu)
         dict_menu.add_command(label='Clipboard', command=self._export_dictionary_to_clipboard)
         dict_menu.add_command(label='File...', command=self._export_dictionary_to_file)
 
     def create_run_thread(self, model, outputview, thread_queue):
-        """
-        Creates run thread
-        """
+        """Creates run thread"""
         filename = None
         if self.save_algo_json.get() != 0:
             preferences = self.create_uipreferences()
@@ -142,8 +132,8 @@ class ChemistryGUIProvider(GUIProvider):
             self.controller.view.clipboard_clear()
             self.controller.view.clipboard_append(value)
             self.controller.outputview.write_line("Exported to clibpoard.")
-        except Exception as e:
-            messagebox.showerror("Error", str(e))
+        except Exception as ex:
+            messagebox.showerror("Error", str(ex))
 
     def _export_dictionary_to_file(self):
         if self.controller.is_empty():
@@ -160,5 +150,5 @@ class ChemistryGUIProvider(GUIProvider):
                 self.controller.outputview.write_line("Exported to file: {}".format(filename))
                 preferences.set_savefile_initialdir(os.path.dirname(filename))
                 preferences.save()
-            except Exception as e:
-                messagebox.showerror("Error", str(e))
+            except Exception as ex:
+                messagebox.showerror("Error", str(ex))

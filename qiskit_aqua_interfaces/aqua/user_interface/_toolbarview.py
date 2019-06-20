@@ -31,30 +31,30 @@ class ToolbarView(ScrollbarView):
         self._add_button_shown = False
         self._remove_button_shown = False
         self._defaults_button_shown = False
-        self._makeToolBar()
+        self._make_toolbar()
 
-    def _makeToolBar(self):
+    def _make_toolbar(self):
         self._toolbar = ttk.Frame(self)
         self._add_button = ttk.Button(self._toolbar,
                                       text='Add',
                                       state='enable',
-                                      command=self.onadd)
+                                      command=self.cb_add)
         self._remove_button = ttk.Button(self._toolbar,
                                          text='Remove',
                                          state='enable',
-                                         command=self.onremove)
+                                         command=self.cb_remove)
         self._defaults_button = ttk.Button(self._toolbar,
                                            text='Defaults',
                                            state='enable',
-                                           command=self.ondefaults)
+                                           command=self.cb_defaults)
 
-    def onadd(self):
+    def cb_add(self):
         pass
 
-    def onremove(self):
+    def cb_remove(self):
         pass
 
-    def ondefaults(self):
+    def cb_defaults(self):
         pass
 
     def get_toolbar_size(self):

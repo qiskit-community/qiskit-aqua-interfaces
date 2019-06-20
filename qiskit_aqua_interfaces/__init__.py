@@ -12,6 +12,8 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
+"""Aqua Interfaces imports"""
+
 from .version import __version__
 
 __all__ = ['__version__']

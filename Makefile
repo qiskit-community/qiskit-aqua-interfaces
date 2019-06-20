@@ -14,10 +14,10 @@
 .PHONY: lint style test
 
 lint:
-	pylint -rn --errors-only qiskit_aqua_interfaces test
+	pylint -rn qiskit_aqua_interfaces test
 
 style:
-	pycodestyle --max-line-length=130 qiskit_aqua_interfaces test
+	pycodestyle --max-line-length=100 qiskit_aqua_interfaces test
 
 test:
 	python -m unittest discover -v test

@@ -12,13 +12,15 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
+"""Thread Safe Output View"""
+
 import tkinter as tk
 from tkinter.font import Font
-from ._scrollbarview import ScrollbarView
-from ._customwidgets import TextCustom
 import queue
 import string
 import platform
+from ._scrollbarview import ScrollbarView
+from ._customwidgets import TextCustom
 
 
 class ThreadSafeOutputView(ScrollbarView):
@@ -29,21 +31,20 @@ class ThreadSafeOutputView(ScrollbarView):
     _CR = '\r'
     _LF = '\n'
     _FONT_FAMILIES = {
-            'Darwin': 'Menlo Regular',
+        'Darwin': 'Menlo Regular',
     }
 
     def __init__(self, parent, **options):
         super(ThreadSafeOutputView, self).__init__(parent, **options)
         self._queue = queue.Queue()
-        self._textWidget = TextCustom(self, wrap=tk.NONE, state=tk.DISABLED)
+        self._text_widget = TextCustom(self, wrap=tk.NONE, state=tk.DISABLED)
         font_family = ThreadSafeOutputView._FONT_FAMILIES.get(platform.system())
         if font_family:
-            f = Font(family=font_family)
-            self._textWidget.configure(font=f)
-        self.init_widgets(self._textWidget)
-        self._updateText()
+            self._text_widget.configure(font=Font(family=font_family))
+        self.init_widgets(self._text_widget)
+        self._update_text()
 
-    def _updateText(self):
+    def _update_text(self):
         try:
             iterations = 0
             while iterations < ThreadSafeOutputView._TOTAL_ITERATIONS:
@@ -58,14 +59,14 @@ class ThreadSafeOutputView(ScrollbarView):
         except Exception:
             pass
 
-        self.after(ThreadSafeOutputView._DELAY, self._updateText)
+        self.after(ThreadSafeOutputView._DELAY, self._update_text)
 
     def write(self, text):
         if text is None:
             return
 
         text = str(text)
-        if len(text) == 0:
+        if not text:
             return
 
         # remove any non printable character that will cause the Text widget to hang
@@ -73,20 +74,20 @@ class ThreadSafeOutputView(ScrollbarView):
                         x in string.printable else '' for x in text])
         if platform.system() == 'Windows':  # Under Windows unicode block is escaped
             text = text.replace('\\u2588', u"\u2588")
-        if len(text) == 0:
+        if not text:
             return
 
         # break cr into separate queue entries
         pos = text.find(ThreadSafeOutputView._CR)  # look for cr in text
         while pos >= 0:  # text contains cr
             line = text[:pos]  # up to but not including the end cr
-            if len(line) > 0:
+            if line:
                 self._queue.put(line)
 
             text = text[pos:]  # get text with cr in front
             pos = text.find(ThreadSafeOutputView._CR, 1)  # look for cr in text after first pos
 
-        if len(text) > 0:  # insert any remaining text
+        if text:  # insert any remaining text
             self._queue.put(text)
 
     def flush(self):
@@ -96,9 +97,7 @@ class ThreadSafeOutputView(ScrollbarView):
         return self._queue.empty()
 
     def clear_buffer(self):
-        """
-        Create another queue to ignore current queue output
-        """
+        """Create another queue to ignore current queue output"""
         self._queue = queue.Queue()
 
     def write_line(self, text):
@@ -108,41 +107,41 @@ class ThreadSafeOutputView(ScrollbarView):
         self._queue.put(None)
 
     def _write(self, text=None, erase=True):
-        self._textWidget.config(state=tk.NORMAL)
+        self._text_widget.config(state=tk.NORMAL)
         if erase:
-            self._textWidget.delete(1.0, tk.END)
+            self._text_widget.delete(1.0, tk.END)
 
         if text is not None:
             self._write_text(text)
             pos = self._vscrollbar.get()[1]
             # scrolls only when scroll bar is at the bottom
             if pos == 1.0:
-                self._textWidget.yview(tk.END)
+                self._text_widget.yview(tk.END)
 
-        self._textWidget.config(state=tk.DISABLED)
+        self._text_widget.config(state=tk.DISABLED)
 
     def _write_text(self, text):
         new_text = text
         pos = new_text.find(ThreadSafeOutputView._CR)  # look for cr in new text
         while pos >= 0:  # new text contains cr
             line = new_text[:pos]  # up to but not including the cr
-            if len(line) > 0:
-                self._textWidget.insert(tk.END, line)
+            if line:
+                self._text_widget.insert(tk.END, line)
 
             # look for last lf
-            prev_index_lf = self._textWidget.search(ThreadSafeOutputView._LF,
-                                                    '{}-1c'.format(tk.END),
-                                                    '1.0',
-                                                    backwards=True)
+            prev_index_lf = self._text_widget.search(ThreadSafeOutputView._LF,
+                                                     '{}-1c'.format(tk.END),
+                                                     '1.0',
+                                                     backwards=True)
             if prev_index_lf:
                 # remove previous line after lf
-                self._textWidget.delete('{} + 1c'.format(prev_index_lf), '{}-1c'.format(tk.END))
+                self._text_widget.delete('{} + 1c'.format(prev_index_lf), '{}-1c'.format(tk.END))
             else:
                 # remove whole text
-                self._textWidget.delete(1.0, tk.END)
+                self._text_widget.delete(1.0, tk.END)
 
             new_text = new_text[pos+1:]  # get text after cr
             pos = new_text.find(ThreadSafeOutputView._CR)  # look for cr in new text
 
-        if len(new_text) > 0:  # insert any remaining text
-            self._textWidget.insert(tk.END, new_text)
+        if new_text:  # insert any remaining text
+            self._text_widget.insert(tk.END, new_text)

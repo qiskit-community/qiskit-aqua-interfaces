@@ -12,6 +12,8 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
+"""Qiskit User Interface base controller"""
+
 from abc import ABC, abstractmethod
 import os
 import threading
@@ -38,11 +40,11 @@ class BaseController(ABC):
         self._model = model
         self._filemenu = None
         self._title = tk.StringVar()
-        self._sectionsView = None
-        self._emptyView = None
-        self._sectionView_title = tk.StringVar()
-        self._propertiesView = None
-        self._textView = None
+        self._sections_view = None
+        self._empty_view = None
+        self._sections_view_title = tk.StringVar()
+        self._properties_view = None
+        self._text_view = None
         self._outputview = None
         self._progress = None
         self._button_text = None
@@ -63,35 +65,32 @@ class BaseController(ABC):
     def view(self, val):
         """Sets controller view."""
         self._view = val
-        self._validate_integer_command = self._view.register(BaseController._validate_integer)
-        self._validate_float_command = self._view.register(BaseController._validate_float)
+        self._validate_integer_command = self._view.register(BaseController._cb_validate_integer)
+        self._validate_float_command = self._view.register(BaseController._cb_validate_float)
 
     @staticmethod
-    def _validate_integer(action, index, value_if_allowed,
-                          prior_value, text, validation_type, trigger_type, widget_name):
+    def _cb_validate_integer(action, index, value_if_allowed,
+                             prior_value, text, validation_type, trigger_type, widget_name):
         # action=1 -> insert
-        if action != '1':
+        if action != '1' or value_if_allowed == '+' or value_if_allowed == '-':
             return True
 
-        if value_if_allowed == '+' or value_if_allowed == '-':
-            return True
-
+        ret = True
         try:
             int(value_if_allowed)
-            return True
         except ValueError:
-            return False
+            ret = False
+
+        return ret
 
     @staticmethod
-    def _validate_float(action, index, value_if_allowed,
-                        prior_value, text, validation_type, trigger_type, widget_name):
+    def _cb_validate_float(action, index, value_if_allowed,
+                           prior_value, text, validation_type, trigger_type, widget_name):
         # action=1 -> insert
-        if action != '1':
+        if action != '1' or value_if_allowed == '+' or value_if_allowed == '-':
             return True
 
-        if value_if_allowed == '+' or value_if_allowed == '-':
-            return True
-
+        ret = True
         if value_if_allowed is not None:
             index = value_if_allowed.find('e')
             if index == 0:
@@ -101,24 +100,24 @@ class BaseController(ABC):
                 try:
                     float(value_if_allowed[:index])
                 except ValueError:
-                    return False
+                    ret = False
 
-                if index < len(value_if_allowed) - 1:
+                if ret and index < len(value_if_allowed) - 1:
                     right = value_if_allowed[index + 1:]
-                    if right == '+' or right == '-':
-                        return True
-                    try:
-                        int(right)
-                    except ValueError:
-                        return False
+                    if right not in ('+', '-'):
+                        try:
+                            int(right)
+                        except ValueError:
+                            ret = False
 
-                return True
+                return ret
 
         try:
             float(value_if_allowed)
-            return True
         except ValueError:
-            return False
+            ret = False
+
+        return ret
 
     @property
     def outputview(self):
@@ -133,73 +132,73 @@ class BaseController(ABC):
         return self._model
 
     def new_input(self):
-        rc = True
+        ret = True
         try:
             self.stop()
             self.outputview.clear()
             self._start_button.state(['disabled'])
             self._title.set('')
-            self._sectionsView.clear()
-            self._sectionsView.show_add_button(True)
-            self._sectionsView.show_remove_button(False)
-            self._textView.clear()
-            self._sectionView_title.set('')
-            self._propertiesView.clear()
-            self._propertiesView.show_remove_button(False)
-            self._emptyView.tkraise()
+            self._sections_view.clear()
+            self._sections_view.show_add_button(True)
+            self._sections_view.show_remove_button(False)
+            self._text_view.clear()
+            self._sections_view_title.set('')
+            self._properties_view.clear()
+            self._properties_view.show_remove_button(False)
+            self._empty_view.tkraise()
 
             section_names = self.model.new()
-            self._sectionsView.populate(section_names)
+            self._sections_view.populate(section_names)
             self._start_button.state(['!disabled'])
             missing = self.get_sections_names_missing()
-            self._sectionsView.show_add_button(True if missing else False)
-        except Exception as e:
+            self._sections_view.show_add_button(bool(missing))
+        except Exception as ex:
             self.outputview.clear()
-            self.outputview.write_line(str(e))
-            rc = False
+            self.outputview.write_line(str(ex))
+            ret = False
 
-        return rc
+        return ret
 
     def open_file(self, filename):
-        rc = True
+        ret = True
         try:
             self.stop()
             self.outputview.clear()
             self._start_button.state(['disabled'])
             self._title.set('')
-            self._sectionsView.clear()
-            self._sectionsView.show_add_button(True)
-            self._sectionsView.show_remove_button(False)
-            self._textView.clear()
-            self._sectionView_title.set('')
-            self._propertiesView.clear()
-            self._propertiesView.show_remove_button(False)
-            self._emptyView.tkraise()
+            self._sections_view.clear()
+            self._sections_view.show_add_button(True)
+            self._sections_view.show_remove_button(False)
+            self._text_view.clear()
+            self._sections_view_title.set('')
+            self._properties_view.clear()
+            self._properties_view.show_remove_button(False)
+            self._empty_view.tkraise()
             try:
                 self.model.load_file(filename)
-            except Exception as e:
-                messagebox.showerror("Error", str(e))
-                rc = False
+            except Exception as ex:
+                messagebox.showerror("Error", str(ex))
+                ret = False
 
             self._title.set(os.path.basename(filename))
             section_names = self.model.get_section_names()
-            self._sectionsView.populate(section_names)
+            self._sections_view.populate(section_names)
             self._start_button.state(['!disabled'])
             missing = self.get_sections_names_missing()
-            self._sectionsView.show_add_button(True if missing else False)
-        except Exception as e:
+            self._sections_view.show_add_button(bool(missing))
+        except Exception as ex:
             self.outputview.clear()
-            self.outputview.write_line(str(e))
-            rc = False
+            self.outputview.write_line(str(ex))
+            ret = False
 
-        return rc
+        return ret
 
     def is_empty(self):
         return self.model.is_empty()
 
     def save_file(self):
         filename = self.model.get_filename()
-        if filename is None or len(filename) == 0:
+        if not filename:
             self.outputview.write_line("No file to save.")
             return False
 
@@ -207,8 +206,8 @@ class BaseController(ABC):
             self.model.save_to_file(filename)
             self.outputview.write_line("Saved file: {}".format(filename))
             return True
-        except Exception as e:
-            messagebox.showerror("Error", str(e))
+        except Exception as ex:
+            messagebox.showerror("Error", str(ex))
 
         return False
 
@@ -217,34 +216,34 @@ class BaseController(ABC):
             self.model.save_to_file(filename)
             self.open_file(filename)
             return True
-        except Exception as e:
-            messagebox.showerror("Error", str(e))
+        except Exception as ex:
+            messagebox.showerror("Error", str(ex))
 
         return False
 
     @abstractmethod
-    def on_section_select(self, section_name):
+    def cb_section_select(self, section_name):
         pass
 
-    def on_property_select(self, section_name, property_name):
+    def cb_property_select(self, section_name, property_name):
         from qiskit.aqua.parser import JSONSchema
-        _show_remove = property_name != JSONSchema.PROVIDER and property_name != JSONSchema.NAME \
+        _show_remove = property_name not in (JSONSchema.PROVIDER, JSONSchema.NAME) \
             if section_name == JSONSchema.BACKEND else property_name != JSONSchema.NAME
-        self._propertiesView.show_remove_button(_show_remove)
+        self._properties_view.show_remove_button(_show_remove)
 
-    def on_section_add(self, section_name):
+    def cb_section_add(self, section_name):
         try:
             if section_name is None:
                 section_name = ''
             section_name = section_name.lower().strip()
-            if len(section_name) == 0:
+            if not section_name:
                 return False
 
             self.model.set_section(section_name)
             missing = self.get_sections_names_missing()
-            self._sectionsView.show_add_button(True if missing else False)
-        except Exception as e:
-            messagebox.showerror("Error", str(e))
+            self._sections_view.show_add_button(bool(missing))
+        except Exception as ex:
+            messagebox.showerror("Error", str(ex))
             return False
 
         return True
@@ -253,29 +252,29 @@ class BaseController(ABC):
         try:
             if section_name in self.model.get_section_names():
                 return'Duplicate section name'
-        except Exception as e:
-            return str(e)
+        except Exception as ex:
+            return str(ex)
 
         return None
 
-    def on_section_remove(self, section_name):
+    def cb_section_remove(self, section_name):
         try:
-            self._sectionsView.show_remove_button(False)
+            self._sections_view.show_remove_button(False)
             self.model.delete_section(section_name)
             missing = self.get_sections_names_missing()
-            self._sectionsView.show_add_button(True if missing else False)
-            self._sectionView_title.set('')
-            self._propertiesView.clear()
-            self._textView.clear()
-            self._emptyView.tkraise()
-        except Exception as e:
-            messagebox.showerror("Error", str(e))
+            self._sections_view.show_add_button(bool(missing))
+            self._sections_view_title.set('')
+            self._properties_view.clear()
+            self._text_view.clear()
+            self._empty_view.tkraise()
+        except Exception as ex:
+            messagebox.showerror("Error", str(ex))
             return False
 
         return True
 
     @abstractmethod
-    def on_section_defaults(self, section_name):
+    def cb_section_defaults(self, section_name):
         pass
 
     def get_sections_names_missing(self):
@@ -283,8 +282,8 @@ class BaseController(ABC):
             section_names = self.model.get_section_names()
             default_sections = self.model.get_default_sections()
             return list(set(default_sections.keys()) - set(section_names))
-        except Exception as e:
-            self.outputview.write_line(str(e))
+        except Exception as ex:
+            self.outputview.write_line(str(ex))
 
     def get_property_names_missing(self, section_name):
         try:
@@ -294,28 +293,29 @@ class BaseController(ABC):
             if default_properties is None:
                 return None
             return list(set(default_properties.keys()) - set(properties.keys()))
-        except Exception as e:
-            self.outputview.write_line(str(e))
+        except Exception as ex:
+            self.outputview.write_line(str(ex))
 
     def shows_add_button(self, section_name):
         if self.model.allows_additional_properties(section_name):
             return True
 
         missing = self.get_property_names_missing(section_name)
-        return missing is None or len(missing) > 0
+        return missing
 
     def on_property_add(self, section_name, property_name):
         try:
-            return self.on_property_set(section_name,
+            return self.cb_property_set(section_name,
                                         property_name,
-                                        self.model.get_property_default_value(section_name, property_name))
-        except Exception as e:
-            messagebox.showerror("Error", str(e))
+                                        self.model.get_property_default_value(section_name,
+                                                                              property_name))
+        except Exception as ex:
+            messagebox.showerror("Error", str(ex))
 
         return False
 
     @abstractmethod
-    def on_property_set(self, section_name, property_name, value):
+    def cb_property_set(self, section_name, property_name, value):
         pass
 
     def validate_property_add(self, section_name, property_name):
@@ -323,21 +323,22 @@ class BaseController(ABC):
             value = self.model.get_section_property(section_name, property_name)
             if value is not None:
                 return 'Duplicate property name'
-        except Exception as e:
-            return str(e)
+        except Exception as ex:
+            return str(ex)
 
         return None
 
     @abstractmethod
-    def on_section_property_remove(self, section_name, property_name):
+    def cb_section_property_remove(self, section_name, property_name):
         pass
 
-    def on_text_set(self, section_name, value):
+    def cb_text_set(self, section_name, value):
         try:
             self.model.set_section_text(section_name, value)
-            self._textView.show_defaults_button(not self.model.default_properties_equals_properties(section_name))
-        except Exception as e:
-            self.outputview.write_line(str(e))
+            self._text_view.show_defaults_button(
+                not self.model.default_properties_equals_properties(section_name))
+        except Exception as ex:
+            self.outputview.write_line(str(ex))
             return False
 
         return True
@@ -350,14 +351,15 @@ class BaseController(ABC):
         if JSONSchema.NAME == property_name and BaseModel.is_pluggable_section(section_name):
             values = self.model.get_pluggable_section_names(section_name)
         elif JSONSchema.BACKEND == section_name and \
-                (JSONSchema.NAME == property_name or JSONSchema.PROVIDER == property_name):
+                property_name in (JSONSchema.NAME, JSONSchema.PROVIDER):
             values = []
             if JSONSchema.PROVIDER == property_name:
                 combobox_state = 'normal'
                 for provider, _ in self.model.providers.items():
                     values.append(provider)
             else:
-                provider_name = self.model.get_section_property(JSONSchema.BACKEND, JSONSchema.PROVIDER)
+                provider_name = \
+                    self.model.get_section_property(JSONSchema.BACKEND, JSONSchema.PROVIDER)
                 values = self.model.providers.get(provider_name, [])
         else:
             values = self.model.get_property_default_values(section_name, property_name)
@@ -376,7 +378,7 @@ class BaseController(ABC):
                                    state=combobox_state,
                                    values=values)
             widget._text = '' if value is None else str(value)
-            if len(values) > 0:
+            if values:
                 if value in values:
                     widget.current(values.index(value))
                 else:
@@ -390,15 +392,16 @@ class BaseController(ABC):
             try:
                 if isinstance(value, str):
                     value = value.strip()
-                    if len(value) > 0:
+                    if value:
                         value = ast.literal_eval(value)
 
-                if isinstance(value, dict) or isinstance(value, list):
+                if isinstance(value, (dict, list)):
                     value = json.dumps(value, sort_keys=True, indent=4)
             except Exception:
                 pass
         elif 'number' in types or 'integer' in types:
-            vcmd = self._validate_integer_command if 'integer' in types else self._validate_float_command
+            vcmd = self._validate_integer_command if \
+                    'integer' in types else self._validate_float_command
             vcmd = (vcmd, '%d', '%i', '%P', '%s', '%S', '%v', '%V', '%W')
             widget = EntryPopup(self,
                                 section_name,
@@ -408,7 +411,7 @@ class BaseController(ABC):
                                 validate='all',
                                 validatecommand=vcmd,
                                 state=tk.NORMAL)
-            widget.selectAll()
+            widget.select_all()
             return widget
 
         widget = TextPopup(self,
@@ -416,7 +419,7 @@ class BaseController(ABC):
                            property_name,
                            parent,
                            value)
-        widget.selectAll()
+        widget.select_all()
         return widget
 
     def toggle(self):
@@ -432,7 +435,8 @@ class BaseController(ABC):
         try:
             if self._command is GUIProvider.START:
                 self.outputview.clear()
-                self._thread = self._guiprovider.create_run_thread(self.model, self.outputview, self._thread_queue)
+                self._thread = self._guiprovider.create_run_thread(
+                    self.model, self.outputview, self._thread_queue)
                 if self._thread is not None:
                     self._thread.daemon = True
                     self._thread.start()
@@ -444,10 +448,10 @@ class BaseController(ABC):
                     self._filemenu.entryconfig(2, state='normal')
             else:
                 self.stop()
-        except Exception as e:
+        except Exception as ex:
             self._thread = None
             self._thread_queue.put(None)
-            self.outputview.write_line("Failure: {}".format(str(e)))
+            self.outputview.write_line("Failure: {}".format(str(ex)))
             self._start_button.state(['!disabled'])
             self._filemenu.entryconfig(0, state='normal')
             self._filemenu.entryconfig(1, state='normal')

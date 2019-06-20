@@ -12,6 +12,8 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
+"""Qiskit Chemistry command line main."""
+
 import sys
 import argparse
 import json
@@ -23,6 +25,7 @@ from qiskit_aqua_interfaces._extras_require import _check_extra_requires
 
 
 def main():
+    """Runs main Chemistry command line."""
     if sys.platform != 'darwin':
         _run()
         return
@@ -44,8 +47,7 @@ def _run_delay(root):
 
 
 def _run_algorithm_from_json(params, output_file):
-    """
-    Runs the Aqua Chemistry experiment from Qiskit Aqua json dictionary
+    """Runs the Aqua Chemistry experiment from Qiskit Aqua json dictionary
 
     Args:
         params (dictionary): Qiskit Aqua json dictionary
@@ -56,11 +58,12 @@ def _run_algorithm_from_json(params, output_file):
 
     ret = run_algorithm(params, None, True)
     if output_file is not None:
-        with open(output_file, 'w') as f:
-            print('{}'.format(ret), file=f)
+        with open(output_file, 'w') as run_output:
+            print('{}'.format(ret), file=run_output)
     else:
         convert_json_to_dict(ret)
-        print('\n\n--------------------------------- R E S U L T ------------------------------------\n')
+        print('\n\n--------------------------------- R E S U L T ----'
+              '--------------------------------\n')
         if isinstance(ret, dict):
             for k, v in ret.items():
                 print("'{}': {}".format(k, v))
@@ -81,7 +84,7 @@ def _run():
         return
 
     preferences = UIPreferences()
-    _LOG_LEVELS = OrderedDict(
+    log_levels = OrderedDict(
         [(logging.getLevelName(logging.CRITICAL).lower(), logging.CRITICAL),
          (logging.getLevelName(logging.ERROR).lower(), logging.ERROR),
          (logging.getLevelName(logging.WARNING).lower(), logging.WARNING),
@@ -105,18 +108,18 @@ def _run():
                        help='Algorithm JSON Output file name')
     parser.add_argument('-l',
                         metavar='logging',
-                        choices=_LOG_LEVELS.keys(),
+                        choices=log_levels.keys(),
                         help=textwrap.dedent('''\
                             Logging level:
                             {}
                             (defaults to level from preferences file: {})
-                             '''.format(list(_LOG_LEVELS.keys()), preferences.filepath))
+                             '''.format(list(log_levels.keys()), preferences.filepath))
                         )
 
     args = parser.parse_args()
 
     if args.l is not None:
-        set_qiskit_chemistry_logging(_LOG_LEVELS.get(args.l, logging.INFO))
+        set_qiskit_chemistry_logging(log_levels.get(args.l, logging.INFO))
     else:
         # update logging setting with latest external packages
         logging_level = logging.INFO
@@ -144,6 +147,7 @@ def _run():
         else:
             result = run_experiment(args.input, args.o)
             if result is not None and 'printable' in result:
-                print('\n\n--------------------------------- R E S U L T ------------------------------------\n')
+                print('\n\n--------------------------------- R E S U L T '
+                      '------------------------------------\n')
                 for line in result['printable']:
                     print(line)

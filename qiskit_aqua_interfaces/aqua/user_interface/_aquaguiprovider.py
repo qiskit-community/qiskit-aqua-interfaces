@@ -12,6 +12,8 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
+"""Aqua User Interface Provider"""
+
 from qiskit_aqua_interfaces import __version__
 from qiskit_aqua_interfaces.aqua.user_interface import GUIProvider
 from qiskit_aqua_interfaces.aqua.user_interface._uipreferences import UIPreferences
@@ -21,9 +23,7 @@ from ._controller import Controller
 
 
 class AquaGUIProvider(GUIProvider):
-    """
-    Aqua GUIProvider
-    """
+    """Aqua GUIProvider"""
 
     def __init__(self):
         super().__init__()
@@ -67,32 +67,22 @@ class AquaGUIProvider(GUIProvider):
         aqua_set_logging_config(logging_config)
 
     def build_logging_config(self, level):
-        """
-         Creates a the configuration dict of the named loggers
-        """
+        """Creates a the configuration dict of the named loggers"""
         from qiskit.aqua._logging import build_logging_config as aqua_build_logging_config
         return aqua_build_logging_config(level)
 
     def create_section_properties_view(self, parent):
-        """
-        Creates provider section properties view
-        """
+        """Creates provider section properties view"""
         return SectionPropertiesView(self.controller, parent)
 
     def add_toolbar_items(self, toolbar):
-        """
-        Add items to toolbar
-        """
+        """Add items to toolbar"""
         pass
 
     def add_file_menu_items(self, file_menu):
-        """
-        Add items to file menu
-        """
+        """Add items to file menu"""
         pass
 
     def create_run_thread(self, model, outputview, thread_queue):
-        """
-        Creates run thread
-        """
+        """Creates run thread"""
         return AquaThread(model, outputview, thread_queue)

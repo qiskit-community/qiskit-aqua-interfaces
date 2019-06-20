@@ -73,7 +73,9 @@ disable=no-self-use,        # disabled as it is too verbose
     unnecessary-pass,   # allow for methods with just "pass", for clarity
     no-else-return,     # relax "elif" after a clause with a return
     missing-yield-doc,      # in coroutines, these checks can yield false
-    missing-yield-type-doc  # positives (pun intended)
+    missing-yield-type-doc,  # positives (pun intended)
+    missing-docstring,
+    broad-except
 
 
 [REPORTS]
@@ -211,7 +213,7 @@ max-nested-blocks=5
 [FORMAT]
 
 # Maximum number of characters on a single line.
-max-line-length=130
+max-line-length=100
 
 # Regexp for a line that is allowed to be longer than the limit.
 ignore-long-lines=^\s*(# )?<?https?://\S+>?$

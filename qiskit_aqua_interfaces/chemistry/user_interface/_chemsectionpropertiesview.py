@@ -18,9 +18,6 @@ from qiskit_aqua_interfaces.aqua.user_interface import SectionPropertiesView, Te
 
 class ChemSectionPropertiesView(SectionPropertiesView):
 
-    def __init__(self, controller, parent, **options):
-        super(ChemSectionPropertiesView, self).__init__(controller, parent, **options)
-
     def populate(self, properties):
         self.clear()
         for property_name, value_tuple in properties.items():
@@ -34,7 +31,7 @@ class ChemSectionPropertiesView(SectionPropertiesView):
         self._tree.tag_configure('SUBSTITUTIONS', foreground='gray')
         self._properties = properties
 
-    def _on_tree_edit(self, event):
+    def _cb_tree_edit(self, event):
         rowid = self._tree.identify_row(event.y)
         if not rowid:
             return

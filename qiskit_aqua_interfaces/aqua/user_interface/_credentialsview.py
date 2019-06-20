@@ -12,14 +12,16 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
+"""Credentials view"""
+
 import tkinter as tk
 import tkinter.ttk as ttk
 from tkinter import font
 from tkinter import messagebox
+import urllib
 from ._customwidgets import EntryCustom
 from ._toolbarview import ToolbarView
 from ._dialog import Dialog
-import urllib
 
 
 class CredentialsView(ttk.Frame):
@@ -31,71 +33,71 @@ class CredentialsView(ttk.Frame):
 
         from qiskit.aqua import Preferences
         preferences = Preferences()
-        self._credentials_preferences = preferences.credentials_preferences
+        self._cred_prefs = preferences.credentials_preferences
 
         ttk.Label(self,
                   text="URL:",
                   borderwidth=0,
                   anchor=tk.E).grid(row=0, column=0, pady=5, sticky='nsew')
-        urls = [credentials.url for credentials in self._credentials_preferences.get_all_credentials()]
-        self._urlCombobox = URLCombobox(self,
-                                        self,
-                                        width=80,
-                                        exportselection=0,
-                                        state='readonly',
-                                        values=urls)
-        self._urlCombobox._text = self._credentials_preferences.get_url('')
-        self._urlCombobox.set(self._urlCombobox._text)
-        if len(urls) > 0:
-            if self._urlCombobox.get() in urls:
-                self._urlCombobox.current(urls.index(self._urlCombobox.get()))
+        urls = [credentials.url for credentials in self._cred_prefs.get_all_credentials()]
+        self._url_combobox = URLCombobox(self,
+                                         self,
+                                         width=80,
+                                         exportselection=0,
+                                         state='readonly',
+                                         values=urls)
+        self._url_combobox._text = self._cred_prefs.get_url('')
+        self._url_combobox.set(self._url_combobox._text)
+        if urls:
+            if self._url_combobox.get() in urls:
+                self._url_combobox.current(urls.index(self._url_combobox.get()))
             else:
-                self._urlCombobox.current(0)
+                self._url_combobox.current(0)
 
-        self._urlCombobox.grid(row=0, column=1, pady=5, sticky='nsew')
+        self._url_combobox.grid(row=0, column=1, pady=5, sticky='nsew')
 
         button_container = tk.Frame(self)
         button_container.grid(row=0, column=2, pady=5, sticky='nsw')
         self._add_button = ttk.Button(button_container,
                                       text='Add',
                                       state='enable',
-                                      command=self.onadd)
+                                      command=self.cb_add)
         self._remove_button = ttk.Button(button_container,
                                          text='Remove',
                                          state='enable',
-                                         command=self.onremove)
+                                         command=self.cb_remove)
         self._add_button.pack(side=tk.LEFT)
-        if len(urls) > 0:
+        if urls:
             self._remove_button.pack(side=tk.LEFT)
 
-        self._apiToken = tk.StringVar()
-        self._apiToken.set(self._credentials_preferences.get_token(''))
+        self._api_token = tk.StringVar()
+        self._api_token.set(self._cred_prefs.get_token(''))
         ttk.Label(self,
                   text="Token:",
                   borderwidth=0,
                   anchor=tk.E).grid(row=1, column=0, pady=5, sticky='nsew')
-        self._apiTokenEntry = EntryCustom(self,
-                                          textvariable=self._apiToken,
-                                          width=120,
-                                          state=tk.NORMAL if len(urls) > 0 else tk.DISABLED)
-        self._apiTokenEntry.grid(row=1, column=1, columnspan=2, pady=5, sticky='nsew')
+        self._api_token_entry = EntryCustom(self,
+                                            textvariable=self._api_token,
+                                            width=120,
+                                            state=tk.NORMAL if urls else tk.DISABLED)
+        self._api_token_entry.grid(row=1, column=1, columnspan=2, pady=5, sticky='nsew')
 
         ttk.Label(self,
                   text="Proxies:",
                   borderwidth=0,
                   anchor=tk.E).grid(row=2, column=0, pady=5, sticky='nsew')
-        self._proxiespage = ProxiesPage(self, self._credentials_preferences)
+        self._proxiespage = ProxiesPage(self, self._cred_prefs)
         self._proxiespage.grid(row=3, column=0, columnspan=3, pady=5, sticky='nsew')
         self._proxiespage.show_add_button(True)
         self._proxiespage.show_remove_button(self._proxiespage.has_selection())
         self._proxiespage.show_defaults_button(False)
-        if len(urls) == 0:
+        if not urls:
             self._proxiespage.enable(False)
 
-        self.initial_focus = self._urlCombobox
+        self.initial_focus = self._url_combobox
 
-    def onadd(self):
-        urls = [credentials.url for credentials in self._credentials_preferences.get_all_credentials()]
+    def cb_add(self):
+        urls = [credentials.url for credentials in self._cred_prefs.get_all_credentials()]
         dialog = URLEntryDialog(self.master, self)
         dialog.do_init(tk.LEFT)
         from qiskit.aqua._credentials_preferences import CredentialsPreferences
@@ -106,70 +108,72 @@ class CredentialsView(ttk.Frame):
             return
 
         url = dialog.result
-        pref_credentials = self._credentials_preferences.get_credentials_with_same_key(url)
+        pref_credentials = self._cred_prefs.get_credentials_with_same_key(url)
         if pref_credentials is not None:
-            msg = "URL '{}' will replace current URL '{}'. Continue?".format(url, pref_credentials.url)
+            msg = "URL '{}' will replace current URL '{}'. Continue?".format(url,
+                                                                             pref_credentials.url)
             if not messagebox.askyesno('Duplicate Account', msg):
                 return
 
-        credentials = self._credentials_preferences.set_credentials('', url)
-        self._credentials_preferences.select_credentials(credentials.url)
-        urls = [credentials.url for credentials in self._credentials_preferences.get_all_credentials()]
-        self._urlCombobox.config(values=urls)
-        self._urlCombobox._text = self._credentials_preferences.get_url('')
-        self._urlCombobox.set(self._urlCombobox._text)
-        if len(urls) > 0:
-            if self._urlCombobox.get() in urls:
-                self._urlCombobox.current(urls.index(self._urlCombobox.get()))
+        credentials = self._cred_prefs.set_credentials('', url)
+        self._cred_prefs.select_credentials(credentials.url)
+        urls = [credentials.url for credentials in self._cred_prefs.get_all_credentials()]
+        self._url_combobox.config(values=urls)
+        self._url_combobox._text = self._cred_prefs.get_url('')
+        self._url_combobox.set(self._url_combobox._text)
+        if urls:
+            if self._url_combobox.get() in urls:
+                self._url_combobox.current(urls.index(self._url_combobox.get()))
             else:
-                self._urlCombobox.current(0)
+                self._url_combobox.current(0)
 
             self._remove_button.pack(side=tk.LEFT)
-            self._apiTokenEntry.config(state=tk.NORMAL)
+            self._api_token_entry.config(state=tk.NORMAL)
             self._proxiespage.enable(True)
 
-        self._apiToken.set(self._credentials_preferences.get_token(''))
-        self._proxiespage._proxy_urls = self._credentials_preferences.get_proxy_urls({})
+        self._api_token.set(self._cred_prefs.get_token(''))
+        self._proxiespage._proxy_urls = self._cred_prefs.get_proxy_urls({})
         self._proxiespage.populate()
 
-    def onremove(self):
-        self._credentials_preferences.remove_credentials(self._urlCombobox.get().strip())
-        urls = [credentials.url for credentials in self._credentials_preferences.get_all_credentials()]
-        self._urlCombobox.config(values=urls)
-        self._urlCombobox._text = self._credentials_preferences.get_url('')
-        self._urlCombobox.set(self._urlCombobox._text)
-        if len(urls) > 0:
-            if self._urlCombobox.get() in urls:
-                self._urlCombobox.current(urls.index(self._urlCombobox.get()))
+    def cb_remove(self):
+        self._cred_prefs.remove_credentials(self._url_combobox.get().strip())
+        urls = [credentials.url for credentials in self._cred_prefs.get_all_credentials()]
+        self._url_combobox.config(values=urls)
+        self._url_combobox._text = self._cred_prefs.get_url('')
+        self._url_combobox.set(self._url_combobox._text)
+        if urls:
+            if self._url_combobox.get() in urls:
+                self._url_combobox.current(urls.index(self._url_combobox.get()))
             else:
-                self._urlCombobox.current(0)
+                self._url_combobox.current(0)
 
-        self._apiToken.set(self._credentials_preferences.get_token(''))
-        self._proxiespage._proxy_urls = self._credentials_preferences.get_proxy_urls({})
+        self._api_token.set(self._cred_prefs.get_token(''))
+        self._proxiespage._proxy_urls = self._cred_prefs.get_proxy_urls({})
         self._proxiespage.populate()
 
-        if len(urls) == 0:
+        if not urls:
             self._remove_button.pack_forget()
-            self._apiTokenEntry.config(state=tk.DISABLED)
+            self._api_token_entry.config(state=tk.DISABLED)
             self._proxiespage.enable(False)
 
-    def on_url_set(self, url):
+    def cb_url_set(self, url):
         # save previously shown data
-        if self._credentials_preferences.selected_credentials is not None:
-            token = self._apiToken.get().strip()
+        if self._cred_prefs.selected_credentials is not None:
+            token = self._api_token.get().strip()
             if token == '':
                 # go back to previous selection
-                urls = [credentials.url for credentials in self._credentials_preferences.get_all_credentials()]
-                self._urlCombobox._text = self._credentials_preferences.get_url('')
-                self._urlCombobox.set(self._urlCombobox._text)
-                if len(urls) > 0:
-                    if self._urlCombobox.get() in urls:
-                        self._urlCombobox.current(urls.index(self._urlCombobox.get()))
+                urls = [credentials.url
+                        for credentials in self._cred_prefs.get_all_credentials()]
+                self._url_combobox._text = self._cred_prefs.get_url('')
+                self._url_combobox.set(self._url_combobox._text)
+                if urls:
+                    if self._url_combobox.get() in urls:
+                        self._url_combobox.current(urls.index(self._url_combobox.get()))
                     else:
-                        self._urlCombobox.current(0)
+                        self._url_combobox.current(0)
 
-                self._urlCombobox.selection_clear()
-                self.initial_focus = self._apiTokenEntry
+                self._url_combobox.selection_clear()
+                self.initial_focus = self._api_token_entry
 
                 def set_focus():
                     self.initial_focus.focus_set()
@@ -178,15 +182,15 @@ class CredentialsView(ttk.Frame):
                 return
 
             proxy_urls = self._proxiespage._proxy_urls
-            if token != self._credentials_preferences.get_token('') or \
-                    proxy_urls != self._credentials_preferences.get_proxy_urls({}):
-                self._credentials_preferences.set_credentials(token,
-                                                              self._credentials_preferences.selected_credentials.url,
-                                                              proxy_urls)
+            if token != self._cred_prefs.get_token('') or \
+                    proxy_urls != self._cred_prefs.get_proxy_urls({}):
+                self._cred_prefs.set_credentials(token,
+                                                 self._cred_prefs.selected_credentials.url,
+                                                 proxy_urls)
 
-        self._credentials_preferences.select_credentials(url)
-        self._apiToken.set(self._credentials_preferences.get_token(''))
-        self._proxiespage._proxy_urls = self._credentials_preferences.get_proxy_urls({})
+        self._cred_prefs.select_credentials(url)
+        self._api_token.set(self._cred_prefs.get_token(''))
+        self._proxiespage._proxy_urls = self._cred_prefs.get_proxy_urls({})
         self._proxiespage.populate()
 
     def is_valid(self):
@@ -194,31 +198,31 @@ class CredentialsView(ttk.Frame):
 
     def validate(self):
         # check current show token
-        if self._credentials_preferences.selected_credentials is not None:
-            token = self._apiToken.get().strip()
+        if self._cred_prefs.selected_credentials is not None:
+            token = self._api_token.get().strip()
             if token == '':
-                self.initial_focus = self._apiTokenEntry
+                self.initial_focus = self._api_token_entry
                 return False
 
             if not self._proxiespage.is_valid():
                 self.initial_focus = self._proxiespage.initial_focus
                 return False
 
-        self.initial_focus = self._urlCombobox
+        self.initial_focus = self._url_combobox
         return True
 
     def apply(self, preferences):
         # save previously shown data
-        if self._credentials_preferences.selected_credentials is not None:
-            token = self._apiToken.get().strip()
+        if self._cred_prefs.selected_credentials is not None:
+            token = self._api_token.get().strip()
             proxy_urls = self._proxiespage._proxy_urls
-            if token != self._credentials_preferences.get_token('') or \
-                    proxy_urls != self._credentials_preferences.get_proxy_urls({}):
-                self._credentials_preferences.set_credentials(token,
-                                                              self._credentials_preferences.selected_credentials.url,
-                                                              proxy_urls)
+            if token != self._cred_prefs.get_token('') or \
+                    proxy_urls != self._cred_prefs.get_proxy_urls({}):
+                self._cred_prefs.set_credentials(token,
+                                                 self._cred_prefs.selected_credentials.url,
+                                                 proxy_urls)
 
-        preferences._credentials_preferences = self._credentials_preferences
+        preferences._credentials_preferences = self._cred_prefs
 
     @staticmethod
     def _is_valid_url(url):
@@ -226,7 +230,7 @@ class CredentialsView(ttk.Frame):
             return False
 
         url = url.strip()
-        if len(url) == 0:
+        if not url:
             return False
 
         min_attributes = ('scheme', 'netloc')
@@ -252,17 +256,17 @@ class CredentialsView(ttk.Frame):
 class URLCombobox(ttk.Combobox):
 
     def __init__(self, controller, parent, **options):
-        ''' If relwidth is set, then width is ignored '''
+        # If relwidth is set, then width is ignored
         super(URLCombobox, self).__init__(parent, **options)
         self._controller = controller
-        self.bind("<<ComboboxSelected>>", self._on_select)
+        self.bind("<<ComboboxSelected>>", self._cb_select)
         self._text = None
 
-    def _on_select(self, *ignore):
+    def _cb_select(self, *ignore):
         new_text = self.get()
-        if len(new_text) > 0 and self._text != new_text:
+        if new_text and self._text != new_text:
             self._text = new_text
-            self._controller.on_url_set(new_text)
+            self._controller.cb_url_set(new_text)
 
 
 class URLEntryDialog(Dialog):
@@ -305,8 +309,8 @@ class ProxiesPage(ToolbarView):
         self._tree.heading('#0', text='Protocol')
         self._tree.heading('value', text='URL')
         self._tree.column('#0', minwidth=0, width=150, stretch=tk.NO)
-        self._tree.bind('<<TreeviewSelect>>', self._on_tree_select)
-        self._tree.bind('<Button-1>', self._on_tree_edit)
+        self._tree.bind('<<TreeviewSelect>>', self._cb_tree_select)
+        self._tree.bind('<Button-1>', self._cb_tree_edit)
         self.init_widgets(self._tree)
 
         self._proxy_urls = preferences.get_proxy_urls({})
@@ -343,20 +347,19 @@ class ProxiesPage(ToolbarView):
 
     def set_proxy(self, protocol, url):
         for item in self._tree.get_children():
-            p = self._tree.item(item, "text")
-            if p == protocol:
+            if self._tree.item(item, "text") == protocol:
                 self._tree.item(item, values=[url])
                 break
 
     def has_selection(self):
         return self._tree.selection()
 
-    def _on_tree_select(self, event):
-        for item in self._tree.selection():
+    def _cb_tree_select(self, event):
+        for _ in self._tree.selection():
             self.show_remove_button(True)
             return
 
-    def _on_tree_edit(self, event):
+    def _cb_tree_edit(self, event):
         if 'disabled' in self._tree.state():
             return
 
@@ -376,10 +379,10 @@ class ProxiesPage(ToolbarView):
                                           self._tree,
                                           self._proxy_urls[protocol],
                                           state=tk.NORMAL)
-            self._popup_widget.selectAll()
+            self._popup_widget.select_all()
             self._popup_widget.place(x=x, y=y + pady, anchor=tk.W, width=width)
 
-    def onadd(self):
+    def cb_add(self):
         dialog = ProxyEntryDialog(self.master, self)
         dialog.do_init(tk.LEFT)
         dialog.do_modal()
@@ -391,7 +394,7 @@ class ProxiesPage(ToolbarView):
             self.populate()
             self.show_remove_button(self.has_selection())
 
-    def onremove(self):
+    def cb_remove(self):
         for item in self._tree.selection():
             protocol = self._tree.item(item, 'text')
             if protocol in self._proxy_urls:
@@ -400,9 +403,9 @@ class ProxiesPage(ToolbarView):
                 self.show_remove_button(self.has_selection())
             break
 
-    def on_proxy_set(self, protocol, url):
+    def cb_proxy_set(self, protocol, url):
         protocol = protocol.strip()
-        if len(protocol) == 0:
+        if not protocol:
             return False
 
         url = url.strip()
@@ -421,36 +424,36 @@ class ProxiesPage(ToolbarView):
         return True
 
     def apply(self, preferences):
-        preferences.set_proxy_urls(self._proxy_urls if len(self._proxy_urls) > 0 else None)
+        preferences.set_proxy_urls(self._proxy_urls if self._proxy_urls else None)
 
 
 class URLPopup(EntryCustom):
 
     def __init__(self, controller, protocol, parent, url, **options):
-        ''' If relwidth is set, then width is ignored '''
+        # If relwidth is set, then width is ignored
         super(URLPopup, self).__init__(parent, **options)
         self._controller = controller
         self._protocol = protocol
         self._url = url
         self.insert(0, self._url)
         self.focus_force()
-        self.bind("<Unmap>", self._update_value)
-        self.bind("<FocusOut>", self._update_value)
+        self.bind("<Unmap>", self._cb_update_value)
+        self.bind("<FocusOut>", self._cb_update_value)
 
-    def selectAll(self):
+    def select_all(self):
         self.focus_force()
         self.selection_range(0, tk.END)
 
-    def _update_value(self, *ignore):
+    def _cb_update_value(self, *ignore):
         new_url = self.get().strip()
         valid = True
         if self._url != new_url:
             self._url = new_url
-            valid = self._controller.on_proxy_set(self._protocol, new_url)
+            valid = self._controller.cb_proxy_set(self._protocol, new_url)
         if valid:
             self.destroy()
         else:
-            self.selectAll()
+            self.select_all()
 
 
 class ProxyEntryDialog(Dialog):
@@ -478,7 +481,7 @@ class ProxyEntryDialog(Dialog):
 
     def validate(self):
         protocol = self._protocol.get().strip()
-        if len(protocol) == 0 or protocol in self._controller._proxy_urls:
+        if not protocol or protocol in self._controller._proxy_urls:
             self.initial_focus = self._protocol
             return False
 

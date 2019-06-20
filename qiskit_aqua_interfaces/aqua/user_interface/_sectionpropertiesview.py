@@ -24,11 +24,12 @@ class SectionPropertiesView(ToolbarView):
         super(SectionPropertiesView, self).__init__(parent, **options)
         self._controller = controller
         ttk.Style().configure("SectionPropertiesView.Treeview.Heading", font=(None, 12, 'bold'))
-        self._tree = ttk.Treeview(self, style='SectionPropertiesView.Treeview', selectmode=tk.BROWSE, columns=['value'])
+        self._tree = ttk.Treeview(self, style='SectionPropertiesView.Treeview',
+                                  selectmode=tk.BROWSE, columns=['value'])
         self._tree.heading('#0', text='Name')
         self._tree.heading('value', text='Value')
-        self._tree.bind('<<TreeviewSelect>>', self._on_tree_select)
-        self._tree.bind('<Button-1>', self._on_tree_edit)
+        self._tree.bind('<<TreeviewSelect>>', self._cb_tree_select)
+        self._tree.bind('<Button-1>', self._cb_tree_edit)
         self.init_widgets(self._tree)
         self._section_name = None
         self._properties = {}
@@ -71,13 +72,13 @@ class SectionPropertiesView(ToolbarView):
     def has_selection(self):
         return self._tree.selection()
 
-    def _on_tree_select(self, event):
+    def _cb_tree_select(self, event):
         for item in self._tree.selection():
             property_name = self._tree.item(item, 'text')
-            self._controller.on_property_select(self._section_name, property_name)
+            self._controller.cb_property_select(self._section_name, property_name)
             return
 
-    def _on_tree_edit(self, event):
+    def _cb_tree_edit(self, event):
         rowid = self._tree.identify_row(event.y)
         if not rowid:
             return
@@ -99,7 +100,7 @@ class SectionPropertiesView(ToolbarView):
             else:
                 self._popup_widget.place(x=x, y=y + pady, anchor=tk.W, width=width)
 
-    def onadd(self):
+    def cb_add(self):
         dialog = None
         if self._controller.model.allows_additional_properties(self.section_name):
             dialog = PropertyEntryDialog(self._controller, self.section_name, self.master)
@@ -113,14 +114,14 @@ class SectionPropertiesView(ToolbarView):
         if dialog.result is None:
             return
 
-        if dialog.result is not None and len(dialog.result) > 0:
+        if dialog.result:
             self._controller.on_property_add(self.section_name, dialog.result)
 
-    def onremove(self):
+    def cb_remove(self):
         for item in self._tree.selection():
             property_name = self._tree.item(item, 'text')
-            self._controller.on_section_property_remove(self.section_name, property_name)
+            self._controller.cb_section_property_remove(self.section_name, property_name)
             break
 
-    def ondefaults(self):
-        self._controller.on_section_defaults(self.section_name)
+    def cb_defaults(self):
+        self._controller.cb_section_defaults(self.section_name)
