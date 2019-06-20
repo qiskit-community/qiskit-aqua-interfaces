@@ -12,15 +12,19 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
+"""Qiskit Aqua browser user interface model."""
+
 from collections import OrderedDict
 import copy
 
 
-class Model(object):
+class Model:
 
     def __init__(self):
         """Create Model object."""
         self._data_loaded = False
+        self._schema_property_titles = None
+        self._sections = None
 
     def _load_data(self):
         if self._data_loaded:
@@ -64,7 +68,7 @@ class Model(object):
             if config_name == 'input_schema' and isinstance(config_value, dict):
                 schema = config_value
                 if 'properties' in schema:
-                    for property, values in schema['properties'].items():
+                    for prop, values in schema['properties'].items():
                         if 'items' in values:
                             if 'type' in values['items']:
                                 values['items'] = values['items']['type']
@@ -76,8 +80,8 @@ class Model(object):
                             values['one of'] = values['oneOf']
                             del values['oneOf']
 
-                        self._sections[pluggable_type][pluggable_name]['properties'][property] = values
-                        for k, v in values.items():
+                        self._sections[pluggable_type][pluggable_name]['properties'][prop] = values
+                        for k, _ in values.items():
                             self._schema_property_titles[pluggable_type][pluggable_name][k] = None
                 continue
 

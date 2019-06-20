@@ -12,6 +12,8 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
+"""Qiskit Chemistry command line entry point."""
+
 from qiskit_aqua_interfaces.chemistry.command_line.command_line import main
 
 main()

@@ -28,6 +28,8 @@ class TestAquaModel(QiskitAquaUisTestCase):
         _filepath = self._get_resource_path('resources/vqe.json')
         self._model = Model()
         self._model.load_file(_filepath)
+        # make sure defaults are populated
+        self._model._parser.validate_merge_defaults()
 
     def test_new(self):
         """Test new model. Passes if required sections are included."""
@@ -38,7 +40,8 @@ class TestAquaModel(QiskitAquaUisTestCase):
     def test_open(self):
         """Test open model. Passes if required sections are included."""
         section_names = self._model.get_section_names()
-        for name in ['algorithm', 'backend', 'initial_state', 'input', 'optimizer', 'problem', 'variational_form']:
+        for name in ['algorithm', 'backend', 'initial_state', 'input',
+                     'optimizer', 'problem', 'variational_form']:
             self.assertIn(name, section_names)
 
     def test_get_input_section_names(self):
@@ -103,7 +106,8 @@ class TestAquaModel(QiskitAquaUisTestCase):
     def test_get_default_sections(self):
         """Test if model can access default sections."""
         section_names = self._model.get_default_sections().keys()
-        for name in ['algorithm', 'backend', 'initial_state', 'input', 'optimizer', 'problem', 'variational_form']:
+        for name in ['algorithm', 'backend', 'initial_state', 'input',
+                     'optimizer', 'problem', 'variational_form']:
             self.assertIn(name, section_names)
 
     def test_get_section_default_properties(self):

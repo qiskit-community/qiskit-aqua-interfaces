@@ -12,13 +12,13 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
+"""User Interface Provider"""
+
 from abc import ABC, abstractmethod
 
 
 class GUIProvider(ABC):
-    """
-    Base class for GUIProviders.
-    """
+    """Base class for GUIProviders."""
 
     START, STOP = 'Start', 'Stop'
 
@@ -67,35 +67,25 @@ class GUIProvider(ABC):
 
     @abstractmethod
     def build_logging_config(self, level):
-        """
-         Creates a the configuration dict of the named loggers
-        """
+        """Creates a the configuration dict of the named loggers"""
         pass
 
     @abstractmethod
     def create_section_properties_view(self, parent):
-        """
-        Creates provider section properties view
-        """
+        """Creates provider section properties view"""
         pass
 
     @abstractmethod
     def add_toolbar_items(self, toolbar):
-        """
-        Add items to toolbar
-        """
+        """Add items to toolbar"""
         pass
 
     @abstractmethod
     def add_file_menu_items(self, file_menu):
-        """
-        Add items to file menu
-        """
+        """Add items to file menu"""
         pass
 
     @abstractmethod
     def create_run_thread(self, model, outputview, thread_queue):
-        """
-        Creates run thread
-        """
+        """Creates run thread"""
         pass

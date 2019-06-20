@@ -12,6 +12,8 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
+"""Qiskit Aqua User Interface imports"""
+
 from .guiprovider import GUIProvider
 from ._uipreferences import UIPreferences
 from .base_controller import BaseController

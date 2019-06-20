@@ -12,6 +12,8 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
+"""Section Properties view"""
+
 import tkinter as tk
 import tkinter.ttk as ttk
 from ._scrollbarview import ScrollbarView
@@ -31,20 +33,22 @@ class SectionPropertiesView(ScrollbarView):
 
     def populate(self, column_titles, properties):
         self.clear()
-        ttk.Style().configure("BrowseSectionPropertiesView.Treeview.Heading", font=(None, 12, 'bold'))
-        self._tree = ttk.Treeview(self, style='BrowseSectionPropertiesView.Treeview', selectmode=tk.BROWSE, columns=column_titles)
+        ttk.Style().configure("BrowseSectionPropertiesView.Treeview.Heading",
+                              font=(None, 12, 'bold'))
+        self._tree = ttk.Treeview(self, style='BrowseSectionPropertiesView.Treeview',
+                                  selectmode=tk.BROWSE, columns=column_titles)
         self._tree.heading('#0', text='property')
         self.init_widgets(self._tree)
         for value in column_titles:
             self._tree.heading(value, text=value)
 
-        self._controller._propertiesView.grid(row=0, column=0, sticky='nsew')
+        self._controller._properties_view.grid(row=0, column=0, sticky='nsew')
 
         for name, props in properties.items():
             values = [''] * len(column_titles)
             for k, v in props.items():
                 index = column_titles.index(k)
-                if isinstance(v, list) and len(v) == 0:
+                if isinstance(v, list) and not v:
                     v = str(v)
                 values[index] = ','.join(str(t) for t in v) if isinstance(v, list) else str(v)
 

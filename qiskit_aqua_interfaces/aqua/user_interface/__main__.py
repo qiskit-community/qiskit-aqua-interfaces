@@ -12,6 +12,8 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
+"""Qiskit Aqua user interface entry point."""
+
 from qiskit_aqua_interfaces.aqua.user_interface.command_line import main
 
 main()

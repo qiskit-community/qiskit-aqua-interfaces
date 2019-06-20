@@ -14,15 +14,15 @@
 
 import tkinter as tk
 import tkinter.ttk as ttk
-from ._dialog import Dialog
 from collections import OrderedDict
-from ._credentialsview import CredentialsView
 import logging
+from ._dialog import Dialog
+from ._credentialsview import CredentialsView
 
 
 class PreferencesDialog(Dialog):
 
-    _LOG_LEVELS = OrderedDict(
+    log_levels = OrderedDict(
         [(logging.CRITICAL, logging.getLevelName(logging.CRITICAL)),
          (logging.ERROR, logging.getLevelName(logging.ERROR)),
          (logging.WARNING, logging.getLevelName(logging.WARNING)),
@@ -35,9 +35,9 @@ class PreferencesDialog(Dialog):
         super(PreferencesDialog, self).__init__(guiprovider.controller, parent, 'Preferences')
         self._guiprovider = guiprovider
         self._credentialsview = None
-        self._levelCombo = None
-        self._checkButton = None
-        self._populateDefaults = tk.IntVar()
+        self._level_combo = None
+        self._check_button = None
+        self._populate_defaults = tk.IntVar()
 
     def body(self, parent, options):
         preferences = self._guiprovider.create_uipreferences()
@@ -46,59 +46,60 @@ class PreferencesDialog(Dialog):
             self._guiprovider.set_logging_config(logging_config)
 
         populate = preferences.get_populate_defaults(True)
-        self._populateDefaults.set(1 if populate else 0)
+        self._populate_defaults.set(1 if populate else 0)
 
         current_row = 0
         from qiskit.aqua.utils import has_ibmq
         if has_ibmq():
-            credentialsGroup = ttk.LabelFrame(parent,
-                                              text='IBMQ Credentials',
-                                              padding=(6, 6, 6, 6),
-                                              borderwidth=4,
-                                              relief=tk.GROOVE)
-            credentialsGroup.grid(padx=(7, 7), pady=6, row=current_row,
-                                  column=0, sticky='nsew')
-            self._credentialsview = CredentialsView(credentialsGroup)
+            credentials_group = ttk.LabelFrame(parent,
+                                               text='IBMQ Credentials',
+                                               padding=(6, 6, 6, 6),
+                                               borderwidth=4,
+                                               relief=tk.GROOVE)
+            credentials_group.grid(padx=(7, 7), pady=6, row=current_row,
+                                   column=0, sticky='nsew')
+            self._credentialsview = CredentialsView(credentials_group)
             current_row += 1
 
-        defaultsGroup = ttk.LabelFrame(parent,
-                                       text='Defaults',
+        defaults_group = ttk.LabelFrame(parent,
+                                        text='Defaults',
+                                        padding=(6, 6, 6, 6),
+                                        borderwidth=4,
+                                        relief=tk.GROOVE)
+        defaults_group.grid(padx=(7, 7), pady=6, row=current_row, column=0, sticky='nsw')
+        defaults_group.columnconfigure(1, pad=7)
+        current_row += 1
+
+        self._check_button = ttk.Checkbutton(defaults_group,
+                                             text="Populate on file new/open",
+                                             variable=self._populate_defaults)
+        self._check_button.grid(row=0, column=1, sticky='nsw')
+
+        logging_group = ttk.LabelFrame(parent,
+                                       text='Logging Configuration',
                                        padding=(6, 6, 6, 6),
                                        borderwidth=4,
                                        relief=tk.GROOVE)
-        defaultsGroup.grid(padx=(7, 7), pady=6, row=current_row, column=0, sticky='nsw')
-        defaultsGroup.columnconfigure(1, pad=7)
-        current_row += 1
-
-        self._checkButton = ttk.Checkbutton(defaultsGroup,
-                                            text="Populate on file new/open",
-                                            variable=self._populateDefaults)
-        self._checkButton.grid(row=0, column=1, sticky='nsw')
-
-        loggingGroup = ttk.LabelFrame(parent,
-                                      text='Logging Configuration',
-                                      padding=(6, 6, 6, 6),
-                                      borderwidth=4,
-                                      relief=tk.GROOVE)
-        loggingGroup.grid(padx=(7, 7), pady=6, row=current_row, column=0, sticky='nsw')
-        loggingGroup.columnconfigure(1, pad=7)
+        logging_group.grid(padx=(7, 7), pady=6, row=current_row, column=0, sticky='nsw')
+        logging_group.columnconfigure(1, pad=7)
         current_row += 1
 
         loglevel = self._guiprovider.get_logging_level()
 
-        ttk.Label(loggingGroup,
+        ttk.Label(logging_group,
                   text="Level:",
                   borderwidth=0,
                   anchor=tk.E).grid(row=0, column=0, sticky='nsew')
-        self._levelCombo = ttk.Combobox(loggingGroup,
-                                        exportselection=0,
-                                        state='readonly',
-                                        values=list(PreferencesDialog._LOG_LEVELS.values()))
-        index = list(PreferencesDialog._LOG_LEVELS.keys()).index(loglevel)
-        self._levelCombo.current(index)
-        self._levelCombo.grid(row=0, column=1, sticky='nsw')
+        self._level_combo = ttk.Combobox(logging_group,
+                                         exportselection=0,
+                                         state='readonly',
+                                         values=list(PreferencesDialog.log_levels.values()))
+        index = list(PreferencesDialog.log_levels.keys()).index(loglevel)
+        self._level_combo.current(index)
+        self._level_combo.grid(row=0, column=1, sticky='nsw')
 
-        self.entry = self._credentialsview.initial_focus if self._credentialsview else self._checkButton
+        self.entry = \
+            self._credentialsview.initial_focus if self._credentialsview else self._check_button
         return self.entry  # initial focus
 
     def validate(self):
@@ -113,15 +114,16 @@ class PreferencesDialog(Dialog):
 
     def apply(self):
         try:
-            level_name = self._levelCombo.get()
-            levels = [key for key, value in PreferencesDialog._LOG_LEVELS.items() if value == level_name]
+            level_name = self._level_combo.get()
+            levels = \
+                [key for key, value in PreferencesDialog.log_levels.items() if value == level_name]
             loglevel = levels[0]
 
             logging_config = self._guiprovider.build_logging_config(loglevel)
-            populate = self._populateDefaults.get()
+            populate = self._populate_defaults.get()
             preferences = self._guiprovider.create_uipreferences()
             preferences.set_logging_config(logging_config)
-            preferences.set_populate_defaults(False if populate == 0 else True)
+            preferences.set_populate_defaults(populate != 0)
             preferences.save()
 
             self._guiprovider.set_logging_config(logging_config)
@@ -130,10 +132,12 @@ class PreferencesDialog(Dialog):
                 from qiskit.aqua import Preferences
                 from qiskit.aqua import disable_ibmq_account
                 preferences = Preferences()
-                disable_ibmq_account(preferences.get_url(), preferences.get_token(), preferences.get_proxies({}))
+                disable_ibmq_account(preferences.get_url(),
+                                     preferences.get_token(),
+                                     preferences.get_proxies({}))
                 self._credentialsview.apply(preferences)
                 preferences.save()
 
             self._controller.model.get_available_providers()
-        except Exception as e:
-            self.controller.outputview.write_line(str(e))
+        except Exception as ex:
+            self.controller.outputview.write_line(str(ex))

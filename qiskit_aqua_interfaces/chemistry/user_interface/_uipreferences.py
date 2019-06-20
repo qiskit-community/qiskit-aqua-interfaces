@@ -12,11 +12,13 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
+"""Qiskit Chemistry user interface preferences."""
+
 import os
 import json
 
 
-class UIPreferences(object):
+class UIPreferences:
 
     _FILENAME = '.qiskit_chemistry_ui'
     _VERSION = '1.0'
@@ -39,8 +41,8 @@ class UIPreferences(object):
         return self._filepath
 
     def save(self):
-        with open(self._filepath, 'w') as fp:
-            json.dump(self._preferences, fp, sort_keys=True, indent=4)
+        with open(self._filepath, 'w') as pref_output:
+            json.dump(self._preferences, pref_output, sort_keys=True, indent=4)
 
     def get_version(self):
         if 'version' in self._preferences:

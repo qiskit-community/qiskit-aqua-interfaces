@@ -12,37 +12,36 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-from qiskit_aqua_interfaces.aqua.user_interface import BaseModel
+"""Qiskit Chemistry user interface model."""
+
 import os
 from collections import OrderedDict
-from ._uipreferences import UIPreferences
 import logging
+from qiskit_aqua_interfaces.aqua.user_interface import BaseModel
+from ._uipreferences import UIPreferences
 
 logger = logging.getLogger(__name__)
 
 
 class Model(BaseModel):
 
-    def __init__(self):
-        """Create Model object."""
-        super().__init__()
-
     def new(self):
         from qiskit.chemistry.parser import InputParser
         uipreferences = UIPreferences()
-        return super().new(InputParser,
-                           os.path.join(os.path.dirname(__file__), 'input_template.json'),
-                           uipreferences.get_populate_defaults(True))
+        return super().new_model(InputParser,
+                                 os.path.join(os.path.dirname(__file__), 'input_template.json'),
+                                 uipreferences.get_populate_defaults(True))
 
     def load_file(self, filename):
         from qiskit.chemistry.parser import InputParser
         uipreferences = UIPreferences()
-        return super().load_file(filename, InputParser, uipreferences.get_populate_defaults(True))
+        return super().load_model(filename, InputParser, uipreferences.get_populate_defaults(True))
 
     def default_properties_equals_properties(self, section_name):
         from qiskit.aqua.parser import JSONSchema
         if self.section_is_text(section_name):
-            return self.get_section_default_properties(section_name) == self.get_section_text(section_name)
+            return self.get_section_default_properties(section_name) == \
+                    self.get_section_text(section_name)
 
         default_properties = self.get_section_default_properties(section_name)
         properties = self.get_section_properties(section_name)
@@ -58,7 +57,8 @@ class Model(BaseModel):
         if len(default_properties) != len(properties):
             return False
 
-        substitution_tuples = self._parser.check_if_substitution_key(section_name, list(properties.keys()))
+        substitution_tuples = self._parser.check_if_substitution_key(
+            section_name, list(properties.keys()))
         for substitution_tuple in substitution_tuples:
             property_name = substitution_tuple[0]
             if property_name not in default_properties:
@@ -84,10 +84,12 @@ class Model(BaseModel):
 
     def get_section_properties_with_substitution(self, section_name):
         properties = self.get_section_properties(section_name)
-        result_tuples = self._parser.check_if_substitution_key(section_name, list(properties.keys()))
+        result_tuples = \
+            self._parser.check_if_substitution_key(section_name, list(properties.keys()))
         properties_with_substitution = OrderedDict()
         for result_tuple in result_tuples:
-            properties_with_substitution[result_tuple[0]] = (properties[result_tuple[0]], result_tuple[1])
+            properties_with_substitution[result_tuple[0]] = \
+                    (properties[result_tuple[0]], result_tuple[1])
 
         return properties_with_substitution
 
