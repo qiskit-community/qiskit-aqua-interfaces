@@ -130,11 +130,7 @@ class PreferencesDialog(Dialog):
 
             if self._credentialsview:
                 from qiskit.aqua import Preferences
-                from qiskit.aqua import disable_ibmq_account
                 preferences = Preferences()
-                disable_ibmq_account(preferences.ibmq_credentials_preferences.url,
-                                     preferences.ibmq_credentials_preferences.token,
-                                     preferences.ibmq_credentials_preferences.proxies)
                 self._credentialsview.apply(preferences)
                 preferences.save()
 

@@ -47,83 +47,64 @@ class CredentialsView(ttk.Frame):
                                         state=tk.NORMAL)
         self._token_entry.grid(row=0, column=1, pady=5, sticky='nsew')
 
-        self._url = tk.StringVar()
-        self._url.set(cred_prefs.url if cred_prefs.url is not None else cred_prefs.IBMQ_URL)
-        ttk.Label(self,
-                  text="URL:",
-                  borderwidth=0,
-                  anchor=tk.E).grid(row=1, column=0, pady=5, sticky='nsew')
-        self._url_entry = EntryCustom(self,
-                                      textvariable=self._url,
-                                      width=100,
-                                      state=tk.NORMAL)
-        self._url_entry.grid(row=1, column=1, pady=5, sticky='nsw')
-
         self._hub = tk.StringVar()
         self._hub.set(cred_prefs.hub if cred_prefs.hub is not None else '')
         ttk.Label(self,
                   text="Hub:",
                   borderwidth=0,
-                  anchor=tk.E).grid(row=2, column=0, pady=5, sticky='nsew')
+                  anchor=tk.E).grid(row=1, column=0, pady=5, sticky='nsew')
         self._hub_entry = EntryCustom(self,
                                       textvariable=self._hub,
                                       width=50,
                                       state=tk.NORMAL)
-        self._hub_entry.grid(row=2, column=1, pady=5, sticky='nsw')
+        self._hub_entry.grid(row=1, column=1, pady=5, sticky='nsw')
 
         self._group = tk.StringVar()
         self._group.set(cred_prefs.group if cred_prefs.group is not None else '')
         ttk.Label(self,
                   text="Group:",
                   borderwidth=0,
-                  anchor=tk.E).grid(row=3, column=0, pady=5, sticky='nsew')
+                  anchor=tk.E).grid(row=2, column=0, pady=5, sticky='nsew')
         self._group_entry = EntryCustom(self,
                                         textvariable=self._group,
                                         width=50,
                                         state=tk.NORMAL)
-        self._group_entry.grid(row=3, column=1, pady=5, sticky='nsw')
+        self._group_entry.grid(row=2, column=1, pady=5, sticky='nsw')
 
         self._project = tk.StringVar()
         self._project.set(cred_prefs.project if cred_prefs.project is not None else '')
         ttk.Label(self,
                   text="Project:",
                   borderwidth=0,
-                  anchor=tk.E).grid(row=4, column=0, pady=5, sticky='nsew')
+                  anchor=tk.E).grid(row=3, column=0, pady=5, sticky='nsew')
         self._project_entry = EntryCustom(self,
                                           textvariable=self._project,
                                           width=50,
                                           state=tk.NORMAL)
-        self._project_entry.grid(row=4, column=1, pady=5, sticky='nsw')
+        self._project_entry.grid(row=3, column=1, pady=5, sticky='nsw')
 
         ttk.Label(self,
                   text="Proxies:",
                   borderwidth=0,
-                  anchor=tk.E).grid(row=5, column=0, pady=5, sticky='nsew')
+                  anchor=tk.E).grid(row=4, column=0, pady=5, sticky='nsew')
         self._proxiespage = ProxiesPage(self, cred_prefs)
-        self._proxiespage.grid(row=6, column=0, columnspan=2, pady=5, sticky='nsew')
+        self._proxiespage.grid(row=5, column=0, columnspan=2, pady=5, sticky='nsew')
         self._proxiespage.show_add_button(True)
         self._proxiespage.show_remove_button(self._proxiespage.has_selection())
         self._proxiespage.show_defaults_button(False)
         self._proxiespage.enable(True)
 
-        self.initial_focus = self._url_entry
+        self.initial_focus = self._token_entry
 
     def is_valid(self):
-        url = self._url.get().strip()
-        return (url == '' or CredentialsView._is_valid_url(url)) and \
-            self._proxiespage.is_valid()
+        return self._proxiespage.is_valid()
 
     def validate(self):
-        url = self._url.get().strip()
-        if url != '' and not CredentialsView._validate_url(self._url.get().strip()):
-            self.initial_focus = self._url_entry
-            return False
-
         if not self._proxiespage.is_valid():
             self.initial_focus = self._proxiespage.initial_focus
             return False
 
-        self.initial_focus = self._url_entry
+        self.initial_focus = self._token_entry
         return True
 
     @staticmethod
@@ -142,7 +123,6 @@ class CredentialsView(ttk.Frame):
             CredentialsView._get_var_value(self._project)
         preferences.ibmq_credentials_preferences.set_credentials(
             CredentialsView._get_var_value(self._token),
-            CredentialsView._get_var_value(self._url),
             self._proxiespage._proxy_urls)
 
     @staticmethod
