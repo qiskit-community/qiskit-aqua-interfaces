@@ -35,29 +35,29 @@ class CredentialsView(ttk.Frame):
         preferences = Preferences()
         cred_prefs = preferences.ibmq_credentials_preferences
 
-        self._url = tk.StringVar()
-        self._url.set(cred_prefs.url if cred_prefs.url is not None else '')
-        ttk.Label(self,
-                  text="URL:",
-                  borderwidth=0,
-                  anchor=tk.E).grid(row=0, column=0, pady=5, sticky='nsew')
-        self._url_entry = EntryCustom(self,
-                                      textvariable=self._url,
-                                      width=100,
-                                      state=tk.NORMAL)
-        self._url_entry.grid(row=0, column=1, pady=5, sticky='nsw')
-
         self._token = tk.StringVar()
         self._token.set(cred_prefs.token if cred_prefs.token is not None else '')
         ttk.Label(self,
                   text="Token:",
                   borderwidth=0,
-                  anchor=tk.E).grid(row=1, column=0, pady=5, sticky='nsew')
+                  anchor=tk.E).grid(row=0, column=0, pady=5, sticky='nsew')
         self._token_entry = EntryCustom(self,
                                         textvariable=self._token,
                                         width=120,
                                         state=tk.NORMAL)
-        self._token_entry.grid(row=1, column=1, pady=5, sticky='nsew')
+        self._token_entry.grid(row=0, column=1, pady=5, sticky='nsew')
+
+        self._url = tk.StringVar()
+        self._url.set(cred_prefs.url if cred_prefs.url is not None else cred_prefs.IBMQ_URL)
+        ttk.Label(self,
+                  text="URL:",
+                  borderwidth=0,
+                  anchor=tk.E).grid(row=1, column=0, pady=5, sticky='nsew')
+        self._url_entry = EntryCustom(self,
+                                      textvariable=self._url,
+                                      width=100,
+                                      state=tk.NORMAL)
+        self._url_entry.grid(row=1, column=1, pady=5, sticky='nsw')
 
         self._hub = tk.StringVar()
         self._hub.set(cred_prefs.hub if cred_prefs.hub is not None else '')
@@ -109,17 +109,14 @@ class CredentialsView(ttk.Frame):
         self.initial_focus = self._url_entry
 
     def is_valid(self):
-        return CredentialsView._validate_url(self._url.get().strip()) and \
-                self._token.get().strip() != '' and \
-                self._proxiespage.is_valid()
+        url = self._url.get().strip()
+        return (url == '' or CredentialsView._is_valid_url(url)) and \
+            self._proxiespage.is_valid()
 
     def validate(self):
-        if not CredentialsView._validate_url(self._url.get().strip()):
+        url = self._url.get().strip()
+        if url != '' and not CredentialsView._validate_url(self._url.get().strip()):
             self.initial_focus = self._url_entry
-            return False
-
-        if self._token.get().strip() == '':
-            self.initial_focus = self._token_entry
             return False
 
         if not self._proxiespage.is_valid():
@@ -129,14 +126,24 @@ class CredentialsView(ttk.Frame):
         self.initial_focus = self._url_entry
         return True
 
+    @staticmethod
+    def _get_var_value(stringvar):
+        value = stringvar.get().strip()
+        if value == '':
+            value = None
+
+        return value
+
     def apply(self, preferences):
         # save previously shown data
-        preferences.ibmq_credentials_preferences.hub = self._hub.get().strip()
-        preferences.ibmq_credentials_preferences.group = self._group.get().strip()
-        preferences.ibmq_credentials_preferences.project = self._project.get().strip()
-        preferences.ibmq_credentials_preferences.set_credentials(self._token.get().strip(),
-                                                                 self._url.get().strip(),
-                                                                 self._proxiespage._proxy_urls)
+        preferences.ibmq_credentials_preferences.hub = CredentialsView._get_var_value(self._hub)
+        preferences.ibmq_credentials_preferences.group = CredentialsView._get_var_value(self._group)
+        preferences.ibmq_credentials_preferences.project = \
+            CredentialsView._get_var_value(self._project)
+        preferences.ibmq_credentials_preferences.set_credentials(
+            CredentialsView._get_var_value(self._token),
+            CredentialsView._get_var_value(self._url),
+            self._proxiespage._proxy_urls)
 
     @staticmethod
     def _is_valid_url(url):
