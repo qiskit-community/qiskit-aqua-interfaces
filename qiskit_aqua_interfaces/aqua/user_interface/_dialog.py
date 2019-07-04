@@ -85,6 +85,7 @@ class Dialog(tk.Toplevel):
         self._cb_cancel()
 
     def _cb_cancel(self, event=None):
+        self.do_cancel()
         self.master.focus_set()
         self.destroy()
 
@@ -97,4 +98,7 @@ class Dialog(tk.Toplevel):
         return True  # override
 
     def apply(self):
+        pass  # override
+
+    def do_cancel(self):
         pass  # override

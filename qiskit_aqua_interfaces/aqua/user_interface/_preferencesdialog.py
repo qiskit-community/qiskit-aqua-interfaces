@@ -137,3 +137,7 @@ class PreferencesDialog(Dialog):
             self._controller.model.get_available_providers()
         except Exception as ex:
             self.controller.outputview.write_line(str(ex))
+
+    def do_cancel(self):
+        if self._credentialsview:
+            self._credentialsview.do_cancel()

@@ -14,6 +14,9 @@
 
 """Credentials view"""
 
+import threading
+import queue
+import logging
 import tkinter as tk
 import tkinter.ttk as ttk
 from tkinter import font
@@ -23,11 +26,18 @@ from ._customwidgets import EntryCustom
 from ._toolbarview import ToolbarView
 from ._dialog import Dialog
 
+logger = logging.getLogger(__name__)
+
 
 class CredentialsView(ttk.Frame):
 
+    _START, _STOP = 'Start', 'Stop'
+
     def __init__(self, parent, **options):
         super(CredentialsView, self).__init__(parent, **options)
+
+        self._thread_queue = queue.Queue()
+        self._thread = None
 
         self.pack(fill=tk.BOTH, expand=tk.TRUE)
 
@@ -45,7 +55,7 @@ class CredentialsView(ttk.Frame):
                                         textvariable=self._token,
                                         width=120,
                                         state=tk.NORMAL)
-        self._token_entry.grid(row=0, column=1, pady=5, sticky='nsew')
+        self._token_entry.grid(row=0, column=1, padx=5, pady=5, sticky='nsew')
 
         self._hub = tk.StringVar()
         self._hub.set(cred_prefs.hub if cred_prefs.hub is not None else '')
@@ -53,11 +63,11 @@ class CredentialsView(ttk.Frame):
                   text="Hub:",
                   borderwidth=0,
                   anchor=tk.E).grid(row=1, column=0, pady=5, sticky='nsew')
-        self._hub_entry = EntryCustom(self,
-                                      textvariable=self._hub,
-                                      width=50,
-                                      state=tk.NORMAL)
-        self._hub_entry.grid(row=1, column=1, pady=5, sticky='nsw')
+        self._hub_entry = ttk.Label(self,
+                                    textvariable=self._hub,
+                                    borderwidth=0,
+                                    width=50)
+        self._hub_entry.grid(row=1, column=1, padx=5, pady=5, sticky='nsw')
 
         self._group = tk.StringVar()
         self._group.set(cred_prefs.group if cred_prefs.group is not None else '')
@@ -65,11 +75,11 @@ class CredentialsView(ttk.Frame):
                   text="Group:",
                   borderwidth=0,
                   anchor=tk.E).grid(row=2, column=0, pady=5, sticky='nsew')
-        self._group_entry = EntryCustom(self,
-                                        textvariable=self._group,
-                                        width=50,
-                                        state=tk.NORMAL)
-        self._group_entry.grid(row=2, column=1, pady=5, sticky='nsw')
+        self._group_entry = ttk.Label(self,
+                                      textvariable=self._group,
+                                      borderwidth=0,
+                                      width=50)
+        self._group_entry.grid(row=2, column=1, padx=5, pady=5, sticky='nsw')
 
         self._project = tk.StringVar()
         self._project.set(cred_prefs.project if cred_prefs.project is not None else '')
@@ -77,24 +87,46 @@ class CredentialsView(ttk.Frame):
                   text="Project:",
                   borderwidth=0,
                   anchor=tk.E).grid(row=3, column=0, pady=5, sticky='nsew')
-        self._project_entry = EntryCustom(self,
-                                          textvariable=self._project,
-                                          width=50,
-                                          state=tk.NORMAL)
-        self._project_entry.grid(row=3, column=1, pady=5, sticky='nsw')
+        self._project_entry = ttk.Label(self,
+                                        textvariable=self._project,
+                                        borderwidth=0,
+                                        width=50)
+        self._project_entry.grid(row=3, column=1, padx=5, pady=5, sticky='nsw')
+
+        self._chose_button = ttk.Button(self,
+                                        text='Chose Hub/Group/Project',
+                                        state='enable',
+                                        command=self.cb_chose)
+        self._chose_button.grid(row=4, column=1, padx=5, pady=5, sticky='nsw')
 
         ttk.Label(self,
                   text="Proxies:",
                   borderwidth=0,
-                  anchor=tk.E).grid(row=4, column=0, pady=5, sticky='nsew')
+                  anchor=tk.E).grid(row=5, column=0, pady=5, sticky='nsew')
         self._proxiespage = ProxiesPage(self, cred_prefs)
-        self._proxiespage.grid(row=5, column=0, columnspan=2, pady=5, sticky='nsew')
+        self._proxiespage.grid(row=6, column=0, columnspan=2, pady=5, sticky='nsew')
         self._proxiespage.show_add_button(True)
         self._proxiespage.show_remove_button(self._proxiespage.has_selection())
         self._proxiespage.show_defaults_button(False)
         self._proxiespage.enable(True)
 
         self.initial_focus = self._token_entry
+
+    def cb_chose(self):
+        try:
+            self._chose_button.state(['disabled'])
+            self.after(100, self._process_thread_queue)
+            proxy_urls = self._proxiespage._proxy_urls
+            self._thread = HGPThread(CredentialsView._get_var_value(self._token),
+                                     {} if proxy_urls is None else {'urls': proxy_urls},
+                                     self._thread_queue)
+            self._thread.daemon = True
+            self._thread.start()
+        except Exception as ex:
+            self._thread = None
+            self._thread_queue.put(None)
+            self._chose_button.state(['!disabled'])
+            logger.debug("Failed to access hub/group/project: {}".format(str(ex)))
 
     def is_valid(self):
         return self._proxiespage.is_valid()
@@ -107,6 +139,9 @@ class CredentialsView(ttk.Frame):
         self.initial_focus = self._token_entry
         return True
 
+    def do_cancel(self):
+        self._stop()
+
     @staticmethod
     def _get_var_value(stringvar):
         value = stringvar.get().strip()
@@ -116,6 +151,7 @@ class CredentialsView(ttk.Frame):
         return value
 
     def apply(self, preferences):
+        self._stop()
         # save previously shown data
         preferences.ibmq_credentials_preferences.hub = CredentialsView._get_var_value(self._hub)
         preferences.ibmq_credentials_preferences.group = CredentialsView._get_var_value(self._group)
@@ -153,34 +189,118 @@ class CredentialsView(ttk.Frame):
 
         return valid
 
+    def _stop(self):
+        self._thread = None
+        self._thread_queue.put(None)
 
-class URLEntryDialog(Dialog):
+    def _process_thread_queue(self):
+        try:
+            line = self._thread_queue.get_nowait()
+            if line is None:
+                self._thread = None
+                self._chose_button.state(['!disabled'])
+                return
+            elif line is CredentialsView._START:
+                self._chose_button.state(['disabled'])
+            elif line is CredentialsView._STOP:
+                self.after(0, self._show_hgp_dialog, self._thread.hgp)
+                self._thread = None
+                self._chose_button.state(['!disabled'])
+                return
 
-    def __init__(self, parent, controller):
-        super(URLEntryDialog, self).__init__(None, parent, "New URL")
-        self._url = None
-        self._controller = controller
+            self.update_idletasks()
+        except Exception:
+            pass
+
+        self.after(100, self._process_thread_queue)
+
+    def _show_hgp_dialog(self, hgp):
+        if hgp:
+            dialog = HGPEntryDialog(self.master)
+            dialog.do_init(values=hgp)
+            dialog.do_modal()
+            if dialog.result:
+                self._hub.set(dialog.result[0])
+                self._group.set(dialog.result[1])
+                self._project.set(dialog.result[2])
+        else:
+            messagebox.showerror("Warning", 'No Hub/Group/Project found.')
+
+
+class HGPEntryDialog(Dialog):
+
+    def __init__(self, parent):
+        super(HGPEntryDialog, self).__init__(None, parent, "Chose Hub/Group/Project")
 
     def body(self, parent, options):
         ttk.Label(parent,
-                  text="URL:",
-                  borderwidth=0,
-                  anchor=tk.E).grid(padx=7, pady=6, row=0, sticky='nse')
-        self._url = EntryCustom(parent, state=tk.NORMAL, width=50)
-        self._url.grid(padx=(0, 7), pady=6, row=0, column=1, sticky='nsew')
-        return self._url  # initial focus
-
-    def validate(self):
-        url = self._url.get().strip()
-        if not CredentialsView._validate_url(url):
-            self.initial_focus = self._url
-            return False
-
-        self.initial_focus = self._url
-        return True
+                  text="Hub/Group/Project:",
+                  borderwidth=0).grid(padx=7, pady=6, row=0)
+        self._hgp = options['values']
+        self.entry = ttk.Combobox(parent,
+                                  exportselection=0,
+                                  state='readonly',
+                                  values=self._hgp)
+        self.entry.current(0)
+        self.entry.grid(padx=(0, 7), pady=6, row=0, column=1)
+        return self.entry  # initial focus
 
     def apply(self):
-        self.result = self._url.get().strip()
+        index = self.entry.current()
+        if index >= 0:
+            self.result = self._hgp[index]
+
+
+class HGPThread(threading.Thread):
+
+    def __init__(self, token, proxies, queue):
+        super(HGPThread, self).__init__(name='Hub/Group/Project thread')
+        self._token = token
+        self._proxies = proxies
+        self._thread_queue = queue
+        self._hgp = []
+
+    @property
+    def hgp(self):
+        return self._hgp
+
+    def run(self):
+        try:
+            if self._thread_queue is not None:
+                self._thread_queue.put(CredentialsView._START)
+            # pylint: disable=no-name-in-module, import-error
+            from qiskit import IBMQ
+            providers = IBMQ.providers()
+            if self._token:
+                # check if there was a previous account that needs to be disabled first
+                disable_account = False
+                enable_account = True
+                for provider in providers:
+                    if provider.credentials.token == self._token and provider.credentials.proxies == self._proxies:
+                        enable_account = False
+                    else:
+                        disable_account = True
+
+                if disable_account:
+                    IBMQ.disable_account()
+                    logger.info('Disabled IBMQ account.')
+
+                if enable_account:
+                    IBMQ.enable_account(self._token, proxies=self._proxies)
+                    logger.info('Enabled IBMQ account.')
+
+                self._hgp = []
+                providers = IBMQ.providers()
+                for provider in providers:
+                    self._hgp.append((provider.credentials.hub,
+                                      provider.credentials.group,
+                                      provider.credentials.project))
+        except Exception as ex:
+            logger.warning("IBMQ account Account Failure. "
+                           "Proxies:'{}' :{}".format(self._proxies, str(ex)))
+        finally:
+            if self._thread_queue is not None:
+                self._thread_queue.put(CredentialsView._STOP)
 
 
 class ProxiesPage(ToolbarView):
