@@ -126,7 +126,7 @@ class CredentialsView(ttk.Frame):
             self._thread = None
             self._thread_queue.put(None)
             self._chose_button.state(['!disabled'])
-            logger.debug("Failed to access hub/group/project: {}".format(str(ex)))
+            logger.debug('Failed to access hub/group/project: %s', ex)
 
     def is_valid(self):
         return self._proxiespage.is_valid()
@@ -231,6 +231,7 @@ class HGPEntryDialog(Dialog):
 
     def __init__(self, parent):
         super(HGPEntryDialog, self).__init__(None, parent, "Chose Hub/Group/Project")
+        self._hgp = []
 
     def body(self, parent, options):
         ttk.Label(parent,
@@ -253,11 +254,11 @@ class HGPEntryDialog(Dialog):
 
 class HGPThread(threading.Thread):
 
-    def __init__(self, token, proxies, queue):
+    def __init__(self, token, proxies, thread_queue):
         super(HGPThread, self).__init__(name='Hub/Group/Project thread')
         self._token = token
         self._proxies = proxies
-        self._thread_queue = queue
+        self._thread_queue = thread_queue
         self._hgp = []
 
     @property
@@ -276,7 +277,8 @@ class HGPThread(threading.Thread):
                 disable_account = False
                 enable_account = True
                 for provider in providers:
-                    if provider.credentials.token == self._token and provider.credentials.proxies == self._proxies:
+                    if provider.credentials.token == self._token and \
+                       provider.credentials.proxies == self._proxies:
                         enable_account = False
                     else:
                         disable_account = True
@@ -296,8 +298,7 @@ class HGPThread(threading.Thread):
                                       provider.credentials.group,
                                       provider.credentials.project))
         except Exception as ex:
-            logger.warning("IBMQ account Account Failure. "
-                           "Proxies:'{}' :{}".format(self._proxies, str(ex)))
+            logger.warning('IBMQ account Account Failure. Proxies:%s :%s', self._proxies, ex)
         finally:
             if self._thread_queue is not None:
                 self._thread_queue.put(CredentialsView._STOP)
