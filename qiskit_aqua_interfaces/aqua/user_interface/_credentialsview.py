@@ -267,32 +267,15 @@ class HGPThread(threading.Thread):
 
     def run(self):
         try:
+            self._hgp = []
             if self._thread_queue is not None:
                 self._thread_queue.put(CredentialsView._START)
             # pylint: disable=no-name-in-module, import-error
-            from qiskit import IBMQ
-            providers = IBMQ.providers()
             if self._token:
-                # check if there was a previous account that needs to be disabled first
-                disable_account = False
-                enable_account = True
-                for provider in providers:
-                    if provider.credentials.token == self._token and \
-                       provider.credentials.proxies == self._proxies:
-                        enable_account = False
-                    else:
-                        disable_account = True
-
-                if disable_account:
-                    IBMQ.disable_account()
-                    logger.info('Disabled IBMQ account.')
-
-                if enable_account:
-                    IBMQ.enable_account(self._token, proxies=self._proxies)
-                    logger.info('Enabled IBMQ account.')
-
-                self._hgp = []
-                providers = IBMQ.providers()
+                from qiskit.providers.ibmq import IBMQFactory
+                ibmq = IBMQFactory()
+                ibmq.enable_account(self._token, proxies=self._proxies)
+                providers = ibmq.providers()
                 for provider in providers:
                     self._hgp.append((provider.credentials.hub,
                                       provider.credentials.group,
