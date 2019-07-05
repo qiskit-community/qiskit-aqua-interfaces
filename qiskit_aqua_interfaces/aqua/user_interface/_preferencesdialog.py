@@ -130,14 +130,14 @@ class PreferencesDialog(Dialog):
 
             if self._credentialsview:
                 from qiskit.aqua import Preferences
-                from qiskit.aqua import disable_ibmq_account
                 preferences = Preferences()
-                disable_ibmq_account(preferences.get_url(),
-                                     preferences.get_token(),
-                                     preferences.get_proxies({}))
                 self._credentialsview.apply(preferences)
                 preferences.save()
 
             self._controller.model.get_available_providers()
         except Exception as ex:
             self.controller.outputview.write_line(str(ex))
+
+    def do_cancel(self):
+        if self._credentialsview:
+            self._credentialsview.do_cancel()
