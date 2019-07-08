@@ -24,7 +24,7 @@ import os
 import subprocess
 import traceback
 import psutil
-from qiskit_aqua_interfaces.aqua.user_interface import GUIProvider
+from qiskit_aqua_interfaces.user_interface import GUIProvider
 
 logger = logging.getLogger(__name__)
 

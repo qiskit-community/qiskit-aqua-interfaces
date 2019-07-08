@@ -14,22 +14,6 @@
 
 """Qiskit Aqua User Interface imports"""
 
-from .guiprovider import GUIProvider
 from ._uipreferences import UIPreferences
-from .base_controller import BaseController
-from .base_model import BaseModel
-from ._customwidgets import (EntryPopup, ComboboxPopup, TextPopup)
-from ._sectionsview import SectionsView
-from ._sectionpropertiesview import SectionPropertiesView
-from ._mainview import MainView
 
-__all__ = ['GUIProvider',
-           'UIPreferences',
-           'BaseController',
-           'BaseModel',
-           'EntryPopup',
-           'ComboboxPopup',
-           'TextPopup',
-           'SectionsView',
-           'SectionPropertiesView',
-           'MainView']
+__all__ = ['UIPreferences']

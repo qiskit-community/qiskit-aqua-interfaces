@@ -13,7 +13,7 @@
 # that they have been altered from the originals.
 
 import tkinter as tk
-from qiskit_aqua_interfaces.aqua.user_interface import SectionPropertiesView, TextPopup
+from qiskit_aqua_interfaces.user_interface import SectionPropertiesView, TextPopup
 
 
 class ChemSectionPropertiesView(SectionPropertiesView):

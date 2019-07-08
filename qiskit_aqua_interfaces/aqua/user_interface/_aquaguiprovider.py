@@ -15,9 +15,8 @@
 """Aqua User Interface Provider"""
 
 from qiskit_aqua_interfaces import __version__
-from qiskit_aqua_interfaces.aqua.user_interface import GUIProvider
-from qiskit_aqua_interfaces.aqua.user_interface._uipreferences import UIPreferences
-from ._sectionpropertiesview import SectionPropertiesView
+from qiskit_aqua_interfaces.user_interface import GUIProvider, SectionPropertiesView
+from ._uipreferences import UIPreferences
 from ._aquathread import AquaThread
 from ._controller import Controller
 

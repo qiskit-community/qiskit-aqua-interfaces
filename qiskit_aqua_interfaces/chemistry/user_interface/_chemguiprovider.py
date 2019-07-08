@@ -22,7 +22,7 @@ import os
 import json
 import pprint
 from qiskit_aqua_interfaces import __version__
-from qiskit_aqua_interfaces.aqua.user_interface import GUIProvider
+from qiskit_aqua_interfaces.user_interface import GUIProvider
 from ._uipreferences import UIPreferences
 from ._chemsectionpropertiesview import ChemSectionPropertiesView
 from ._chemthread import ChemistryThread
