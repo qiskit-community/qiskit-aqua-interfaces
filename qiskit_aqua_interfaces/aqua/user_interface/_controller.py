@@ -16,7 +16,7 @@
 
 from tkinter import messagebox
 import logging
-from .base_controller import BaseController
+from qiskit_aqua_interfaces.user_interface import BaseController
 from ._model import Model
 
 logger = logging.getLogger(__name__)

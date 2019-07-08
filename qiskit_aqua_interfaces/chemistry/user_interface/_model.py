@@ -17,7 +17,7 @@
 import os
 from collections import OrderedDict
 import logging
-from qiskit_aqua_interfaces.aqua.user_interface import BaseModel
+from qiskit_aqua_interfaces.user_interface import BaseModel
 from ._uipreferences import UIPreferences
 
 logger = logging.getLogger(__name__)

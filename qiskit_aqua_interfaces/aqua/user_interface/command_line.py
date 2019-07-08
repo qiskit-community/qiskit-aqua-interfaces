@@ -18,8 +18,8 @@ import sys
 import logging
 import tkinter as tk
 from qiskit_aqua_interfaces._extras_require import _check_extra_requires
+from qiskit_aqua_interfaces.user_interface._mainview import MainView
 from ._aquaguiprovider import AquaGUIProvider
-from ._mainview import MainView
 
 
 def set_preferences_logging():
