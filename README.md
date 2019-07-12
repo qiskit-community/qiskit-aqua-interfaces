@@ -5,8 +5,7 @@
 Qiskit is made up elements that work together to enable quantum computing. This repository contains **Qiskit Aqua Interfaces**,
 a set of user-interface components for [Qiskit Aqua](https://github.com/Qiskit/qiskit-aqua) (the element of Qiskit consisting
 of a library of cross-domain algorithms upon which domain-specific applications can be
-built) and [Qiskit Chemistry](https://github.com/Qiskit/qiskit-chemistry) (the chemistry-application component of
-Qiskit Aqua).
+built) and Qiskit Chemistry (the chemistry-application component of Qiskit Aqua).
 
 The following user interfaces are currently included in this repository:
 1. A command-line interface for Qiskit Aqua

@@ -45,11 +45,6 @@ before_install:
   - unzip /tmp/qiskit-aqua.zip -d /tmp/
   # Install local Qiskit Aqua
   - pip install -e /tmp/qiskit-aqua-$DEPENDENCY_BRANCH --progress-bar off
-  # download Qiskit Chemistry and unzip it
-  - wget https://codeload.github.com/Qiskit/qiskit-chemistry/zip/$DEPENDENCY_BRANCH -O /tmp/qiskit-chemistry.zip
-  - unzip /tmp/qiskit-chemistry.zip -d /tmp/
-  # Install local Qiskit Chemistry
-  - pip install -e /tmp/qiskit-chemistry-$DEPENDENCY_BRANCH --progress-bar off
    
 # Test 
 install:

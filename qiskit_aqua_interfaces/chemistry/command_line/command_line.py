@@ -73,16 +73,11 @@ def _run_algorithm_from_json(params, output_file):
 
 def _run():
     _check_extra_requires('console_scripts', 'qiskit_chemistry_cmd')
-    try:
-        from qiskit.chemistry import run_experiment, run_driver_to_json
-        from qiskit.chemistry._logging import (get_logging_level,
-                                               build_logging_config,
-                                               set_logging_config,
-                                               set_qiskit_chemistry_logging)
-    except ImportError:
-        print('Please install qiskit-chemistry before running.')
-        return
-
+    from qiskit.chemistry import run_experiment, run_driver_to_json
+    from qiskit.chemistry._logging import (get_logging_level,
+                                           build_logging_config,
+                                           set_logging_config,
+                                           set_qiskit_chemistry_logging)
     preferences = UIPreferences()
     log_levels = OrderedDict(
         [(logging.getLevelName(logging.CRITICAL).lower(), logging.CRITICAL),
