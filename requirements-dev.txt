@@ -1,4 +1,3 @@
-qiskit-chemistry>=0.5.1
 discover
 parameterized
 pycodestyle

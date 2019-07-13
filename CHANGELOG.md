@@ -29,6 +29,7 @@ Changed
 
 - Handle single value with different schema types, like array and integer
 - Improve PEP8 conformance
+- Remove qiskit-chemistry library dependency
 
 Fixed
 -----

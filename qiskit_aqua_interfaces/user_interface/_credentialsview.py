@@ -238,10 +238,11 @@ class HGPEntryDialog(Dialog):
                   text="Hub/Group/Project:",
                   borderwidth=0).grid(padx=7, pady=6, row=0)
         self._hgp = options['values']
+        hgp = ['{}/{}/{}'.format(hgp[0], hgp[1], hgp[2]) for hgp in self._hgp]
         self.entry = ttk.Combobox(parent,
                                   exportselection=0,
                                   state='readonly',
-                                  values=self._hgp)
+                                  values=hgp)
         self.entry.current(0)
         self.entry.grid(padx=(0, 7), pady=6, row=0, column=1)
         return self.entry  # initial focus

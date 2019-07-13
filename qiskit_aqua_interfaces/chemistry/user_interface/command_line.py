@@ -20,6 +20,7 @@ import tkinter as tk
 from tkinter import messagebox
 from qiskit_aqua_interfaces.user_interface import MainView
 from qiskit_aqua_interfaces._extras_require import _check_extra_requires
+from ._chemguiprovider import ChemistryGUIProvider
 
 
 def set_preferences_logging():
@@ -27,7 +28,6 @@ def set_preferences_logging():
     from qiskit.chemistry._logging import (get_logging_level,
                                            build_logging_config,
                                            set_logging_config)
-    from ._chemguiprovider import ChemistryGUIProvider
     guiprovider = ChemistryGUIProvider()
     preferences = guiprovider.create_uipreferences()
     logging_level = logging.INFO
@@ -43,12 +43,7 @@ def main():
     """Runs main Chemistry user interface."""
     _check_extra_requires('gui_scripts', 'qiskit_chemistry_ui')
     error_msg = None
-    guiprovider = None
-    try:
-        from ._chemguiprovider import ChemistryGUIProvider
-        guiprovider = ChemistryGUIProvider()
-    except ImportError:
-        error_msg = 'Please install qiskit-chemistry before running.'
+    guiprovider = ChemistryGUIProvider()
 
     if sys.platform == 'darwin' and guiprovider is not None:
         # pylint: disable=no-name-in-module, import-error

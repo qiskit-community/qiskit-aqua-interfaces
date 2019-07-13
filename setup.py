@@ -16,8 +16,7 @@ import setuptools
 import os
 
 long_description = """Qiskit Aqua Interfaces, a set of user-interface components for
- <a href="https://github.com/Qiskit/qiskit-aqua" rel=nofollow>Qiskit Aqua</a> and
- <a href="https://github.com/Qiskit/qiskit-chemistry" rel=nofollow>Qiskit Chemistry</a>."""
+ <a href="https://github.com/Qiskit/qiskit-aqua" rel=nofollow>Qiskit Aqua</a>."""
 
 requirements = [
     "qiskit-aqua>=0.5.3",
@@ -35,7 +34,7 @@ setuptools.setup(
     description='Qiskit Aqua Interfaces',
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url='https://github.com/Qiskit/qiskit-aqua-uis',
+    url='https://github.com/Qiskit/qiskit_aqua_interfaces',
     author='Qiskit Aqua Development Team',
     author_email='qiskit@us.ibm.com',
     license='Apache-2.0',
@@ -56,18 +55,15 @@ setuptools.setup(
     install_requires=requirements,
     include_package_data=True,
     python_requires=">=3.5",
-    extras_require={
-        'qiskit_chemistry': ['qiskit-chemistry>=0.5.1']
-    },
     entry_points={
         'console_scripts': [
                 'qiskit_aqua_cmd=qiskit_aqua_interfaces.aqua.command_line.command_line:main',
-                'qiskit_chemistry_cmd=qiskit_aqua_interfaces.chemistry.command_line.command_line:main [qiskit_chemistry]'
+                'qiskit_chemistry_cmd=qiskit_aqua_interfaces.chemistry.command_line.command_line:main'
         ],
         'gui_scripts': [
                 'qiskit_aqua_ui=qiskit_aqua_interfaces.aqua.user_interface.command_line:main',
                 'qiskit_aqua_browser=qiskit_aqua_interfaces.aqua.browser.command_line:main',
-                'qiskit_chemistry_ui=qiskit_aqua_interfaces.chemistry.user_interface.command_line:main [qiskit_chemistry]'
+                'qiskit_chemistry_ui=qiskit_aqua_interfaces.chemistry.user_interface.command_line:main'
         ]
     }
 )
