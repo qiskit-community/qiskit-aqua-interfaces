@@ -1,6 +1,10 @@
-# qiskit-aqua-interfaces
+# Qiskit Aqua Interfaces
 [Qiskit](https://github.com/Qiskit/qiskit) is an open-source framework for working with noisy intermediate-scale quantum
 (NISQ) computers at the level of pulses, circuits, algorithms, and applications.
+
+## Note
+As of July 12, 2019 Qiskit Chemistry has been merged into Qiskit Aqua, and all the code of the [Qiskit Chemistry repository](https://github.com/Qiskit/qiskit-chemistry) has been integrated into the [Qiskit Aqua](https://github.com/Qiskit/qiskit-aqua) repository.  This change has impacted the dependencies of [Qiskit Aqua Intefaces](https://github.com/Qiskit/qiskit-aqua-interfaces).  Follow the instructions in the [Qiskit Chemistry README file](https://github.com/Qiskit/qiskit-chemistry/blob/master/README.md).
+</aside>
 
 Qiskit is made up elements that work together to enable quantum computing. This repository contains **Qiskit Aqua Interfaces**,
 a set of user-interface components for [Qiskit Aqua](https://github.com/Qiskit/qiskit-aqua) (the element of Qiskit consisting
