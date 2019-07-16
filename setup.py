@@ -19,7 +19,7 @@ long_description = """Qiskit Aqua Interfaces, a set of user-interface components
  <a href="https://github.com/Qiskit/qiskit-aqua" rel=nofollow>Qiskit Aqua</a>."""
 
 requirements = [
-    "qiskit-aqua>=0.5.3",
+    "qiskit-aqua>=0.5.4",
     "pyobjc-core; sys_platform == 'darwin'",
     "pyobjc-framework-Cocoa; sys_platform == 'darwin'"
 ]
