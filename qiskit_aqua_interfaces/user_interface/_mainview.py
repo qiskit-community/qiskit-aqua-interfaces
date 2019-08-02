@@ -173,7 +173,6 @@ class MainView(ttk.Frame):
     def _create_pane(self):
         label_font = font.nametofont('TkHeadingFont').copy()
         label_font.configure(size=12, weight='bold')
-        ttk.Style().configure('TLabel', borderwidth=1, relief='solid')
         style = ttk.Style()
         style.configure('Title.TLabel',
                         borderwidth=0,
