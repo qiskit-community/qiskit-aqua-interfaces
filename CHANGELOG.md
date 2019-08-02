@@ -22,20 +22,21 @@ Changelog](http://keepachangelog.com/en/1.0.0/).
 Added
 -----
 
-- IBMQ v2 support
+-   IBMQ v2 support
+-   More Information on About box.
 
 Changed
 -------
 
-- Handle single value with different schema types, like array and integer
-- Improve PEP8 conformance
-- Remove qiskit-chemistry library dependency
+-   Handle single value with different schema types, like array and integer
+-   Improve PEP8 conformance
+-   Remove qiskit-chemistry library dependency
 
 Fixed
 -----
 
-- Refresh sections panel when removing a section
-- On MacOSX avoid possible matplotlib error in case it is imported by other imported libraries
+-   Refresh sections panel when removing a section
+-   On MacOSX avoid possible matplotlib error in case it is imported by other imported libraries
 
 
 [0.1.0](https://github.com/Qiskit/qiskit-aqua-interfaces/compare/b1d21f0...0.1.0) - 2019-05-02
@@ -44,12 +45,12 @@ Fixed
 Added
 -----
 
-- Moved Aqua GUI and command line to this repository
-- Moved Chemistry GUI and command line to this repository
+-   Moved Aqua GUI and command line to this repository
+-   Moved Chemistry GUI and command line to this repository
 
 Changed
 -------
 
-- Changed package name to dashes in setup.py.
-- Updated qiskit minimum version in setup.py.
-- Fixed links in readme.me.
+-   Changed package name to dashes in setup.py.
+-   Updated qiskit minimum version in setup.py.
+-   Fixed links in readme.me.
