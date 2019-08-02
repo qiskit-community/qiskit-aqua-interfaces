@@ -22,6 +22,7 @@ import tkinter.filedialog as tkfd
 from tkinter import font
 import webbrowser
 import os
+from qiskit_aqua_interfaces import __version__
 from ._sectionsview import SectionsView
 from ._sectiontextview import SectionTextView
 from ._threadsafeoutputview import ThreadSafeOutputView
@@ -43,7 +44,11 @@ class MainView(ttk.Frame):
             parent.protocol('WM_DELETE_WINDOW', self.quit)
 
     def _show_about_dialog(self):
-        tkmb.showinfo(message='{} {}'.format(self._guiprovider.title, self._guiprovider.version))
+        import qiskit.aqua as qa
+        lines = ['Qiskit Aqua Interfaces {}'.format(__version__),
+                 '',
+                 'Qiskit Aqua {}'.format(qa.__version__)]
+        tkmb.showinfo(self._guiprovider.title, message='\n'.join(lines))
 
     def _show_preferences(self):
         dialog = PreferencesDialog(self, self._guiprovider)

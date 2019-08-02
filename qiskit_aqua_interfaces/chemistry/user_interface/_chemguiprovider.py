@@ -21,7 +21,6 @@ from tkinter import messagebox
 import os
 import json
 import pprint
-from qiskit_aqua_interfaces import __version__
 from qiskit_aqua_interfaces.user_interface import GUIProvider
 from ._uipreferences import UIPreferences
 from ._chemsectionpropertiesview import ChemSectionPropertiesView
@@ -49,11 +48,6 @@ class ChemistryGUIProvider(GUIProvider):
     def title(self):
         """Return provider title."""
         return 'Qiskit Chemistry'
-
-    @property
-    def version(self):
-        """Return provider version."""
-        return __version__
 
     @property
     def help_hyperlink(self):

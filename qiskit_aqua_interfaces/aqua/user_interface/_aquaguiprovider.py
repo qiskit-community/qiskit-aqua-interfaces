@@ -14,7 +14,6 @@
 
 """Aqua User Interface Provider"""
 
-from qiskit_aqua_interfaces import __version__
 from qiskit_aqua_interfaces.user_interface import GUIProvider, SectionPropertiesView
 from ._uipreferences import UIPreferences
 from ._aquathread import AquaThread
@@ -32,11 +31,6 @@ class AquaGUIProvider(GUIProvider):
     def title(self):
         """Return provider title."""
         return 'Qiskit Aqua'
-
-    @property
-    def version(self):
-        """Return provider version."""
-        return __version__
 
     @property
     def help_hyperlink(self):

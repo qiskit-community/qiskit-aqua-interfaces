@@ -43,7 +43,11 @@ class MainView(ttk.Frame):
             parent.protocol('WM_DELETE_WINDOW', self.quit)
 
     def _show_about_dialog(self):
-        tkmb.showinfo(message='Qiskit Aqua Browser {}'.format(__version__))
+        import qiskit.aqua as qa
+        lines = ['Qiskit Aqua Interfaces {}'.format(__version__),
+                 '',
+                 'Qiskit Aqua {}'.format(qa.__version__)]
+        tkmb.showinfo('Qiskit Aqua Browser', message='\n'.join(lines))
 
     def _create_widgets(self):
         self._make_menubar()

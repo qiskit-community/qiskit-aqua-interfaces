@@ -34,12 +34,6 @@ class GUIProvider(ABC):
 
     @property
     @abstractmethod
-    def version(self):
-        """Return provider version."""
-        pass
-
-    @property
-    @abstractmethod
     def help_hyperlink(self):
         """Return provider help hyperlink."""
         pass
