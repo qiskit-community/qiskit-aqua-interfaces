@@ -44,9 +44,12 @@ class MainView(ttk.Frame):
 
     def _show_about_dialog(self):
         import qiskit.aqua as qa
-        lines = ['Qiskit Aqua Interfaces {}'.format(__version__),
+        lines = ['Qiskit Aqua Interfaces',
+                 'Version: {}'.format(__version__),
                  '',
-                 'Qiskit Aqua {}'.format(qa.__version__)]
+                 'Qiskit Aqua',
+                 'Version: {}'.format(qa.__version__),
+                 ]
         tkmb.showinfo('Qiskit Aqua Browser', message='\n'.join(lines))
 
     def _create_widgets(self):
