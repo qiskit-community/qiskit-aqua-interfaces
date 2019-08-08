@@ -52,7 +52,7 @@ class TestAquaModel(QiskitAquaUisTestCase):
     def test_get_property_default_values(self):
         """Test if model has correct default values."""
         modes = self._model.get_property_default_values('algorithm', 'operator_mode')
-        self.assertEqual(modes, ['matrix', 'paulis', 'grouped_paulis'])
+        self.assertEqual(modes, ['matrix', 'paulis', 'grouped_paulis', None])
 
     def test_section_is_text(self):
         """Test if model has correct text section."""
@@ -128,7 +128,7 @@ class TestAquaModel(QiskitAquaUisTestCase):
     def test_get_property_types(self):
         """Test if model can access property types."""
         types = self._model.get_property_types('algorithm', 'operator_mode')
-        self.assertEqual(types, ['string'])
+        self.assertEqual(types, ['string', 'null'])
 
     def test_set_section_property(self):
         """Test if model can update property."""
