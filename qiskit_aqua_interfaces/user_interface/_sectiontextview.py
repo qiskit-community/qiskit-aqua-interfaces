@@ -22,7 +22,7 @@ _LINESEP = '\n'
 
 
 class SectionTextView(ToolbarView):
-
+    """ Section Text View """
     def __init__(self, controller, parent, **options):
         super(SectionTextView, self).__init__(parent, **options)
         self._controller = controller
@@ -35,13 +35,16 @@ class SectionTextView(ToolbarView):
 
     @property
     def section_name(self):
+        """ get section name """
         return self._section_name
 
     @section_name.setter
     def section_name(self, new_section_name):
+        """ set section name """
         self._section_name = new_section_name
 
     def populate(self, text):
+        """ populate text """
         self._text_widget.delete(1.0, tk.END)
         if text is not None:
             self._text_widget.insert(tk.END, text)
@@ -49,6 +52,7 @@ class SectionTextView(ToolbarView):
         self._text = text
 
     def clear(self):
+        """ clear text """
         self._text_widget.delete(1.0, tk.END)
         self._text = self._text_widget.get(1.0, tk.END)
 

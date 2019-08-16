@@ -23,7 +23,7 @@ from ._credentialsview import CredentialsView
 
 
 class PreferencesDialog(Dialog):
-
+    """ Preferences Dialog """
     log_levels = OrderedDict(
         [(logging.CRITICAL, logging.getLevelName(logging.CRITICAL)),
          (logging.ERROR, logging.getLevelName(logging.ERROR)),
@@ -137,7 +137,7 @@ class PreferencesDialog(Dialog):
                 preferences.save()
 
             self._controller.model.get_available_providers()
-        except Exception as ex:
+        except Exception as ex:  # pylint: disable=broad-except
             self.controller.outputview.write_line(str(ex))
 
     def do_cancel(self):

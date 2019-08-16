@@ -30,13 +30,14 @@ logger = logging.getLogger(__name__)
 
 
 def exception_to_string(excp):
+    """ exception string formatter """
     stack = traceback.extract_stack()[:-3] + traceback.extract_tb(excp.__traceback__)
     pretty = traceback.format_list(stack)
     return ''.join(pretty) + '\n  {} {}'.format(excp.__class__, excp)
 
 
 class ChemistryThread(threading.Thread):
-
+    """ Chemistry Thread """
     def __init__(self, model, output, queue, filename):
         super(ChemistryThread, self).__init__(name='Chemistry run thread')
         self.model = model
@@ -46,6 +47,7 @@ class ChemistryThread(threading.Thread):
         self._popen = None
 
     def stop(self):
+        """ stop thread """
         self._output = None
         self._thread_queue = None
         if self._popen is not None:
@@ -59,7 +61,7 @@ class ChemistryThread(threading.Thread):
             for proc in process.children(recursive=True):
                 proc.kill()
             process.kill()
-        except Exception as ex:
+        except Exception as ex:  # pylint: disable=broad-except
             if self._output is not None:
                 self._output.write_line(
                     'Process kill has failed: {}'.format(str(ex)))
@@ -137,7 +139,7 @@ class ChemistryThread(threading.Thread):
 
             self._popen.stdout.close()
             self._popen.wait()
-        except Exception as ex:
+        except Exception as ex:  # pylint: disable=broad-except
             if self._output is not None:
                 self._output.write('Process has failed: {}'.format(exception_to_string(ex)))
         finally:

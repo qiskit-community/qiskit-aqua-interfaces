@@ -21,7 +21,7 @@ from ._customwidgets import PropertyComboDialog, PropertyEntryDialog, TextPopup
 
 
 class SectionPropertiesView(ToolbarView):
-
+    """ Section Properties View """
     def __init__(self, controller, parent, **options):
         super(SectionPropertiesView, self).__init__(parent, **options)
         self._controller = controller
@@ -39,13 +39,16 @@ class SectionPropertiesView(ToolbarView):
 
     @property
     def section_name(self):
+        """ get section name """
         return self._section_name
 
     @section_name.setter
     def section_name(self, new_section_name):
+        """ set section name """
         self._section_name = new_section_name
 
     def clear(self):
+        """ clear entries """
         if self._popup_widget is not None and self._popup_widget.winfo_exists():
             self._popup_widget.destroy()
 
@@ -56,6 +59,7 @@ class SectionPropertiesView(ToolbarView):
         self._properties = {}
 
     def populate(self, properties):
+        """ populate entries """
         self.clear()
         for name, value in properties.items():
             value = '' if value is None else str(value)
@@ -65,6 +69,7 @@ class SectionPropertiesView(ToolbarView):
         self._properties = properties
 
     def set_property(self, property_name, value):
+        """ set property """
         for item in self._tree.get_children():
             name = self._tree.item(item, "text")
             if name == property_name:
@@ -72,6 +77,7 @@ class SectionPropertiesView(ToolbarView):
                 break
 
     def has_selection(self):
+        """ check if entry is selected """
         return self._tree.selection()
 
     def _cb_tree_select(self, event):

@@ -24,7 +24,7 @@ from ._customwidgets import TextCustom
 
 
 class ThreadSafeOutputView(ScrollbarView):
-
+    """ Thread Safe Output View """
     _DELAY = 50
     _TOTAL_ITERATIONS = 120
     _FULL_BLOCK_CHAR = u'█'
@@ -56,12 +56,13 @@ class ThreadSafeOutputView(ScrollbarView):
                     self._write(str(line), False)
 
                 self.update_idletasks()
-        except Exception:
+        except Exception:  # pylint: disable=broad-except
             pass
 
         self.after(ThreadSafeOutputView._DELAY, self._update_text)
 
     def write(self, text):
+        """ write text """
         if text is None:
             return
 
@@ -91,9 +92,11 @@ class ThreadSafeOutputView(ScrollbarView):
             self._queue.put(text)
 
     def flush(self):
+        """ flush data """
         pass
 
     def buffer_empty(self):
+        """ check if buffer is emopty """
         return self._queue.empty()
 
     def clear_buffer(self):
@@ -101,9 +104,11 @@ class ThreadSafeOutputView(ScrollbarView):
         self._queue = queue.Queue()
 
     def write_line(self, text):
+        """ write a line """
         self.write(text + '\n')
 
     def clear(self):
+        """ clear queue """
         self._queue.put(None)
 
     def _write(self, text=None, erase=True):

@@ -23,8 +23,9 @@ logger = logging.getLogger(__name__)
 
 
 class Model(BaseModel):
-
+    """ Aqua Model """
     def new(self):
+        """ Create new model """
         from qiskit.aqua.parser._inputparser import InputParser
         uipreferences = UIPreferences()
         return super().new_model(InputParser,
@@ -32,6 +33,7 @@ class Model(BaseModel):
                                  uipreferences.get_populate_defaults(True))
 
     def load_file(self, filename):
+        """ load input file """
         from qiskit.aqua.parser._inputparser import InputParser
         uipreferences = UIPreferences()
         return super().load_model(filename, InputParser, uipreferences.get_populate_defaults(True))
@@ -56,6 +58,7 @@ class Model(BaseModel):
         return dict(default_properties) == dict(properties)
 
     def get_input_section_names(self):
+        """ get input section valid names """
         from qiskit.aqua.parser._inputparser import InputParser
         from qiskit.aqua import local_pluggables, PluggableType
         from qiskit.aqua.parser import JSONSchema

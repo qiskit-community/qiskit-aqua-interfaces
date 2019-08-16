@@ -20,7 +20,7 @@ from ._scrollbarview import ScrollbarView
 
 
 class SectionsView(ScrollbarView):
-
+    """ Aqua Browser Sections View """
     _TAG_PLUGGABLE_TYPE = 'PLUGGABLE_TYPE'
     _TAG_PLUGGABLE = 'PLUGGABLE'
     _TAG_PROBLEMS = 'PROBLEMS'
@@ -37,10 +37,12 @@ class SectionsView(ScrollbarView):
         self.init_widgets(self._tree)
 
     def clear(self):
+        """ clear view """
         for i in self._tree.get_children():
             self._tree.delete([i])
 
     def populate(self, algos):
+        """ populate view with pluggables  """
         self.clear()
         root_identifier = None
         for pluggable_type, section_types in algos.items():
@@ -90,6 +92,7 @@ class SectionsView(ScrollbarView):
             self._tree.see(root_identifier)
 
     def has_selection(self):
+        """ check if an entry is selected """
         return self._tree.selection()
 
     def _cb_tree_select(self, event):

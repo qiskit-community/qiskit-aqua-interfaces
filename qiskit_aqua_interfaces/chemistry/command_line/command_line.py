@@ -131,7 +131,7 @@ def _run():
     try:
         with open(args.input) as json_file:
             params = json.load(json_file)
-    except Exception:
+    except Exception:  # pylint: disable=broad-except
         pass
 
     if params is not None:

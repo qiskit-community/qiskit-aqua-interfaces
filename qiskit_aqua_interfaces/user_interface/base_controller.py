@@ -121,17 +121,21 @@ class BaseController(ABC):
 
     @property
     def outputview(self):
+        """ return output view """
         return self._outputview
 
     @outputview.setter
     def outputview(self, outputview):
+        """ set output view """
         self._outputview = outputview
 
     @property
     def model(self):
+        """ return model """
         return self._model
 
     def new_input(self):
+        """ load new input data """
         ret = True
         try:
             self.stop()
@@ -152,7 +156,7 @@ class BaseController(ABC):
             self._start_button.state(['!disabled'])
             missing = self.get_sections_names_missing()
             self._sections_view.show_add_button(bool(missing))
-        except Exception as ex:
+        except Exception as ex:  # pylint: disable=broad-except
             self.outputview.clear()
             self.outputview.write_line(str(ex))
             ret = False
@@ -160,6 +164,7 @@ class BaseController(ABC):
         return ret
 
     def open_file(self, filename):
+        """ open file """
         ret = True
         try:
             self.stop()
@@ -176,7 +181,7 @@ class BaseController(ABC):
             self._empty_view.tkraise()
             try:
                 self.model.load_file(filename)
-            except Exception as ex:
+            except Exception as ex:  # pylint: disable=broad-except
                 messagebox.showerror("Error", str(ex))
                 ret = False
 
@@ -186,7 +191,7 @@ class BaseController(ABC):
             self._start_button.state(['!disabled'])
             missing = self.get_sections_names_missing()
             self._sections_view.show_add_button(bool(missing))
-        except Exception as ex:
+        except Exception as ex:  # pylint: disable=broad-except
             self.outputview.clear()
             self.outputview.write_line(str(ex))
             ret = False
@@ -194,9 +199,11 @@ class BaseController(ABC):
         return ret
 
     def is_empty(self):
+        """ check if is empty """
         return self.model.is_empty()
 
     def save_file(self):
+        """ save file """
         filename = self.model.get_filename()
         if not filename:
             self.outputview.write_line("No file to save.")
@@ -206,32 +213,36 @@ class BaseController(ABC):
             self.model.save_to_file(filename)
             self.outputview.write_line("Saved file: {}".format(filename))
             return True
-        except Exception as ex:
+        except Exception as ex:  # pylint: disable=broad-except
             messagebox.showerror("Error", str(ex))
 
         return False
 
     def save_file_as(self, filename):
+        """ save file to a different path """
         try:
             self.model.save_to_file(filename)
             self.open_file(filename)
             return True
-        except Exception as ex:
+        except Exception as ex:  # pylint: disable=broad-except
             messagebox.showerror("Error", str(ex))
 
         return False
 
     @abstractmethod
     def cb_section_select(self, section_name):
+        """ select section callback """
         pass
 
     def cb_property_select(self, section_name, property_name):
+        """ prpperty selevtion callback """
         from qiskit.aqua.parser import JSONSchema
         _show_remove = property_name not in (JSONSchema.PROVIDER, JSONSchema.NAME) \
             if section_name == JSONSchema.BACKEND else property_name != JSONSchema.NAME
         self._properties_view.show_remove_button(_show_remove)
 
     def cb_section_add(self, section_name):
+        """ add section callback """
         try:
             if section_name is None:
                 section_name = ''
@@ -242,22 +253,24 @@ class BaseController(ABC):
             self.model.set_section(section_name)
             missing = self.get_sections_names_missing()
             self._sections_view.show_add_button(bool(missing))
-        except Exception as ex:
+        except Exception as ex:  # pylint: disable=broad-except
             messagebox.showerror("Error", str(ex))
             return False
 
         return True
 
     def validate_section_add(self, section_name):
+        """ validate add section """
         try:
             if section_name in self.model.get_section_names():
                 return'Duplicate section name'
-        except Exception as ex:
+        except Exception as ex:  # pylint: disable=broad-except
             return str(ex)
 
         return None
 
     def cb_section_remove(self, section_name):
+        """ remove section callback """
         try:
             self._sections_view.show_remove_button(False)
             self.model.delete_section(section_name)
@@ -267,7 +280,7 @@ class BaseController(ABC):
             self._properties_view.clear()
             self._text_view.clear()
             self._empty_view.tkraise()
-        except Exception as ex:
+        except Exception as ex:  # pylint: disable=broad-except
             messagebox.showerror("Error", str(ex))
             return False
 
@@ -275,17 +288,20 @@ class BaseController(ABC):
 
     @abstractmethod
     def cb_section_defaults(self, section_name):
+        """ section defaults callback """
         pass
 
     def get_sections_names_missing(self):
+        """ get missing section names """
         try:
             section_names = self.model.get_section_names()
             default_sections = self.model.get_default_sections()
             return list(set(default_sections.keys()) - set(section_names))
-        except Exception as ex:
+        except Exception as ex:  # pylint: disable=broad-except
             self.outputview.write_line(str(ex))
 
     def get_property_names_missing(self, section_name):
+        """ get missing property names """
         try:
             properties = self.model.get_section_properties(section_name)
             default_properties = self.model.get_section_default_properties(
@@ -293,10 +309,11 @@ class BaseController(ABC):
             if default_properties is None:
                 return None
             return list(set(default_properties.keys()) - set(properties.keys()))
-        except Exception as ex:
+        except Exception as ex:  # pylint: disable=broad-except
             self.outputview.write_line(str(ex))
 
     def shows_add_button(self, section_name):
+        """ check if it should show add button """
         if self.model.allows_additional_properties(section_name):
             return True
 
@@ -304,46 +321,52 @@ class BaseController(ABC):
         return missing
 
     def on_property_add(self, section_name, property_name):
+        """ property add callback """
         try:
             return self.cb_property_set(section_name,
                                         property_name,
                                         self.model.get_property_default_value(section_name,
                                                                               property_name))
-        except Exception as ex:
+        except Exception as ex:  # pylint: disable=broad-except
             messagebox.showerror("Error", str(ex))
 
         return False
 
     @abstractmethod
     def cb_property_set(self, section_name, property_name, value):
+        """ property set callback """
         pass
 
     def validate_property_add(self, section_name, property_name):
+        """ validate add property """
         try:
             value = self.model.get_section_property(section_name, property_name)
             if value is not None:
                 return 'Duplicate property name'
-        except Exception as ex:
+        except Exception as ex:  # pylint: disable=broad-except
             return str(ex)
 
         return None
 
     @abstractmethod
     def cb_section_property_remove(self, section_name, property_name):
+        """ section property remove callback """
         pass
 
     def cb_text_set(self, section_name, value):
+        """ set text callback """
         try:
             self.model.set_section_text(section_name, value)
             self._text_view.show_defaults_button(
                 not self.model.default_properties_equals_properties(section_name))
-        except Exception as ex:
+        except Exception as ex:  # pylint: disable=broad-except
             self.outputview.write_line(str(ex))
             return False
 
         return True
 
     def get_combobox_parameters(self, section_name, property_name):
+        """ get combobox paramaters """
         from qiskit.aqua.parser import JSONSchema
         values = None
         types = ['string']
@@ -368,6 +391,7 @@ class BaseController(ABC):
         return combobox_state, types, values
 
     def create_popup(self, section_name, property_name, parent, value):
+        """ shows popup """
         combobox_state, types, values = self.get_combobox_parameters(section_name, property_name)
 
         if values is not None:
@@ -397,7 +421,7 @@ class BaseController(ABC):
 
                 if isinstance(value, (dict, list)):
                     value = json.dumps(value, sort_keys=True, indent=4)
-            except Exception:
+            except Exception:  # pylint: disable=broad-except
                 pass
         elif 'number' in types or 'integer' in types:
             vcmd = self._validate_integer_command if \
@@ -423,6 +447,7 @@ class BaseController(ABC):
         return widget
 
     def toggle(self):
+        """ toggle between start/stop """
         if self.model.is_empty():
             self.outputview.write_line("Missing Input")
             return
@@ -448,7 +473,7 @@ class BaseController(ABC):
                     self._filemenu.entryconfig(2, state='normal')
             else:
                 self.stop()
-        except Exception as ex:
+        except Exception as ex:  # pylint: disable=broad-except
             self._thread = None
             self._thread_queue.put(None)
             self.outputview.write_line("Failure: {}".format(str(ex)))
@@ -458,6 +483,7 @@ class BaseController(ABC):
             self._filemenu.entryconfig(2, state='normal')
 
     def stop(self):
+        """ stop start thread """
         if self._thread is not None:
             stopthread = threading.Thread(target=BaseController._stop,
                                           args=(self._thread,),
@@ -474,7 +500,7 @@ class BaseController(ABC):
         try:
             if thread is not None:
                 thread.stop()
-        except Exception:
+        except Exception:  # pylint: disable=broad-except
             pass
 
     def _process_thread_queue(self):
@@ -506,7 +532,7 @@ class BaseController(ABC):
                     return
 
             self._view.update_idletasks()
-        except Exception:
+        except Exception:  # pylint: disable=broad-except
             pass
 
         self._view.after(100, self._process_thread_queue)
