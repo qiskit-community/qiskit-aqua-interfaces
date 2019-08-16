@@ -20,7 +20,7 @@ from ._scrollbarview import ScrollbarView
 
 
 class ToolbarView(ScrollbarView):
-
+    """ Toolbar View """
     def __init__(self, parent, **options):
         super(ToolbarView, self).__init__(parent, **options)
         self._child = None
@@ -51,21 +51,26 @@ class ToolbarView(ScrollbarView):
                                            command=self.cb_defaults)
 
     def cb_add(self):
+        """ add callback """
         pass
 
     def cb_remove(self):
+        """ remove callback """
         pass
 
     def cb_defaults(self):
+        """ defaults callback """
         pass
 
     def get_toolbar_size(self):
+        """ get size """
         if self._toolbar is None:
             return (0, 0)
 
         return (self._toolbar.winfo_width(), self._toolbar.winfo_height())
 
     def pack(self, **options):
+        """ pack layout """
         if self._toolbar is not None:
             self._toolbar.pack(side=tk.BOTTOM, fill=tk.X)
             self._add_button.pack(side=tk.LEFT)
@@ -75,6 +80,7 @@ class ToolbarView(ScrollbarView):
         ScrollbarView.pack(self, **options)
 
     def grid(self, **options):
+        """ grid layout """
         if self._toolbar is not None:
             self._toolbar.pack(side=tk.BOTTOM, fill=tk.X)
             self._add_button.pack(side=tk.LEFT)
@@ -84,6 +90,7 @@ class ToolbarView(ScrollbarView):
         ScrollbarView.grid(self, **options)
 
     def show_add_button(self, show):
+        """ show/hide add button """
         self._add_button_shown = show
         if show:
             if self._remove_button_shown:
@@ -95,6 +102,7 @@ class ToolbarView(ScrollbarView):
             self._add_button.pack_forget()
 
     def show_remove_button(self, show):
+        """ show/hide remove button """
         self._remove_button_shown = show
         if show:
             self._remove_button.pack(side=tk.LEFT)
@@ -102,6 +110,7 @@ class ToolbarView(ScrollbarView):
             self._remove_button.pack_forget()
 
     def show_defaults_button(self, show):
+        """ show/hide defaults button """
         self._defaults_button_shown = show
         if show:
             self._defaults_button.pack(side=tk.RIGHT)

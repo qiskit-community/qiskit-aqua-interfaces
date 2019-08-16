@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 
 
 class CredentialsView(ttk.Frame):
-
+    """ Credentials View """
     _START, _STOP = 'Start', 'Stop'
 
     def __init__(self, parent, **options):
@@ -113,6 +113,7 @@ class CredentialsView(ttk.Frame):
         self.initial_focus = self._token_entry
 
     def cb_chose(self):
+        """ chose Hub/Group/Project callback """
         try:
             self._chose_button.state(['disabled'])
             self.after(100, self._process_thread_queue)
@@ -122,16 +123,18 @@ class CredentialsView(ttk.Frame):
                                      self._thread_queue)
             self._thread.daemon = True
             self._thread.start()
-        except Exception as ex:
+        except Exception as ex:  # pylint: disable=broad-except
             self._thread = None
             self._thread_queue.put(None)
             self._chose_button.state(['!disabled'])
             logger.debug('Failed to access hub/group/project: %s', ex)
 
     def is_valid(self):
+        """ check is entries are valid """
         return self._proxiespage.is_valid()
 
     def validate(self):
+        """ validate entries """
         if not self._proxiespage.is_valid():
             self.initial_focus = self._proxiespage.initial_focus
             return False
@@ -140,6 +143,7 @@ class CredentialsView(ttk.Frame):
         return True
 
     def do_cancel(self):
+        """ cancel dialog """
         self._stop()
 
     @staticmethod
@@ -151,6 +155,7 @@ class CredentialsView(ttk.Frame):
         return value
 
     def apply(self, preferences):
+        """ save changes """
         self._stop()
         # save previously shown data
         preferences.ibmq_credentials_preferences.hub = CredentialsView._get_var_value(self._hub)
@@ -176,7 +181,7 @@ class CredentialsView(ttk.Frame):
             token = urllib.parse.urlparse(url)
             if not all([getattr(token, attr) for attr in min_attributes]):
                 valid = False
-        except Exception:
+        except Exception:  # pylint: disable=broad-except
             valid = False
 
         return valid
@@ -209,7 +214,7 @@ class CredentialsView(ttk.Frame):
                 return
 
             self.update_idletasks()
-        except Exception:
+        except Exception:  # pylint: disable=broad-except
             pass
 
         self.after(100, self._process_thread_queue)
@@ -228,7 +233,7 @@ class CredentialsView(ttk.Frame):
 
 
 class HGPEntryDialog(Dialog):
-
+    """ Hub/Group/Project Entry Dialog """
     def __init__(self, parent):
         super(HGPEntryDialog, self).__init__(None, parent, "Chose Hub/Group/Project")
         self._hgp = []
@@ -254,7 +259,7 @@ class HGPEntryDialog(Dialog):
 
 
 class HGPThread(threading.Thread):
-
+    """ Hub/Group/Project Thread """
     def __init__(self, token, proxies, thread_queue):
         super(HGPThread, self).__init__(name='Hub/Group/Project thread')
         self._token = token
@@ -264,9 +269,11 @@ class HGPThread(threading.Thread):
 
     @property
     def hgp(self):
+        """ return hub/group/project """
         return self._hgp
 
     def run(self):
+        """ h/g/p thread process """
         try:
             self._hgp = []
             if self._thread_queue is not None:
@@ -281,7 +288,7 @@ class HGPThread(threading.Thread):
                     self._hgp.append((provider.credentials.hub,
                                       provider.credentials.group,
                                       provider.credentials.project))
-        except Exception as ex:
+        except Exception as ex:  # pylint: disable=broad-except
             logger.warning('IBMQ account Account Failure. Proxies:%s :%s', self._proxies, ex)
         finally:
             if self._thread_queue is not None:
@@ -289,7 +296,7 @@ class HGPThread(threading.Thread):
 
 
 class ProxiesPage(ToolbarView):
-
+    """ Proxies Page View """
     def __init__(self, parent, preferences, **options):
         super(ProxiesPage, self).__init__(parent, **options)
         size = font.nametofont('TkHeadingFont').actual('size')
@@ -311,6 +318,7 @@ class ProxiesPage(ToolbarView):
         self.initial_focus = self._tree
 
     def enable(self, enable=True):
+        """ enable/disable proxy page """
         if enable and "disabled" in self._tree.state():
             self._tree.state(("!disabled",))
             self.show_add_button(True)
@@ -323,6 +331,7 @@ class ProxiesPage(ToolbarView):
             self.show_remove_button(False)
 
     def clear(self):
+        """ clear proxies """
         if self._popup_widget is not None and self._popup_widget.winfo_exists():
             self._popup_widget.destroy()
 
@@ -331,6 +340,7 @@ class ProxiesPage(ToolbarView):
             self._tree.delete([i])
 
     def populate(self):
+        """ populate proxies """
         self.clear()
         for protocol, url in self._proxy_urls.items():
             url = '' if url is None else str(url)
@@ -338,12 +348,14 @@ class ProxiesPage(ToolbarView):
             self._tree.insert('', tk.END, text=protocol, values=[url])
 
     def set_proxy(self, protocol, url):
+        """ update a proxy """
         for item in self._tree.get_children():
             if self._tree.item(item, "text") == protocol:
                 self._tree.item(item, values=[url])
                 break
 
     def has_selection(self):
+        """ check if proxy entry is selected """
         return self._tree.selection()
 
     def _cb_tree_select(self, event):
@@ -396,6 +408,7 @@ class ProxiesPage(ToolbarView):
             break
 
     def cb_proxy_set(self, protocol, url):
+        """ proxy set callback """
         protocol = protocol.strip()
         if not protocol:
             return False
@@ -410,17 +423,20 @@ class ProxiesPage(ToolbarView):
         return True
 
     def is_valid(self):
+        """ check if entries are valid """
         return True
 
     def validate(self):
+        """ validate entries """
         return True
 
     def apply(self, preferences):
+        """ save entries """
         preferences.set_proxy_urls(self._proxy_urls if self._proxy_urls else None)
 
 
 class URLPopup(EntryCustom):
-
+    """ URL Popup """
     def __init__(self, controller, protocol, parent, url, **options):
         # If relwidth is set, then width is ignored
         super(URLPopup, self).__init__(parent, **options)
@@ -433,6 +449,7 @@ class URLPopup(EntryCustom):
         self.bind("<FocusOut>", self._cb_update_value)
 
     def select_all(self):
+        """ select entry """
         self.focus_force()
         self.selection_range(0, tk.END)
 
@@ -449,7 +466,7 @@ class URLPopup(EntryCustom):
 
 
 class ProxyEntryDialog(Dialog):
-
+    """ Proxy Entry Dialog """
     def __init__(self, parent, controller):
         super(ProxyEntryDialog, self).__init__(None, parent, "New Proxy")
         self._protocol = None
@@ -457,6 +474,7 @@ class ProxyEntryDialog(Dialog):
         self._controller = controller
 
     def body(self, parent, options):
+        """ create body """
         ttk.Label(parent,
                   text="Protocol:",
                   borderwidth=0,
@@ -472,6 +490,7 @@ class ProxyEntryDialog(Dialog):
         return self._protocol  # initial focus
 
     def validate(self):
+        """ validate entries """
         protocol = self._protocol.get().strip()
         if not protocol or protocol in self._controller._proxy_urls:
             self.initial_focus = self._protocol
@@ -486,4 +505,5 @@ class ProxyEntryDialog(Dialog):
         return True
 
     def apply(self):
+        """ save entries """
         self.result = (self._protocol.get().strip(), self._url.get().strip())

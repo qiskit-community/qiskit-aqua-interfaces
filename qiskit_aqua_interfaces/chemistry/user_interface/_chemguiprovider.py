@@ -38,6 +38,7 @@ class ChemistryGUIProvider(GUIProvider):
 
     @property
     def save_algo_json(self):
+        """ get save algo json flag """
         if self._save_algo_json is None:
             self._save_algo_json = tk.IntVar()
             self._save_algo_json.set(0)
@@ -126,7 +127,7 @@ class ChemistryGUIProvider(GUIProvider):
             self.controller.view.clipboard_clear()
             self.controller.view.clipboard_append(value)
             self.controller.outputview.write_line("Exported to clibpoard.")
-        except Exception as ex:
+        except Exception as ex:  # pylint: disable=broad-except
             messagebox.showerror("Error", str(ex))
 
     def _export_dictionary_to_file(self):
@@ -144,5 +145,5 @@ class ChemistryGUIProvider(GUIProvider):
                 self.controller.outputview.write_line("Exported to file: {}".format(filename))
                 preferences.set_savefile_initialdir(os.path.dirname(filename))
                 preferences.save()
-            except Exception as ex:
+            except Exception as ex:  # pylint: disable=broad-except
                 messagebox.showerror("Error", str(ex))

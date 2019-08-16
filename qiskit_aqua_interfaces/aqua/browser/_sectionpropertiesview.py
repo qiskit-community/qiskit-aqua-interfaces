@@ -20,18 +20,20 @@ from ._scrollbarview import ScrollbarView
 
 
 class SectionPropertiesView(ScrollbarView):
-
+    """ Aqua Browser Section Properties View """
     def __init__(self, controller, parent, **options):
         super(SectionPropertiesView, self).__init__(parent, **options)
         self._controller = controller
         self._tree = None
 
     def clear(self):
+        """ clear sections """
         if self._tree is not None:
             for i in self._tree.get_children():
                 self._tree.delete([i])
 
     def populate(self, column_titles, properties):
+        """ populate sections """
         self.clear()
         ttk.Style().configure("BrowseSectionPropertiesView.Treeview.Heading",
                               font=(None, 12, 'bold'))

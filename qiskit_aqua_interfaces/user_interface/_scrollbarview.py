@@ -19,7 +19,7 @@ import tkinter.ttk as ttk
 
 
 class ScrollbarView(ttk.Frame):
-
+    """ Scrollbar View """
     def __init__(self, parent, **options):
         super(ScrollbarView, self).__init__(parent, **options)
         self._child = None
@@ -27,6 +27,7 @@ class ScrollbarView(ttk.Frame):
         self._vscrollbar = None
 
     def init_widgets(self, child):
+        """ initialize widgets """
         self._child = child
         self._hscrollbar = ttk.Scrollbar(self, orient=tk.HORIZONTAL)
         self._vscrollbar = ttk.Scrollbar(self, orient=tk.VERTICAL)
@@ -36,6 +37,7 @@ class ScrollbarView(ttk.Frame):
         self._hscrollbar.config(command=self._child.xview)
 
     def pack(self, **options):
+        """ pack layout """
         if self._hscrollbar is not None:
             self._hscrollbar.pack(side=tk.BOTTOM, fill=tk.X, expand=tk.FALSE)
 
@@ -48,6 +50,7 @@ class ScrollbarView(ttk.Frame):
         ttk.Frame.pack(self, **options)
 
     def grid(self, **options):
+        """ grid layout """
         if self._hscrollbar is not None:
             self._hscrollbar.pack(side=tk.BOTTOM, fill=tk.X, expand=tk.FALSE)
 

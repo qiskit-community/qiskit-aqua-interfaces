@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 
 class Controller:
-
+    """ Aqua Browser Controller """
     _NAME = 'name'
 
     def __init__(self, view):
@@ -36,23 +36,28 @@ class Controller:
 
     @property
     def model(self):
+        """ return model """
         if self._model is None:
             self._model = Model()
 
         return self._model
 
     def pluggable_names(self):
+        """ get pluggable names """
         return self.model.pluggable_names()
 
     def populate_sections(self):
+        """ populate sections """
         self._sections_view.populate(self.model.get_sections())
 
     def pluggable_type_select(self, pluggable_type):
+        """ select pluggable type """
         del pluggable_type
         self._sections_view_title.set('')
         self._empty_view.tkraise()
 
     def pluggable_schema_select(self, pluggable_type, pluggable_name):
+        """ select pluggable schema """
         self._sections_view_title.set(
             self.model.get_pluggable_description(pluggable_type, pluggable_name))
         properties = self.model.get_pluggable_schema_properties(pluggable_type, pluggable_name)
@@ -62,17 +67,20 @@ class Controller:
         self._properties_view.tkraise()
 
     def pluggable_problems_select(self, pluggable_type, pluggable_name):
+        """ select pluggable problems """
         problems = \
             self.model.get_pluggable_problems(pluggable_type, pluggable_name)
         self._properties_view.populate(['oneOf'], {'name': {'oneOf': problems}})
         self._properties_view.tkraise()
 
     def pluggable_depends_select(self, pluggable_type, pluggable_name):
+        """ select pluggable depends """
         self._sections_view_title.set(
             self.model.get_pluggable_description(pluggable_type, pluggable_name))
         self._empty_view.tkraise()
 
     def pluggable_dependency_select(self, pluggable_type, pluggable_name, dependency_type):
+        """ select pluggable dependency """
         dependency = \
             self.model.get_pluggable_dependency(pluggable_type, pluggable_name, dependency_type)
         default = dependency.get('default', {})

@@ -19,7 +19,7 @@ import tkinter.ttk as ttk
 
 
 class Dialog(tk.Toplevel):
-
+    """ Dialog """
     def __init__(self, controller, parent, title=''):
         super(Dialog, self).__init__(parent)
         self.transient(parent)
@@ -31,6 +31,7 @@ class Dialog(tk.Toplevel):
         self.entry = None
 
     def do_init(self, cancel_side=tk.RIGHT, **options):
+        """ initialize dialog """
         body = ttk.Frame(self)
         self.initial_focus = self.body(body, options)
         body.pack(fill=tk.BOTH, expand=tk.TRUE)
@@ -52,11 +53,13 @@ class Dialog(tk.Toplevel):
         self.geometry('+{}+{}'.format(x, y))
 
     def do_modal(self):
+        """ modal processing """
         self.initial_focus.focus_set()
         self.wait_window(self)
 
     @property
     def controller(self):
+        """ return controller """
         return self._controller
 
     def _buttonbox(self, cancel_side=tk.RIGHT):
@@ -90,15 +93,19 @@ class Dialog(tk.Toplevel):
         self.destroy()
 
     def body(self, parent, options):
+        """ populate body """
         del parent
         del options
         return self  # override
 
     def validate(self):
+        """ validate entries """
         return True  # override
 
     def apply(self):
+        """ save data """
         pass  # override
 
     def do_cancel(self):
+        """ cancel entries """
         pass  # override

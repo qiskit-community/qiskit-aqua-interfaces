@@ -19,7 +19,7 @@ import copy
 
 
 class Model:
-
+    """ Aqua Browser Model """
     def __init__(self):
         """Create Model object."""
         self._data_loaded = False
@@ -89,18 +89,22 @@ class Model:
             list(self._schema_property_titles[pluggable_type][pluggable_name].keys())
 
     def pluggable_names(self):
+        """ get all pluggable names """
         self._load_data()
         return list(self._sections.keys())
 
     def get_pluggable_description(self, pluggable_type, pluggable_name):
+        """ get pluggable description """
         self._load_data()
         return self._sections[pluggable_type][pluggable_name]['description']
 
     def get_pluggable_problems(self, pluggable_type, pluggable_name):
+        """ get pluggable problems """
         self._load_data()
         return self._sections[pluggable_type][pluggable_name]['problems']
 
     def get_pluggable_dependency(self, pluggable_type, pluggable_name, dependency_type):
+        """ get pluggable dependency """
         self._load_data()
         depends = self._sections[pluggable_type][pluggable_name]['depends']
         for dependency in depends:
@@ -110,13 +114,16 @@ class Model:
         return {}
 
     def get_pluggable_schema_property_titles(self, pluggable_type, pluggable_name):
+        """ get pluggable schema property titles """
         self._load_data()
         return self._schema_property_titles[pluggable_type][pluggable_name]
 
     def get_sections(self):
+        """ get sections """
         self._load_data()
         return self._sections
 
     def get_pluggable_schema_properties(self, pluggable_type, pluggable_name):
+        """ get pluggable schema properties """
         self._load_data()
         return self._sections[pluggable_type][pluggable_name]['properties']

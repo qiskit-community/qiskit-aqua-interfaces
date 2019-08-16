@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 
 
 class Controller(BaseController):
-
+    """ Chemistry Controller """
     def __init__(self, guiprovider):
         super().__init__(guiprovider, Model())
 
@@ -68,7 +68,7 @@ class Controller(BaseController):
 
             self.cb_section_select(section_name)
             return True
-        except Exception as ex:
+        except Exception as ex:  # pylint: disable=broad-except
             messagebox.showerror("Error", str(ex))
 
         return False
@@ -77,7 +77,7 @@ class Controller(BaseController):
         from qiskit.aqua.parser import JSONSchema
         try:
             self.model.set_section_property(section_name, property_name, value)
-        except Exception as ex:
+        except Exception as ex:  # pylint: disable=broad-except
             messagebox.showerror("Error", str(ex))
             return False
 
@@ -96,7 +96,7 @@ class Controller(BaseController):
             missing = self.get_sections_names_missing()
             self._sections_view.show_add_button(bool(missing))
             return True
-        except Exception as ex:
+        except Exception as ex:  # pylint: disable=broad-except
             messagebox.showerror("Error", str(ex))
 
         return False
@@ -110,7 +110,7 @@ class Controller(BaseController):
             self._properties_view.show_remove_button(False)
             self._properties_view.show_defaults_button(
                 not self.model.default_properties_equals_properties(section_name))
-        except Exception as ex:
+        except Exception as ex:  # pylint: disable=broad-except
             self.outputview.write_line(str(ex))
 
     def get_combobox_parameters(self, section_name, property_name):

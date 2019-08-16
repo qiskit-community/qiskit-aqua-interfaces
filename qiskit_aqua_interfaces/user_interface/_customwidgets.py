@@ -24,7 +24,7 @@ _LINESEP = '\n'
 
 
 class EntryCustom(ttk.Entry):
-
+    """ entry Custom """
     def __init__(self, *args, **kwargs):
         super(EntryCustom, self).__init__(*args, **kwargs)
         self.menu = None
@@ -53,19 +53,19 @@ class EntryCustom(ttk.Entry):
     def _cb_paste(self, event):
         try:
             self.delete(tk.SEL_FIRST, tk.SEL_LAST)
-        except Exception:
+        except Exception:  # pylint: disable=broad-except
             pass
 
         try:
             self.insert(tk.INSERT, self.clipboard_get())
-        except Exception:
+        except Exception:  # pylint: disable=broad-except
             pass
 
         return 'break'
 
 
 class TextCustom(tk.Text):
-
+    """ Text Custom """
     def __init__(self, *args, **kwargs):
         super(TextCustom, self).__init__(*args, **kwargs)
         self.menu = None
@@ -92,19 +92,19 @@ class TextCustom(tk.Text):
     def _cb_paste(self, event):
         try:
             self.delete(tk.SEL_FIRST, tk.SEL_LAST)
-        except Exception:
+        except Exception:  # pylint: disable=broad-except
             pass
 
         try:
             self.insert(tk.INSERT, self.clipboard_get())
-        except Exception:
+        except Exception:  # pylint: disable=broad-except
             pass
 
         return 'break'
 
 
 class EntryPopup(EntryCustom):
-
+    """ Entry Popup """
     def __init__(self, controller, section_name, property_name, parent, text, **options):
         # If relwidth is set, then width is ignored
         super(EntryPopup, self).__init__(parent, **options)
@@ -118,6 +118,7 @@ class EntryPopup(EntryCustom):
         self.bind("<FocusOut>", self._cb_update_value)
 
     def select_all(self):
+        """ select all text """
         self.focus_force()
         self.selection_range(0, tk.END)
 
@@ -136,7 +137,7 @@ class EntryPopup(EntryCustom):
 
 
 class ComboboxPopup(ttk.Combobox):
-
+    """ Combobox Popup """
     def __init__(self, controller, section_name, property_name, parent, **options):
         self._orig_values = []
         if 'values' in options:
@@ -182,7 +183,7 @@ class ComboboxPopup(ttk.Combobox):
 
 
 class TextPopup(ttk.Frame):
-
+    """ Text Popup """
     def __init__(self, controller, section_name, property_name, parent, text, **options):
         super(TextPopup, self).__init__(parent, **options)
         self._child = TextCustom(self, wrap=tk.NONE, state=tk.NORMAL)
@@ -210,6 +211,7 @@ class TextPopup(ttk.Frame):
         self.bind("<FocusOut>", self._cb_update_value)
 
     def select_all(self):
+        """ select all text """
         self._child.focus_force()
         # do not select the new line that the text widget automatically adds at the end
         self._child.tag_add(tk.SEL, 1.0, tk.END + '-1c')
@@ -233,7 +235,7 @@ class TextPopup(ttk.Frame):
 
 
 class PropertyEntryDialog(Dialog):
-
+    """ Property Entry Dialog """
     def __init__(self, controller, section_name, parent):
         super(PropertyEntryDialog, self).__init__(controller, parent, "New Property")
         self._section_name = section_name
@@ -274,7 +276,7 @@ class PropertyEntryDialog(Dialog):
 
 
 class PropertyComboDialog(Dialog):
-
+    """ Property Combo Dialog """
     def __init__(self, controller, section_name, parent):
         super(PropertyComboDialog, self).__init__(controller, parent, 'New Property')
         self._section_name = section_name
@@ -318,7 +320,7 @@ class PropertyComboDialog(Dialog):
 
 
 class SectionComboDialog(Dialog):
-
+    """ Section Combo Dialog """
     def __init__(self, controller, parent):
         super(SectionComboDialog, self).__init__(controller, parent, "New Section")
         self.label_text = None

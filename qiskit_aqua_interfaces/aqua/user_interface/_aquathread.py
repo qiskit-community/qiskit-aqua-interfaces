@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 
 
 class AquaThread(threading.Thread):
-
+    """ Aqua Thread """
     def __init__(self, model, output, queue):
         super(AquaThread, self).__init__(name='Aqua run thread')
         self.model = model
@@ -38,6 +38,7 @@ class AquaThread(threading.Thread):
         self._popen = None
 
     def stop(self):
+        """ stop thread """
         self._output = None
         self._thread_queue = None
         if self._popen is not None:
@@ -51,7 +52,7 @@ class AquaThread(threading.Thread):
             for proc in process.children(recursive=True):
                 proc.kill()
             process.kill()
-        except Exception as ex:
+        except Exception as ex:  # pylint: disable=broad-except
             if self._output is not None:
                 self._output.write_line(
                     'Process kill has failed: {}'.format(str(ex)))
@@ -123,7 +124,7 @@ class AquaThread(threading.Thread):
 
             self._popen.stdout.close()
             self._popen.wait()
-        except Exception as ex:
+        except Exception as ex:  # pylint: disable=broad-except
             if self._output is not None:
                 self._output.write('Process has failed: {}'.format(str(ex)))
         finally:

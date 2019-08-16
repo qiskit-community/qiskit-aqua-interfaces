@@ -31,7 +31,7 @@ from ._preferencesdialog import PreferencesDialog
 
 
 class MainView(ttk.Frame):
-
+    """ Main View """
     def __init__(self, parent, guiprovider):
         """Create MainView object."""
         super(MainView, self).__init__(parent)

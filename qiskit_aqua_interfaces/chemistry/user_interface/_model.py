@@ -24,8 +24,9 @@ logger = logging.getLogger(__name__)
 
 
 class Model(BaseModel):
-
+    """ Chemistry Model """
     def new(self):
+        """ new model """
         from qiskit.chemistry.parser import InputParser
         uipreferences = UIPreferences()
         return super().new_model(InputParser,
@@ -33,11 +34,13 @@ class Model(BaseModel):
                                  uipreferences.get_populate_defaults(True))
 
     def load_file(self, filename):
+        """ load input data """
         from qiskit.chemistry.parser import InputParser
         uipreferences = UIPreferences()
         return super().load_model(filename, InputParser, uipreferences.get_populate_defaults(True))
 
     def default_properties_equals_properties(self, section_name):
+        """ check if default properties are the same as current properties """
         from qiskit.aqua.parser import JSONSchema
         if self.section_is_text(section_name):
             return self.get_section_default_properties(section_name) == \
@@ -71,18 +74,21 @@ class Model(BaseModel):
         return True
 
     def get_dictionary(self):
+        """ get data dictionary """
         if self.is_empty():
             raise Exception("Empty input data.")
 
         return self._parser.to_dictionary()
 
     def export_dictionary(self, filename):
+        """ export data dictionary """
         if self.is_empty():
             raise Exception("Empty input data.")
 
         self._parser.export_dictionary(filename)
 
     def get_section_properties_with_substitution(self, section_name):
+        """ get section properties after updating values """
         properties = self.get_section_properties(section_name)
         result_tuples = \
             self._parser.check_if_substitution_key(section_name, list(properties.keys()))
@@ -94,6 +100,7 @@ class Model(BaseModel):
         return properties_with_substitution
 
     def get_operator_section_names(self):
+        """ get operator sectio  names """
         from qiskit.aqua.parser import JSONSchema
         from qiskit.chemistry.parser import InputParser
         from qiskit.chemistry.core import local_chemistry_operators

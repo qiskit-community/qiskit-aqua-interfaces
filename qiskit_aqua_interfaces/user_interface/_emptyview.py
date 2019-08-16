@@ -19,16 +19,18 @@ import tkinter.ttk as ttk
 
 
 class EmptyView(ttk.Frame):
-
+    """ Empty View """
     def __init__(self, parent, **options):
         super(EmptyView, self).__init__(parent, **options)
         self._child = tk.Frame(self, background='white')
         self._toolbar = ttk.Frame(self)
 
     def grid(self, **options):
+        """ grid layout """
         self._toolbar.pack(side=tk.BOTTOM, fill=tk.X)
         self._child.pack(side=tk.LEFT, fill=tk.BOTH, expand=tk.TRUE)
         ttk.Frame.grid(self, **options)
 
     def set_toolbar_size(self, size):
+        """ set tollbar size """
         self._toolbar.configure(width=size[0], height=size[1])
