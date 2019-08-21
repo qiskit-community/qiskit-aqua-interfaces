@@ -23,27 +23,30 @@ python:
   - "3.6"
 
 env: 
-  - DEPENDENCY_BRANCH=$(if [ "$TRAVIS_BRANCH" = "stable" ]; then echo "stable"; else echo "master"; fi)
+  - DEPENDENCY_BRANCH=$(if [[ "$TRAVIS_BRANCH" == stable* ]]; then echo "stable"; else echo "master"; fi)
 
 before_install:
   # Install Dependencies
   - pip install --upgrade pip setuptools wheel
-  # Download github Terra
-  - wget https://codeload.github.com/Qiskit/qiskit-terra/zip/$DEPENDENCY_BRANCH -O /tmp/qiskit-terra.zip
-  - unzip /tmp/qiskit-terra.zip -d /tmp/
-  # Install local Qiskit Terra
-  - pip install -e /tmp/qiskit-terra-$DEPENDENCY_BRANCH --progress-bar off
-  # Download github Ignis
-  - wget https://codeload.github.com/Qiskit/qiskit-ignis/zip/$DEPENDENCY_BRANCH -O /tmp/qiskit-ignis.zip
-  - unzip /tmp/qiskit-ignis.zip -d /tmp/
-  # Install local Qiskit Ignis
-  - pip install -e /tmp/qiskit-ignis-$DEPENDENCY_BRANCH --progress-bar off
-  # download Qiskit Aqua and unzip it
-  - wget https://codeload.github.com/Qiskit/qiskit-aqua/zip/$DEPENDENCY_BRANCH -O /tmp/qiskit-aqua.zip
-  - unzip /tmp/qiskit-aqua.zip -d /tmp/
-  # Install local Qiskit Aqua
-  - pip install -e /tmp/qiskit-aqua-$DEPENDENCY_BRANCH --progress-bar off
-   
+  - |
+    # Download dependencies from master
+    if [ "$DEPENDENCY_BRANCH" == "master" ]; then
+      # Download github Terra
+      wget https://codeload.github.com/Qiskit/qiskit-terra/zip/$DEPENDENCY_BRANCH -O /tmp/qiskit-terra.zip
+      unzip /tmp/qiskit-terra.zip -d /tmp/
+      # Install local Qiskit Terra
+      pip install -e /tmp/qiskit-terra-$DEPENDENCY_BRANCH --progress-bar off
+      # Download github Ignis
+      wget https://codeload.github.com/Qiskit/qiskit-ignis/zip/$DEPENDENCY_BRANCH -O /tmp/qiskit-ignis.zip
+      unzip /tmp/qiskit-ignis.zip -d /tmp/
+      # Install local Qiskit Ignis
+      pip install -e /tmp/qiskit-ignis-$DEPENDENCY_BRANCH --progress-bar off
+      # download Qiskit Aqua and unzip it
+      wget https://codeload.github.com/Qiskit/qiskit-aqua/zip/$DEPENDENCY_BRANCH -O /tmp/qiskit-aqua.zip
+      unzip /tmp/qiskit-aqua.zip -d /tmp/
+      # Install local Qiskit Aqua
+      pip install -e /tmp/qiskit-aqua-$DEPENDENCY_BRANCH --progress-bar off
+    fi
 # Test 
 install:
   # install library and dev requirements
