@@ -23,7 +23,7 @@ python:
   - "3.6"
 
 env: 
-  - DEPENDENCY_BRANCH=$(if [[ "$TRAVIS_BRANCH" = stable* ]]; then echo "stable"; else echo "master"; fi)
+  - DEPENDENCY_BRANCH=$(if [[ "$TRAVIS_BRANCH" == stable* ]]; then echo "stable"; else echo "master"; fi)
 
 before_install:
   # Install Dependencies
