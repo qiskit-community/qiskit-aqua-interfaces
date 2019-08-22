@@ -12,29 +12,32 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-import psutil
-import os
-import subprocess
+"""Chemistry User Interface run experiment thread"""
+
 import threading
 import tempfile
 import sys
 import logging
-from qiskit_aqua_interfaces.aqua.user_interface import GUIProvider
-import traceback
 import io
 import platform
+import os
+import subprocess
+import traceback
+import psutil
+from qiskit_aqua_interfaces.user_interface import GUIProvider
 
 logger = logging.getLogger(__name__)
 
 
 def exception_to_string(excp):
+    """ exception string formatter """
     stack = traceback.extract_stack()[:-3] + traceback.extract_tb(excp.__traceback__)
     pretty = traceback.format_list(stack)
     return ''.join(pretty) + '\n  {} {}'.format(excp.__class__, excp)
 
 
 class ChemistryThread(threading.Thread):
-
+    """ Chemistry Thread """
     def __init__(self, model, output, queue, filename):
         super(ChemistryThread, self).__init__(name='Chemistry run thread')
         self.model = model
@@ -44,12 +47,13 @@ class ChemistryThread(threading.Thread):
         self._popen = None
 
     def stop(self):
+        """ stop thread """
         self._output = None
         self._thread_queue = None
         if self._popen is not None:
-            p = self._popen
-            self._kill(p.pid)
-            p.stdout.close()
+            proc = self._popen
+            self._kill(proc.pid)
+            proc.stdout.close()
 
     def _kill(self, proc_pid):
         try:
@@ -57,10 +61,10 @@ class ChemistryThread(threading.Thread):
             for proc in process.children(recursive=True):
                 proc.kill()
             process.kill()
-        except Exception as e:
+        except Exception as ex:  # pylint: disable=broad-except
             if self._output is not None:
                 self._output.write_line(
-                    'Process kill has failed: {}'.format(str(e)))
+                    'Process kill has failed: {}'.format(str(ex)))
 
     def run(self):
         input_file = None
@@ -72,14 +76,14 @@ class ChemistryThread(threading.Thread):
                 os.path.join(qiskit_chemistry_directory, '../command_line'))
             input_file = self.model.get_filename()
             if input_file is None or self.model.is_modified():
-                fd, input_file = tempfile.mkstemp(suffix='.in')
-                os.close(fd)
+                f_d, input_file = tempfile.mkstemp(suffix='.in')
+                os.close(f_d)
                 temp_input = True
                 self.model.save_to_file(input_file)
 
             startupinfo = None
             process_name = psutil.Process().exe()
-            if process_name is None or len(process_name) == 0:
+            if not process_name:
                 process_name = 'python'
             else:
                 if sys.platform == 'win32' and process_name.endswith('pythonw.exe'):
@@ -90,16 +94,16 @@ class ChemistryThread(threading.Thread):
                     files = sorted(files, key=str.lower, reverse=True)
                     new_process = None
                     for file in files:
-                        p = os.path.join(path, file)
-                        if os.path.isfile(p):
+                        proc = os.path.join(path, file)
+                        if os.path.isfile(proc):
                             # python.exe takes precedence
                             if file.lower() == 'python.exe':
-                                new_process = p
+                                new_process = proc
                                 break
 
                             # use first found
                             if new_process is None:
-                                new_process = p
+                                new_process = proc
 
                     if new_process is not None:
                         startupinfo = subprocess.STARTUPINFO()
@@ -111,8 +115,8 @@ class ChemistryThread(threading.Thread):
             if self._json_algo_file:
                 input_array.extend(['-jo', self._json_algo_file])
             else:
-                fd, output_file = tempfile.mkstemp(suffix='.out')
-                os.close(fd)
+                f_d, output_file = tempfile.mkstemp(suffix='.out')
+                os.close(f_d)
                 input_array.extend(['-o', output_file])
 
             if self._output is not None and logger.getEffectiveLevel() == logging.DEBUG:
@@ -130,14 +134,14 @@ class ChemistryThread(threading.Thread):
                 if self._output is not None:
                     if platform.system() == "Windows":
                         line = line.replace('\r\n', '\n')
-                        
+
                     self._output.write(line)
 
             self._popen.stdout.close()
             self._popen.wait()
-        except Exception as e:
+        except Exception as ex:  # pylint: disable=broad-except
             if self._output is not None:
-                self._output.write('Process has failed: {}'.format(exception_to_string(e)))
+                self._output.write('Process has failed: {}'.format(exception_to_string(ex)))
         finally:
             self._popen = None
             if self._thread_queue is not None:

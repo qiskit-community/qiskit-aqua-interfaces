@@ -12,22 +12,8 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-from .guiprovider import GUIProvider
-from ._uipreferences import UIPreferences
-from .base_controller import BaseController
-from .base_model import BaseModel
-from ._customwidgets import (EntryPopup, ComboboxPopup, TextPopup)
-from ._sectionsview import SectionsView
-from ._sectionpropertiesview import SectionPropertiesView
-from ._mainview import MainView
+"""Qiskit Aqua User Interface imports"""
 
-__all__ = ['GUIProvider',
-           'UIPreferences',
-           'BaseController',
-           'BaseModel',
-           'EntryPopup',
-           'ComboboxPopup',
-           'TextPopup',
-           'SectionsView',
-           'SectionPropertiesView',
-           'MainView']
+from ._uipreferences import UIPreferences
+
+__all__ = ['UIPreferences']

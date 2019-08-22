@@ -12,15 +12,19 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
+"""Qiskit Aqua browser user interface model."""
+
 from collections import OrderedDict
 import copy
 
 
-class Model(object):
-
+class Model:
+    """ Aqua Browser Model """
     def __init__(self):
         """Create Model object."""
         self._data_loaded = False
+        self._schema_property_titles = None
+        self._sections = None
 
     def _load_data(self):
         if self._data_loaded:
@@ -64,7 +68,7 @@ class Model(object):
             if config_name == 'input_schema' and isinstance(config_value, dict):
                 schema = config_value
                 if 'properties' in schema:
-                    for property, values in schema['properties'].items():
+                    for prop, values in schema['properties'].items():
                         if 'items' in values:
                             if 'type' in values['items']:
                                 values['items'] = values['items']['type']
@@ -76,26 +80,31 @@ class Model(object):
                             values['one of'] = values['oneOf']
                             del values['oneOf']
 
-                        self._sections[pluggable_type][pluggable_name]['properties'][property] = values
-                        for k, v in values.items():
+                        self._sections[pluggable_type][pluggable_name]['properties'][prop] = values
+                        for k, _ in values.items():
                             self._schema_property_titles[pluggable_type][pluggable_name][k] = None
                 continue
 
-        self._schema_property_titles[pluggable_type][pluggable_name] = list(self._schema_property_titles[pluggable_type][pluggable_name].keys())
+        self._schema_property_titles[pluggable_type][pluggable_name] = \
+            list(self._schema_property_titles[pluggable_type][pluggable_name].keys())
 
     def pluggable_names(self):
+        """ get all pluggable names """
         self._load_data()
         return list(self._sections.keys())
 
     def get_pluggable_description(self, pluggable_type, pluggable_name):
+        """ get pluggable description """
         self._load_data()
         return self._sections[pluggable_type][pluggable_name]['description']
 
     def get_pluggable_problems(self, pluggable_type, pluggable_name):
+        """ get pluggable problems """
         self._load_data()
         return self._sections[pluggable_type][pluggable_name]['problems']
 
     def get_pluggable_dependency(self, pluggable_type, pluggable_name, dependency_type):
+        """ get pluggable dependency """
         self._load_data()
         depends = self._sections[pluggable_type][pluggable_name]['depends']
         for dependency in depends:
@@ -105,13 +114,16 @@ class Model(object):
         return {}
 
     def get_pluggable_schema_property_titles(self, pluggable_type, pluggable_name):
+        """ get pluggable schema property titles """
         self._load_data()
         return self._schema_property_titles[pluggable_type][pluggable_name]
 
     def get_sections(self):
+        """ get sections """
         self._load_data()
         return self._sections
 
     def get_pluggable_schema_properties(self, pluggable_type, pluggable_name):
+        """ get pluggable schema properties """
         self._load_data()
         return self._sections[pluggable_type][pluggable_name]['properties']

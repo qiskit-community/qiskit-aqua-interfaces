@@ -12,36 +12,37 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-from .base_model import BaseModel
+"""Qiskit Aqua user interface model."""
+
 import os
-from qiskit_aqua_interfaces.aqua.user_interface._uipreferences import UIPreferences
 import logging
+from qiskit_aqua_interfaces.aqua.user_interface._uipreferences import UIPreferences
+from qiskit_aqua_interfaces.user_interface import BaseModel
 
 logger = logging.getLogger(__name__)
 
 
 class Model(BaseModel):
-
-    def __init__(self):
-        """Create Model object."""
-        super().__init__()
-
+    """ Aqua Model """
     def new(self):
+        """ Create new model """
         from qiskit.aqua.parser._inputparser import InputParser
         uipreferences = UIPreferences()
-        return super().new(InputParser,
-                           os.path.join(os.path.dirname(__file__), 'input_template.json'),
-                           uipreferences.get_populate_defaults(True))
+        return super().new_model(InputParser,
+                                 os.path.join(os.path.dirname(__file__), 'input_template.json'),
+                                 uipreferences.get_populate_defaults(True))
 
     def load_file(self, filename):
+        """ load input file """
         from qiskit.aqua.parser._inputparser import InputParser
         uipreferences = UIPreferences()
-        return super().load_file(filename, InputParser, uipreferences.get_populate_defaults(True))
+        return super().load_model(filename, InputParser, uipreferences.get_populate_defaults(True))
 
     def default_properties_equals_properties(self, section_name):
         from qiskit.aqua.parser import JSONSchema
         if self.section_is_text(section_name):
-            return self.get_section_default_properties(section_name) == self.get_section_text(section_name)
+            return self.get_section_default_properties(section_name) == \
+                    self.get_section_text(section_name)
 
         default_properties = self.get_section_default_properties(section_name)
         properties = self.get_section_properties(section_name)
@@ -57,6 +58,7 @@ class Model(BaseModel):
         return dict(default_properties) == dict(properties)
 
     def get_input_section_names(self):
+        """ get input section valid names """
         from qiskit.aqua.parser._inputparser import InputParser
         from qiskit.aqua import local_pluggables, PluggableType
         from qiskit.aqua.parser import JSONSchema

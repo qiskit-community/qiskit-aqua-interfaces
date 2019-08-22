@@ -12,14 +12,12 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""
-InputParser test.
-"""
+"""Aqua Model test."""
 
 import unittest
 from test.common import QiskitAquaUisTestCase
-from qiskit_aqua_interfaces.aqua.user_interface._model import Model
 from qiskit.aqua import AquaError
+from qiskit_aqua_interfaces.aqua.user_interface._model import Model
 
 
 class TestAquaModel(QiskitAquaUisTestCase):
@@ -30,38 +28,49 @@ class TestAquaModel(QiskitAquaUisTestCase):
         _filepath = self._get_resource_path('resources/vqe.json')
         self._model = Model()
         self._model.load_file(_filepath)
+        # make sure defaults are populated
+        self._model._parser.validate_merge_defaults()
 
     def test_new(self):
+        """Test new model. Passes if required sections are included."""
         section_names = self._model.new()
         for name in ['algorithm', 'backend']:
             self.assertIn(name, section_names)
 
     def test_open(self):
+        """Test open model. Passes if required sections are included."""
         section_names = self._model.get_section_names()
-        for name in ['algorithm', 'backend', 'initial_state', 'input', 'optimizer', 'problem', 'variational_form']:
+        for name in ['algorithm', 'backend', 'initial_state', 'input',
+                     'optimizer', 'problem', 'variational_form']:
             self.assertIn(name, section_names)
 
     def test_get_input_section_names(self):
+        """Test if model has EnergyInput."""
         section_names = self._model.get_input_section_names()
         self.assertEqual(section_names, ['EnergyInput'])
 
     def test_get_property_default_values(self):
+        """Test if model has correct default values."""
         modes = self._model.get_property_default_values('algorithm', 'operator_mode')
-        self.assertEqual(modes, ['matrix', 'paulis', 'grouped_paulis'])
+        self.assertEqual(modes, ['matrix', 'paulis', 'grouped_paulis', None])
 
     def test_section_is_text(self):
+        """Test if model has correct text section."""
         ret = self._model.section_is_text('problem')
         self.assertFalse(ret)
 
     def test_get_section(self):
+        """Test if model can access section."""
         section = self._model.get_section('initial_state')
         self.assertEqual(section, {'name': 'ZERO'})
 
     def test_get_section_text(self):
+        """Test if model can access section text."""
         text = self._model.get_section_text('algorithm')
         self.assertIsInstance(text, str)
 
     def test_get_section_properties(self):
+        """Test if model can access section properties."""
         expected = {
             'depth': 3,
             'entanglement': "linear",
@@ -73,56 +82,68 @@ class TestAquaModel(QiskitAquaUisTestCase):
         self.assertDictEqual(subset, expected)
 
     def test_default_properties_equals_properties(self):
+        """Test if model default properties are the same as current properties."""
         ret = self._model.default_properties_equals_properties('optimizer')
         self.assertTrue(ret)
 
     def test_get_section_property(self):
+        """Test if model can access section property."""
         prop = self._model.get_section_property('algorithm', 'name')
         self.assertEqual(prop, 'VQE')
 
     def test_set_section(self):
+        """Test if model can update section."""
         self._model.set_section('oracle')
         section_names = self._model.get_section_names()
         self.assertIn('oracle', section_names)
 
     def test_get_pluggable_section_names(self):
+        """Test if model can access pluggable sections."""
         section_names = self._model.get_pluggable_section_names('initial_state')
         for name in ['CUSTOM', 'ZERO', 'HartreeFock']:
             self.assertIn(name, section_names)
 
     def test_get_default_sections(self):
+        """Test if model can access default sections."""
         section_names = self._model.get_default_sections().keys()
-        for name in ['algorithm', 'backend', 'initial_state', 'input', 'optimizer', 'problem', 'variational_form']:
+        for name in ['algorithm', 'backend', 'initial_state', 'input',
+                     'optimizer', 'problem', 'variational_form']:
             self.assertIn(name, section_names)
 
     def test_get_section_default_properties(self):
+        """Test if model can access default section properties."""
         properties = self._model.get_section_default_properties('initial_state')
         self.assertEqual(properties, {'name': 'ZERO'})
 
     def test_allows_additional_properties(self):
+        """Test if model can access default section properties."""
         ret = self._model.allows_additional_properties('algorithm')
         self.assertFalse(ret)
 
     def test_get_property_default_value(self):
+        """Test if model can access default section property default value."""
         value = self._model.get_property_default_value('algorithm', 'name')
         self.assertEqual(value, 'VQE')
 
     def test_get_property_types(self):
+        """Test if model can access property types."""
         types = self._model.get_property_types('algorithm', 'operator_mode')
-        self.assertEqual(types, ['string'])
+        self.assertEqual(types, ['string', 'null'])
 
     def test_set_section_property(self):
+        """Test if model can update property."""
         self._model.set_section_property('algorithm', 'operator_mode', 'paulis')
         prop = self._model.get_section_property('algorithm', 'operator_mode')
         self.assertEqual(prop, 'paulis')
 
     def test_delete_section_property(self):
+        """Test if model can delete property."""
         self._model.delete_section_property('optimizer', 'factr')
         ret = self._model.get_section_property('optimizer', 'factr')
         self.assertIsNone(ret)
 
     def test_set_section_text(self):
-        # check that it fails because algorithm doesn't allow text
+        """check that it fails because algorithm doesn't allow text"""
         with self.assertRaises(AquaError):
             self._model.set_section_text('algorithm', 'dummy')
 
