@@ -30,7 +30,7 @@ from ._emptyview import EmptyView
 
 class MainView(ttk.Frame):
     """ Aqua Browser Main View """
-    _HELP_LINK = 'http://qiskit.org/documentation/aqua/'
+    _HELP_LINK = 'https://qiskit.org/'
 
     def __init__(self, parent=None):
         """Create MainView object."""

@@ -53,7 +53,7 @@ class ChemistryGUIProvider(GUIProvider):
     @property
     def help_hyperlink(self):
         """Return provider help hyperlink."""
-        return 'http://qiskit.org/documentation/aqua/'
+        return 'https://qiskit.org/'
 
     @property
     def controller(self):
