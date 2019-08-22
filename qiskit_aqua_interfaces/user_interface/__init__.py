@@ -2,7 +2,7 @@
 
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2018, 2019.
+# (C) Copyright IBM 2019.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -12,8 +12,18 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Qiskit Aqua user interface entry point."""
+"""Common User Interface"""
 
-from qiskit_aqua_interfaces.aqua.user_interface.command_line import main
+from .guiprovider import GUIProvider
+from .base_controller import BaseController
+from .base_model import BaseModel
+from ._customwidgets import TextPopup
+from ._sectionpropertiesview import SectionPropertiesView
+from ._mainview import MainView
 
-main()
+__all__ = ['GUIProvider',
+           'BaseController',
+           'BaseModel',
+           'TextPopup',
+           'SectionPropertiesView',
+           'MainView']

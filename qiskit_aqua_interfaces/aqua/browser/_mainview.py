@@ -12,22 +12,24 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
+"""Main View"""
+
 import sys
 import tkinter as tk
 import tkinter.messagebox as tkmb
 import tkinter.ttk as ttk
 from tkinter import font
 import webbrowser
+from qiskit_aqua_interfaces import __version__
+from qiskit_aqua_interfaces.aqua.user_interface import UIPreferences
 from ._controller import Controller
 from ._sectionsview import SectionsView
 from ._sectionpropertiesview import SectionPropertiesView
 from ._emptyview import EmptyView
-from qiskit_aqua_interfaces import __version__
-from qiskit_aqua_interfaces.aqua.user_interface import UIPreferences
 
 
 class MainView(ttk.Frame):
-
+    """ Aqua Browser Main View """
     _HELP_LINK = 'http://qiskit.org/documentation/aqua/'
 
     def __init__(self, parent=None):
@@ -41,13 +43,20 @@ class MainView(ttk.Frame):
             parent.protocol('WM_DELETE_WINDOW', self.quit)
 
     def _show_about_dialog(self):
-        tkmb.showinfo(message='Qiskit Aqua Browser {}'.format(__version__))
+        import qiskit.aqua as qa
+        lines = ['Qiskit Aqua Interfaces',
+                 'Version: {}'.format(__version__),
+                 '',
+                 'Qiskit Aqua',
+                 'Version: {}'.format(qa.__version__),
+                 ]
+        tkmb.showinfo('Qiskit Aqua Browser', message='\n'.join(lines))
 
     def _create_widgets(self):
-        self._makeMenuBar()
+        self._make_menubar()
         self._create_pane()
 
-    def _makeMenuBar(self):
+    def _make_menubar(self):
         menubar = tk.Menu(self.master)
         if sys.platform == 'darwin':
             app_menu = tk.Menu(menubar, name='apple')
@@ -56,11 +65,12 @@ class MainView(ttk.Frame):
             self.master.createcommand('tk::mac::Quit', self.quit)
 
         self.master.config(menu=menubar)
-        self._controller._filemenu = self._fileMenu(menubar)
+        self._controller._filemenu = self._make_filemenu(menubar)
 
         help_menu = tk.Menu(menubar, tearoff=False)
         if sys.platform != 'darwin':
-            help_menu.add_command(label='About Qiskit Aqua Browser', command=self._show_about_dialog)
+            help_menu.add_command(label='About Qiskit Aqua Browser',
+                                  command=self._show_about_dialog)
 
         help_menu.add_command(label='Open Help Center', command=self._open_help_center)
         menubar.add_cascade(label='Help', menu=help_menu)
@@ -68,7 +78,7 @@ class MainView(ttk.Frame):
     def _open_help_center(self):
         webbrowser.open(MainView._HELP_LINK)
 
-    def _fileMenu(self, menubar):
+    def _make_filemenu(self, menubar):
         if sys.platform != 'darwin':
             file_menu = tk.Menu(menubar, tearoff=False)
             file_menu.add_separator()
@@ -85,9 +95,9 @@ class MainView(ttk.Frame):
         top_pane.pack(expand=tk.YES, fill=tk.BOTH)
         main_pane.add(top_pane)
 
-        self._controller._sectionsView = SectionsView(self._controller, top_pane)
-        self._controller._sectionsView.pack(expand=tk.YES, fill=tk.BOTH)
-        top_pane.add(self._controller._sectionsView)
+        self._controller._sections_view = SectionsView(self._controller, top_pane)
+        self._controller._sections_view.pack(expand=tk.YES, fill=tk.BOTH)
+        top_pane.add(self._controller._sections_view)
 
         main_container = tk.Frame(top_pane)
         main_container.pack(expand=tk.YES, fill=tk.BOTH)
@@ -99,7 +109,7 @@ class MainView(ttk.Frame):
         label = ttk.Label(main_container,
                           style='PropViewTitle.TLabel',
                           padding=(5, 5, 5, 5),
-                          textvariable=self._controller._sectionsView_title)
+                          textvariable=self._controller._sections_view_title)
         label_font = font.nametofont('TkHeadingFont').copy()
         label_font.configure(size=12, weight='bold')
         label['font'] = label_font
@@ -109,12 +119,12 @@ class MainView(ttk.Frame):
         container.pack(side=tk.BOTTOM, expand=tk.YES, fill=tk.BOTH)
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
-        self._controller._emptyView = EmptyView(container)
-        self._controller._emptyView.grid(row=0, column=0, sticky='nsew')
+        self._controller._empty_view = EmptyView(container)
+        self._controller._empty_view.grid(row=0, column=0, sticky='nsew')
 
-        self._controller._propertiesView = SectionPropertiesView(self._controller, container)
-        self._controller._propertiesView.grid(row=0, column=0, sticky='nsew')
-        self._controller._emptyView.tkraise()
+        self._controller._properties_view = SectionPropertiesView(self._controller, container)
+        self._controller._properties_view.grid(row=0, column=0, sticky='nsew')
+        self._controller._empty_view.tkraise()
         top_pane.add(main_container, weight=1)
 
         self.update_idletasks()

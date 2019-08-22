@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
-
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2018, 2019.
+# (C) Copyright IBM 2019.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -12,8 +10,14 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Qiskit Aqua user interface entry point."""
 
-from qiskit_aqua_interfaces.aqua.user_interface.command_line import main
+.PHONY: lint style test
 
-main()
+lint:
+	pylint -rn qiskit_aqua_interfaces test
+
+style:
+	pycodestyle --max-line-length=100 qiskit_aqua_interfaces test
+
+test:
+	python -m unittest discover -v test

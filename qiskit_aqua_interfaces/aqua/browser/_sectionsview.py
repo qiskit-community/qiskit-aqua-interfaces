@@ -12,13 +12,15 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
+"""Sections view"""
+
 import tkinter as tk
 import tkinter.ttk as ttk
 from ._scrollbarview import ScrollbarView
 
 
 class SectionsView(ScrollbarView):
-
+    """ Aqua Browser Sections View """
     _TAG_PLUGGABLE_TYPE = 'PLUGGABLE_TYPE'
     _TAG_PLUGGABLE = 'PLUGGABLE'
     _TAG_PROBLEMS = 'PROBLEMS'
@@ -31,14 +33,16 @@ class SectionsView(ScrollbarView):
         ttk.Style().configure("BrowseSectionsView.Treeview.Heading", font=(None, 12, 'bold'))
         self._tree = ttk.Treeview(self, style='BrowseSectionsView.Treeview', selectmode=tk.BROWSE)
         self._tree.heading('#0', text='Sections')
-        self._tree.bind('<<TreeviewSelect>>', self._on_tree_select)
+        self._tree.bind('<<TreeviewSelect>>', self._cb_tree_select)
         self.init_widgets(self._tree)
 
     def clear(self):
+        """ clear view """
         for i in self._tree.get_children():
             self._tree.delete([i])
 
     def populate(self, algos):
+        """ populate view with pluggables  """
         self.clear()
         root_identifier = None
         for pluggable_type, section_types in algos.items():
@@ -88,27 +92,28 @@ class SectionsView(ScrollbarView):
             self._tree.see(root_identifier)
 
     def has_selection(self):
+        """ check if an entry is selected """
         return self._tree.selection()
 
-    def _on_tree_select(self, event):
+    def _cb_tree_select(self, event):
         for item in self._tree.selection():
             item_tag = self._tree.item(item, 'tag')[0]
             if item_tag == SectionsView._TAG_PLUGGABLE_TYPE:
                 item_text = self._tree.item(item, 'text')
-                self._controller.on_pluggable_type_select(item_text)
+                self._controller.pluggable_type_select(item_text)
             elif item_tag == SectionsView._TAG_PLUGGABLE:
                 item_text = self._tree.item(item, 'text')
                 values = self._tree.item(item, 'values')
-                self._controller.on_pluggable_schema_select(values[0], item_text)
+                self._controller.pluggable_schema_select(values[0], item_text)
             elif item_tag == SectionsView._TAG_PROBLEMS:
                 values = self._tree.item(item, 'values')
-                self._controller.on_pluggable_problems_select(values[0], values[1])
+                self._controller.pluggable_problems_select(values[0], values[1])
             elif item_tag == SectionsView._TAG_DEPENDS:
                 values = self._tree.item(item, 'values')
-                self._controller.on_pluggable_depends_select(values[0], values[1])
+                self._controller.pluggable_depends_select(values[0], values[1])
             elif item_tag == SectionsView._TAG_DEPENDENCY:
                 item_text = self._tree.item(item, 'text')
                 values = self._tree.item(item, 'values')
-                self._controller.on_pluggable_dependency_select(values[0], values[1], item_text)
+                self._controller.pluggable_dependency_select(values[0], values[1], item_text)
 
             return

@@ -12,6 +12,8 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
+"""Qiskit Chemistry User Interface imports"""
+
 from ._uipreferences import UIPreferences
 
 __all__ = ['UIPreferences']

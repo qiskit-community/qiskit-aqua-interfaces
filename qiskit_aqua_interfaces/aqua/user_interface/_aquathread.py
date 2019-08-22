@@ -12,22 +12,24 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-import psutil
-import os
-import subprocess
+"""Aqua User Interface run experiment thread"""
+
 import threading
 import tempfile
 import sys
 import logging
-from qiskit_aqua_interfaces.aqua.user_interface import GUIProvider
 import io
 import platform
+import os
+import subprocess
+import psutil
+from qiskit_aqua_interfaces.user_interface import GUIProvider
 
 logger = logging.getLogger(__name__)
 
 
 class AquaThread(threading.Thread):
-
+    """ Aqua Thread """
     def __init__(self, model, output, queue):
         super(AquaThread, self).__init__(name='Aqua run thread')
         self.model = model
@@ -36,12 +38,13 @@ class AquaThread(threading.Thread):
         self._popen = None
 
     def stop(self):
+        """ stop thread """
         self._output = None
         self._thread_queue = None
         if self._popen is not None:
-            p = self._popen
-            self._kill(p.pid)
-            p.stdout.close()
+            proc = self._popen
+            self._kill(proc.pid)
+            proc.stdout.close()
 
     def _kill(self, proc_pid):
         try:
@@ -49,10 +52,10 @@ class AquaThread(threading.Thread):
             for proc in process.children(recursive=True):
                 proc.kill()
             process.kill()
-        except Exception as e:
+        except Exception as ex:  # pylint: disable=broad-except
             if self._output is not None:
                 self._output.write_line(
-                    'Process kill has failed: {}'.format(str(e)))
+                    'Process kill has failed: {}'.format(str(ex)))
 
     def run(self):
         input_file = None
@@ -63,34 +66,35 @@ class AquaThread(threading.Thread):
                 os.path.join(algorithms_directory, '../command_line'))
             input_file = self.model.get_filename()
             if input_file is None or self.model.is_modified():
-                fd, input_file = tempfile.mkstemp(suffix='.in')
-                os.close(fd)
+                f_d, input_file = tempfile.mkstemp(suffix='.in')
+                os.close(f_d)
                 temp_input = True
                 self.model.save_to_file(input_file)
 
             startupinfo = None
             process_name = psutil.Process().exe()
-            if process_name is None or len(process_name) == 0:
+            if not process_name:
                 process_name = 'python'
             else:
                 if sys.platform == 'win32' and process_name.endswith('pythonw.exe'):
                     path = os.path.dirname(process_name)
                     files = [f for f in os.listdir(path) if f != 'pythonw.exe' and f.startswith(
                         'python') and f.endswith('.exe')]
-                    # sort reverse to have hihre python versions first: python3.exe before python2.exe
+                    # sort reverse to have hihre python
+                    # versions first: python3.exe before python2.exe
                     files = sorted(files, key=str.lower, reverse=True)
                     new_process = None
                     for file in files:
-                        p = os.path.join(path, file)
-                        if os.path.isfile(p):
+                        proc = os.path.join(path, file)
+                        if os.path.isfile(proc):
                             # python.exe takes precedence
                             if file.lower() == 'python.exe':
-                                new_process = p
+                                new_process = proc
                                 break
 
                             # use first found
                             if new_process is None:
-                                new_process = p
+                                new_process = proc
 
                     if new_process is not None:
                         startupinfo = subprocess.STARTUPINFO()
@@ -120,9 +124,9 @@ class AquaThread(threading.Thread):
 
             self._popen.stdout.close()
             self._popen.wait()
-        except Exception as e:
+        except Exception as ex:  # pylint: disable=broad-except
             if self._output is not None:
-                self._output.write('Process has failed: {}'.format(str(e)))
+                self._output.write('Process has failed: {}'.format(str(ex)))
         finally:
             self._popen = None
             if self._thread_queue is not None:

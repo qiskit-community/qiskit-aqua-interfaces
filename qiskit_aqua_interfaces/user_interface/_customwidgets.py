@@ -12,6 +12,8 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
+"""Custom Widgets Collection"""
+
 from sys import platform
 import tkinter as tk
 import tkinter.ttk as ttk
@@ -22,89 +24,89 @@ _LINESEP = '\n'
 
 
 class EntryCustom(ttk.Entry):
-
+    """ entry Custom """
     def __init__(self, *args, **kwargs):
         super(EntryCustom, self).__init__(*args, **kwargs)
         self.menu = None
-        self.bind('<Button-1><ButtonRelease-1>', self._dismiss_menu)
-        self.bind_class('Entry', '<Control-a>', self._event_select_all)
-        self.bind(_BIND, self._show_menu)
-        self.bind('<<Paste>>', self._event_paste)
+        self.bind('<Button-1><ButtonRelease-1>', self._cb_dismiss_menu)
+        self.bind_class('Entry', '<Control-a>', self._cb_select_all)
+        self.bind(_BIND, self._cb_show_menu)
+        self.bind('<<Paste>>', self._cb_paste)
 
-    def _event_select_all(self, *args):
+    def _cb_select_all(self, *args):
         if platform == 'darwin':
             self.focus_force()
         self.selection_range(0, tk.END)
         return 'break'
 
-    def _show_menu(self, e):
+    def _cb_show_menu(self, event):
         _create_menu(self)
         if self.menu:
-            self.menu.post(e.x_root, e.y_root)
+            self.menu.post(event.x_root, event.y_root)
         if platform == 'darwin':
             self.selection_clear()
 
-    def _dismiss_menu(self, e):
+    def _cb_dismiss_menu(self, event):
         if self.menu:
             self.menu.unpost()
 
-    def _event_paste(self, e):
+    def _cb_paste(self, event):
         try:
             self.delete(tk.SEL_FIRST, tk.SEL_LAST)
-        except:
+        except Exception:  # pylint: disable=broad-except
             pass
 
         try:
             self.insert(tk.INSERT, self.clipboard_get())
-        except:
+        except Exception:  # pylint: disable=broad-except
             pass
 
         return 'break'
 
 
 class TextCustom(tk.Text):
-
+    """ Text Custom """
     def __init__(self, *args, **kwargs):
         super(TextCustom, self).__init__(*args, **kwargs)
         self.menu = None
-        self.bind('<Button-1><ButtonRelease-1>', self._dismiss_menu)
-        self.bind_class('Text', '<Control-a>', self._event_select_all)
-        self.bind(_BIND, self._show_menu)
+        self.bind('<Button-1><ButtonRelease-1>', self._cb_dismiss_menu)
+        self.bind_class('Text', '<Control-a>', self._cb_select_all)
+        self.bind(_BIND, self._cb_show_menu)
         self.bind('<1>', lambda event: self.focus_set())
-        self.bind('<<Paste>>', self._event_paste)
+        self.bind('<<Paste>>', self._cb_paste)
 
-    def _event_select_all(self, *args):
+    def _cb_select_all(self, *args):
         # do not select the new line that the text widget automatically adds at the end
         self.tag_add(tk.SEL, 1.0, tk.END + '-1c')
         return 'break'
 
-    def _show_menu(self, e):
+    def _cb_show_menu(self, event):
         _create_menu(self)
         if self.menu:
-            self.menu.post(e.x_root, e.y_root)
+            self.menu.post(event.x_root, event.y_root)
 
-    def _dismiss_menu(self, e):
+    def _cb_dismiss_menu(self, event):
         if self.menu:
             self.menu.unpost()
 
-    def _event_paste(self, e):
+    def _cb_paste(self, event):
         try:
             self.delete(tk.SEL_FIRST, tk.SEL_LAST)
-        except:
+        except Exception:  # pylint: disable=broad-except
             pass
 
         try:
             self.insert(tk.INSERT, self.clipboard_get())
-        except:
+        except Exception:  # pylint: disable=broad-except
             pass
 
         return 'break'
 
 
 class EntryPopup(EntryCustom):
-
+    """ Entry Popup """
     def __init__(self, controller, section_name, property_name, parent, text, **options):
-        ''' If relwidth is set, then width is ignored '''
+        # If relwidth is set, then width is ignored
         super(EntryPopup, self).__init__(parent, **options)
         self._controller = controller
         self._section_name = section_name
@@ -112,29 +114,30 @@ class EntryPopup(EntryCustom):
         self._text = text
         self.insert(0, self._text)
         self.focus_force()
-        self.bind("<Unmap>", self._update_value)
-        self.bind("<FocusOut>", self._update_value)
+        self.bind("<Unmap>", self._cb_update_value)
+        self.bind("<FocusOut>", self._cb_update_value)
 
-    def selectAll(self):
+    def select_all(self):
+        """ select all text """
         self.focus_force()
         self.selection_range(0, tk.END)
 
-    def _update_value(self, *ignore):
+    def _cb_update_value(self, *ignore):
         new_text = self.get()
         valid = True
         if self._text != new_text:
             self._text = new_text
-            valid = self._controller.on_property_set(self._section_name,
+            valid = self._controller.cb_property_set(self._section_name,
                                                      self._property_name,
                                                      new_text)
         if valid:
             self.destroy()
         else:
-            self.selectAll()
+            self.select_all()
 
 
 class ComboboxPopup(ttk.Combobox):
-
+    """ Combobox Popup """
     def __init__(self, controller, section_name, property_name, parent, **options):
         self._orig_values = []
         if 'values' in options:
@@ -146,27 +149,27 @@ class ComboboxPopup(ttk.Combobox):
         self._section_name = section_name
         self._property_name = property_name
         self.focus_force()
-        self.bind("<Unmap>", self._update_value)
-        self.bind("<FocusOut>", self._update_value)
-        self.bind("<<ComboboxSelected>>", self._on_select)
+        self.bind("<Unmap>", self._cb_update_value)
+        self.bind("<FocusOut>", self._cb_update_value)
+        self.bind("<<ComboboxSelected>>", self._cb_select)
         self._text = None
 
-    def _on_select(self, *ignore):
+    def _cb_select(self, *ignore):
         new_text = self.get()
         if self._text != new_text:
             self._text = new_text
             selected_index = self.current()
             if selected_index >= 0:
                 new_text = self._orig_values[selected_index]
-            self._controller.on_property_set(self._section_name,
+            self._controller.cb_property_set(self._section_name,
                                              self._property_name,
                                              new_text)
 
-    def _update_value(self, *ignore):
+    def _cb_update_value(self, *ignore):
         new_text = self.get()
         selected_index = self.current()
         state = self.state()
-        combo_state = state[0] if isinstance(state, tuple) and len(state) > 0 else None
+        combo_state = state[0] if isinstance(state, tuple) and state else None
         if combo_state is None or combo_state != 'pressed':
             self.destroy()
 
@@ -174,13 +177,13 @@ class ComboboxPopup(ttk.Combobox):
             self._text = new_text
             if selected_index >= 0:
                 new_text = self._orig_values[selected_index]
-            self._controller.on_property_set(self._section_name,
+            self._controller.cb_property_set(self._section_name,
                                              self._property_name,
                                              new_text)
 
 
 class TextPopup(ttk.Frame):
-
+    """ Text Popup """
     def __init__(self, controller, section_name, property_name, parent, text, **options):
         super(TextPopup, self).__init__(parent, **options)
         self._child = TextCustom(self, wrap=tk.NONE, state=tk.NORMAL)
@@ -204,15 +207,16 @@ class TextPopup(ttk.Frame):
             self._child.insert(tk.END, self._text)
 
         self._child.focus_force()
-        self.bind("<Unmap>", self._update_value)
-        self.bind("<FocusOut>", self._update_value)
+        self.bind("<Unmap>", self._cb_update_value)
+        self.bind("<FocusOut>", self._cb_update_value)
 
-    def selectAll(self):
+    def select_all(self):
+        """ select all text """
         self._child.focus_force()
         # do not select the new line that the text widget automatically adds at the end
         self._child.tag_add(tk.SEL, 1.0, tk.END + '-1c')
 
-    def _update_value(self, *ignore):
+    def _cb_update_value(self, *ignore):
         sep_pos = -len(_LINESEP)
         new_text = self._child.get(1.0, tk.END)
         if len(new_text) >= len(_LINESEP) and new_text[sep_pos:] == _LINESEP:
@@ -221,17 +225,17 @@ class TextPopup(ttk.Frame):
         valid = True
         if self._text != new_text:
             self._text = new_text
-            valid = self._controller.on_property_set(self._section_name,
+            valid = self._controller.cb_property_set(self._section_name,
                                                      self._property_name,
                                                      new_text)
         if valid:
             self.destroy()
         else:
-            self.selectAll()
+            self.select_all()
 
 
 class PropertyEntryDialog(Dialog):
-
+    """ Property Entry Dialog """
     def __init__(self, controller, section_name, parent):
         super(PropertyEntryDialog, self).__init__(controller, parent, "New Property")
         self._section_name = section_name
@@ -272,7 +276,7 @@ class PropertyEntryDialog(Dialog):
 
 
 class PropertyComboDialog(Dialog):
-
+    """ Property Combo Dialog """
     def __init__(self, controller, section_name, parent):
         super(PropertyComboDialog, self).__init__(controller, parent, 'New Property')
         self._section_name = section_name
@@ -316,7 +320,7 @@ class PropertyComboDialog(Dialog):
 
 
 class SectionComboDialog(Dialog):
-
+    """ Section Combo Dialog """
     def __init__(self, controller, parent):
         super(SectionComboDialog, self).__init__(controller, parent, "New Section")
         self.label_text = None
@@ -381,7 +385,7 @@ def _create_menu(w):
 
     if platform == 'darwin' and isinstance(w, ttk.Entry):
         w.menu.entryconfigure('Select all',
-                              command=lambda: w.after(0, w._event_select_all))
+                              command=lambda: w.after(0, w._cb_select_all))
     else:
         w.menu.entryconfigure('Select all',
-                              command=lambda: w.focus_force() or w._event_select_all(None))
+                              command=lambda: w.focus_force() or w._cb_select_all(None))

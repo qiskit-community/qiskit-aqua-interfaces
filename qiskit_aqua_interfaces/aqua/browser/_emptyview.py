@@ -12,16 +12,19 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
+"""Empty Frame"""
+
 import tkinter as tk
 import tkinter.ttk as ttk
 
 
 class EmptyView(ttk.Frame):
-
+    """ Aqua Browser Empty Frame """
     def __init__(self, parent, **options):
         super(EmptyView, self).__init__(parent, **options)
         self._child = tk.Frame(self, background='white')
 
     def grid(self, **options):
+        """ grid layout """
         self._child.pack(side=tk.LEFT, fill=tk.BOTH, expand=tk.TRUE)
         ttk.Frame.grid(self, **options)
