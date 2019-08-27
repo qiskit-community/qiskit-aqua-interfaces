@@ -23,7 +23,7 @@ from ._customwidgets import SectionComboDialog
 class SectionsView(ToolbarView):
     """Sections toolbar view."""
 
-    def __init__(self, controller, parent, **options):
+    def __init__(self, controller, parent, **options) -> None:
         super(SectionsView, self).__init__(parent, **options)
         self._controller = controller
         ttk.Style().configure("SectionsView.Treeview.Heading", font=(None, 12, 'bold'))

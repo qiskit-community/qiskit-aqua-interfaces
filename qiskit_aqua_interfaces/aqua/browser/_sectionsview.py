@@ -27,7 +27,7 @@ class SectionsView(ScrollbarView):
     _TAG_DEPENDS = 'DEPENDS'
     _TAG_DEPENDENCY = 'DEPENDENCY'
 
-    def __init__(self, controller, parent, **options):
+    def __init__(self, controller, parent, **options) -> None:
         super(SectionsView, self).__init__(parent, **options)
         self._controller = controller
         ttk.Style().configure("BrowseSectionsView.Treeview.Heading", font=(None, 12, 'bold'))

@@ -25,7 +25,7 @@ _LINESEP = '\n'
 
 class EntryCustom(ttk.Entry):
     """ entry Custom """
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super(EntryCustom, self).__init__(*args, **kwargs)
         self.menu = None
         self.bind('<Button-1><ButtonRelease-1>', self._cb_dismiss_menu)
@@ -66,7 +66,7 @@ class EntryCustom(ttk.Entry):
 
 class TextCustom(tk.Text):
     """ Text Custom """
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super(TextCustom, self).__init__(*args, **kwargs)
         self.menu = None
         self.bind('<Button-1><ButtonRelease-1>', self._cb_dismiss_menu)
@@ -105,7 +105,9 @@ class TextCustom(tk.Text):
 
 class EntryPopup(EntryCustom):
     """ Entry Popup """
-    def __init__(self, controller, section_name, property_name, parent, text, **options):
+    def __init__(self, controller,
+                 section_name, property_name,
+                 parent, text, **options) -> None:
         # If relwidth is set, then width is ignored
         super(EntryPopup, self).__init__(parent, **options)
         self._controller = controller
@@ -138,7 +140,8 @@ class EntryPopup(EntryCustom):
 
 class ComboboxPopup(ttk.Combobox):
     """ Combobox Popup """
-    def __init__(self, controller, section_name, property_name, parent, **options):
+    def __init__(self, controller, section_name,
+                 property_name, parent, **options) -> None:
         self._orig_values = []
         if 'values' in options:
             self._orig_values = options['values']
@@ -184,7 +187,8 @@ class ComboboxPopup(ttk.Combobox):
 
 class TextPopup(ttk.Frame):
     """ Text Popup """
-    def __init__(self, controller, section_name, property_name, parent, text, **options):
+    def __init__(self, controller, section_name,
+                 property_name, parent, text, **options) -> None:
         super(TextPopup, self).__init__(parent, **options)
         self._child = TextCustom(self, wrap=tk.NONE, state=tk.NORMAL)
         self._hscrollbar = ttk.Scrollbar(self, orient=tk.HORIZONTAL)
@@ -236,7 +240,7 @@ class TextPopup(ttk.Frame):
 
 class PropertyEntryDialog(Dialog):
     """ Property Entry Dialog """
-    def __init__(self, controller, section_name, parent):
+    def __init__(self, controller, section_name, parent) -> None:
         super(PropertyEntryDialog, self).__init__(controller, parent, "New Property")
         self._section_name = section_name
         self.label_text = None
@@ -277,7 +281,7 @@ class PropertyEntryDialog(Dialog):
 
 class PropertyComboDialog(Dialog):
     """ Property Combo Dialog """
-    def __init__(self, controller, section_name, parent):
+    def __init__(self, controller, section_name, parent) -> None:
         super(PropertyComboDialog, self).__init__(controller, parent, 'New Property')
         self._section_name = section_name
         self.label_text = None
@@ -321,7 +325,7 @@ class PropertyComboDialog(Dialog):
 
 class SectionComboDialog(Dialog):
     """ Section Combo Dialog """
-    def __init__(self, controller, parent):
+    def __init__(self, controller, parent) -> None:
         super(SectionComboDialog, self).__init__(controller, parent, "New Section")
         self.label_text = None
         self.label = None

@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 
 class AquaThread(threading.Thread):
     """ Aqua Thread """
-    def __init__(self, model, output, queue):
+    def __init__(self, model, output, queue) -> None:
         super(AquaThread, self).__init__(name='Aqua run thread')
         self.model = model
         self._output = output

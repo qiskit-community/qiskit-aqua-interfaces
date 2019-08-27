@@ -22,7 +22,7 @@ from ._customwidgets import PropertyComboDialog, PropertyEntryDialog, TextPopup
 
 class SectionPropertiesView(ToolbarView):
     """ Section Properties View """
-    def __init__(self, controller, parent, **options):
+    def __init__(self, controller, parent, **options) -> None:
         super(SectionPropertiesView, self).__init__(parent, **options)
         self._controller = controller
         ttk.Style().configure("SectionPropertiesView.Treeview.Heading", font=(None, 12, 'bold'))

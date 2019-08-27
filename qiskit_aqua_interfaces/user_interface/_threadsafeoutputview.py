@@ -34,7 +34,7 @@ class ThreadSafeOutputView(ScrollbarView):
         'Darwin': 'Menlo Regular',
     }
 
-    def __init__(self, parent, **options):
+    def __init__(self, parent, **options) -> None:
         super(ThreadSafeOutputView, self).__init__(parent, **options)
         self._queue = queue.Queue()
         self._text_widget = TextCustom(self, wrap=tk.NONE, state=tk.DISABLED)

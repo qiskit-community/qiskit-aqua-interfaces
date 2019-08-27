@@ -38,7 +38,7 @@ def exception_to_string(excp):
 
 class ChemistryThread(threading.Thread):
     """ Chemistry Thread """
-    def __init__(self, model, output, queue, filename):
+    def __init__(self, model, output, queue, filename) -> None:
         super(ChemistryThread, self).__init__(name='Chemistry run thread')
         self.model = model
         self._output = output

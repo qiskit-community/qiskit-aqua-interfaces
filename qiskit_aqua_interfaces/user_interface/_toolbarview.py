@@ -21,7 +21,7 @@ from ._scrollbarview import ScrollbarView
 
 class ToolbarView(ScrollbarView):
     """ Toolbar View """
-    def __init__(self, parent, **options):
+    def __init__(self, parent, **options) -> None:
         super(ToolbarView, self).__init__(parent, **options)
         self._child = None
         self._toolbar = None

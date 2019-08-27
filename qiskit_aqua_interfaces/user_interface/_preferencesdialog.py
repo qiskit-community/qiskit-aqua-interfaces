@@ -33,7 +33,7 @@ class PreferencesDialog(Dialog):
          (logging.NOTSET, logging.getLevelName(logging.NOTSET))]
     )
 
-    def __init__(self, parent, guiprovider):
+    def __init__(self, parent, guiprovider) -> None:
         super(PreferencesDialog, self).__init__(guiprovider.controller, parent, 'Preferences')
         self._guiprovider = guiprovider
         self._credentialsview = None

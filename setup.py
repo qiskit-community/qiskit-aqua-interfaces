@@ -19,7 +19,7 @@ long_description = """Qiskit Aqua Interfaces, a set of user-interface components
  <a href="https://github.com/Qiskit/qiskit-aqua" rel=nofollow>Qiskit Aqua</a>."""
 
 requirements = [
-    "qiskit-aqua>=0.7.0",
+    "qiskit-aqua>=0.7.0,<0.8.0",
     "pyobjc-core; sys_platform == 'darwin'",
     "pyobjc-framework-Cocoa; sys_platform == 'darwin'"
 ]
@@ -48,6 +48,7 @@ setuptools.setup(
         "Operating System :: POSIX :: Linux",
         "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
         "Topic :: Scientific/Engineering"
     ),
     keywords='qiskit sdk quantum aqua',

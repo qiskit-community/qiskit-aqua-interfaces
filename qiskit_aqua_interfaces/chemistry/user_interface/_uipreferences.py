@@ -16,6 +16,7 @@
 
 import os
 import json
+from typing import Optional, List, Dict
 
 
 class UIPreferences:
@@ -23,7 +24,7 @@ class UIPreferences:
     _FILENAME = '.qiskit_chemistry_ui'
     _VERSION = '1.0'
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Create UIPreferences object."""
         self._preferences = {
             'version': UIPreferences._VERSION
@@ -37,34 +38,34 @@ class UIPreferences:
             pass
 
     @property
-    def filepath(self):
+    def filepath(self) -> str:
         """ get filepath """
         return self._filepath
 
-    def save(self):
+    def save(self) -> None:
         """ save preferences """
         with open(self._filepath, 'w') as pref_output:
             json.dump(self._preferences, pref_output, sort_keys=True, indent=4)
 
-    def get_version(self):
+    def get_version(self) -> str:
         """ get version """
         if 'version' in self._preferences:
             return self._preferences['version']
 
         return None
 
-    def get_geometry(self, default_value=None):
+    def get_geometry(self, default_value: Optional[str] = None) -> str:
         """ get chemistry geometry """
         if 'geometry' in self._preferences:
             return self._preferences['geometry']
 
         return default_value
 
-    def set_geometry(self, geometry):
+    def set_geometry(self, geometry: str) -> None:
         """ set chemistry geometry """
         self._preferences['geometry'] = geometry
 
-    def get_openfile_initialdir(self):
+    def get_openfile_initialdir(self) -> str:
         """ get open file initial folder """
         if 'openfile_initialdir' in self._preferences:
             if not os.path.isdir(self._preferences['openfile_initialdir']):
@@ -74,11 +75,11 @@ class UIPreferences:
 
         return os.getcwd()
 
-    def set_openfile_initialdir(self, initialdir):
+    def set_openfile_initialdir(self, initialdir: str) -> None:
         """ set open file initial folder """
         self._preferences['openfile_initialdir'] = initialdir
 
-    def get_savefile_initialdir(self):
+    def get_savefile_initialdir(self) -> str:
         """ get save file initial folder """
         if 'savefile_initialdir' in self._preferences:
             if not os.path.isdir(self._preferences['savefile_initialdir']):
@@ -88,22 +89,22 @@ class UIPreferences:
 
         return os.getcwd()
 
-    def set_savefile_initialdir(self, initialdir):
+    def set_savefile_initialdir(self, initialdir: str) -> None:
         """ set save file initial folder """
         self._preferences['savefile_initialdir'] = initialdir
 
-    def get_populate_defaults(self, default_value=None):
+    def get_populate_defaults(self, default_value: Optional[bool] = None) -> bool:
         """ get populate defaults flag """
         if 'populate_defaults' in self._preferences:
             return self._preferences['populate_defaults']
 
         return default_value
 
-    def set_populate_defaults(self, populate_defaults):
+    def set_populate_defaults(self, populate_defaults: bool) -> None:
         """ set populate defaults flag """
         self._preferences['populate_defaults'] = populate_defaults
 
-    def get_recent_files(self):
+    def get_recent_files(self) -> List[str]:
         """ get recent files list """
         files = []
         if 'recent_files' in self._preferences:
@@ -115,7 +116,7 @@ class UIPreferences:
 
         return files
 
-    def add_recent_file(self, file):
+    def add_recent_file(self, file: str) -> None:
         """ add a recent file """
         recent_files = self.get_recent_files()
         if file not in recent_files:
@@ -124,18 +125,19 @@ class UIPreferences:
                 recent_files = recent_files[1:]
         self._preferences['recent_files'] = recent_files
 
-    def clear_recent_files(self):
+    def clear_recent_files(self) -> None:
         """ clear recent files list """
         if 'recent_files' in self._preferences:
             del self._preferences['recent_files']
 
-    def get_logging_config(self, default_value=None):
+    def get_logging_config(self,
+                           default_value: Optional[Dict[str, object]] = None) -> Dict[str, object]:
         """ get chemistry logging """
         if 'logging_config' in self._preferences:
             return self._preferences['logging_config']
 
         return default_value
 
-    def set_logging_config(self, logging_config):
+    def set_logging_config(self, logging_config: Dict[str, object]) -> None:
         """ set chemistry logging """
         self._preferences['logging_config'] = logging_config

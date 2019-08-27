@@ -34,7 +34,7 @@ class BaseController(ABC):
     """Base GUI Controller."""
 
     @abstractmethod
-    def __init__(self, guiprovider, model):
+    def __init__(self, guiprovider, model) -> None:
         self._view = None
         self._guiprovider = guiprovider
         self._model = model

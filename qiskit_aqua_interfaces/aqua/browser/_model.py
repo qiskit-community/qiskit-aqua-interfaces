@@ -20,7 +20,7 @@ import copy
 
 class Model:
     """ Aqua Browser Model """
-    def __init__(self):
+    def __init__(self) -> None:
         """Create Model object."""
         self._data_loaded = False
         self._schema_property_titles = None

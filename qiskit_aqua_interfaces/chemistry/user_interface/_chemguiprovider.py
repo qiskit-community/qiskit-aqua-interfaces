@@ -31,7 +31,7 @@ from ._controller import Controller
 class ChemistryGUIProvider(GUIProvider):
     """Chemistry GUIProvider"""
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self._save_algo_json = None
         self._controller = None

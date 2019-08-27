@@ -23,7 +23,7 @@ from ._controller import Controller
 class AquaGUIProvider(GUIProvider):
     """Aqua GUIProvider"""
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self._controller = None
 

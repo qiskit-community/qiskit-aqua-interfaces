@@ -25,7 +25,7 @@ class Controller:
     """ Aqua Browser Controller """
     _NAME = 'name'
 
-    def __init__(self, view):
+    def __init__(self, view) -> None:
         self._view = view
         self._model = None
         self._filemenu = None

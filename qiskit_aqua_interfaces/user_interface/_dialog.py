@@ -20,7 +20,7 @@ import tkinter.ttk as ttk
 
 class Dialog(tk.Toplevel):
     """ Dialog """
-    def __init__(self, controller, parent, title=''):
+    def __init__(self, controller, parent, title='') -> None:
         super(Dialog, self).__init__(parent)
         self.transient(parent)
         self.resizable(0, 0)
