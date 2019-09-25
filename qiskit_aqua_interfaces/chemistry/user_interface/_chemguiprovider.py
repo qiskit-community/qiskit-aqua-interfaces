@@ -38,7 +38,7 @@ class ChemistryGUIProvider(GUIProvider):
 
     @property
     def save_algo_json(self):
-        """ get save algo json flag """
+        """ get save algorithm json flag """
         if self._save_algo_json is None:
             self._save_algo_json = tk.IntVar()
             self._save_algo_json.set(0)

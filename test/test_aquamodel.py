@@ -51,8 +51,8 @@ class TestAquaModel(QiskitAquaUisTestCase):
 
     def test_get_property_default_values(self):
         """Test if model has correct default values."""
-        modes = self._model.get_property_default_values('algorithm', 'operator_mode')
-        self.assertEqual(modes, ['matrix', 'paulis', 'grouped_paulis', None])
+        initial_point = self._model.get_property_default_values('algorithm', 'initial_point')
+        self.assertEqual(initial_point, None)
 
     def test_section_is_text(self):
         """Test if model has correct text section."""
@@ -127,14 +127,14 @@ class TestAquaModel(QiskitAquaUisTestCase):
 
     def test_get_property_types(self):
         """Test if model can access property types."""
-        types = self._model.get_property_types('algorithm', 'operator_mode')
-        self.assertEqual(types, ['string', 'null'])
+        types = self._model.get_property_types('algorithm', 'initial_point')
+        self.assertEqual(types, ['array', 'null'])
 
     def test_set_section_property(self):
         """Test if model can update property."""
-        self._model.set_section_property('algorithm', 'operator_mode', 'paulis')
-        prop = self._model.get_section_property('algorithm', 'operator_mode')
-        self.assertEqual(prop, 'paulis')
+        self._model.set_section_property('algorithm', 'initial_point', None)
+        prop = self._model.get_section_property('algorithm', 'initial_point')
+        self.assertEqual(prop, None)
 
     def test_delete_section_property(self):
         """Test if model can delete property."""

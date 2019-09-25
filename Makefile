@@ -21,3 +21,6 @@ style:
 
 test:
 	python -m unittest discover -v test
+
+spell:
+	pylint -rn --disable=all --enable=spelling --spelling-dict=en_US --spelling-private-dict-file=.pylintdict qiskit_aqua_interfaces test

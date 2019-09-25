@@ -96,7 +96,7 @@ class ThreadSafeOutputView(ScrollbarView):
         pass
 
     def buffer_empty(self):
-        """ check if buffer is emopty """
+        """ check if buffer is empty """
         return self._queue.empty()
 
     def clear_buffer(self):

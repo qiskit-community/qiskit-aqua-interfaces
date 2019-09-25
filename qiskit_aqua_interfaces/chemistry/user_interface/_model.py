@@ -100,7 +100,7 @@ class Model(BaseModel):
         return properties_with_substitution
 
     def get_operator_section_names(self):
-        """ get operator sectio  names """
+        """ get operator section names """
         from qiskit.aqua.parser import JSONSchema
         from qiskit.chemistry.parser import InputParser
         from qiskit.chemistry.core import local_chemistry_operators

@@ -44,7 +44,7 @@ class MainView(ttk.Frame):
             parent.protocol('WM_DELETE_WINDOW', self.quit)
 
     def _show_about_dialog(self):
-        import qiskit.aqua as qa
+        import qiskit.aqua as qa  # pylint: disable=import-outside-toplevel
         lines = ['Qiskit Aqua Interfaces',
                  'Version: {}'.format(__version__),
                  '',
@@ -235,7 +235,7 @@ class MainView(ttk.Frame):
         # redirect output
         sys.stdout = self._guiprovider.controller.outputview
         sys.stderr = self._guiprovider.controller.outputview
-        # reupdate logging after redirect
+        # update logging after redirect
         self.after(0, self._set_preferences_logging)
 
         self.update_idletasks()

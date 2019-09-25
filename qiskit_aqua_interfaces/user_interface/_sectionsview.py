@@ -66,7 +66,7 @@ class SectionsView(ToolbarView):
         """Checks if an entry is selected.
 
         Returns:
-            bool: True if the entry is selectec, else False.
+            bool: True if the entry is selected, else False.
         """
         return self._tree.selection()
 

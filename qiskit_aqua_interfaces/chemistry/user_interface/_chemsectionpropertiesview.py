@@ -12,14 +12,14 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-""" Cmemistry Section Properties View """
+""" Chemistry Section Properties View """
 
 import tkinter as tk
 from qiskit_aqua_interfaces.user_interface import SectionPropertiesView, TextPopup
 
 
 class ChemSectionPropertiesView(SectionPropertiesView):
-    """ Cmemistry Section Properties View """
+    """ Chemistry Section Properties View """
     def populate(self, properties):
         self.clear()
         for property_name, value_tuple in properties.items():

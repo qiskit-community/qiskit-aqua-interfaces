@@ -32,5 +32,5 @@ class EmptyView(ttk.Frame):
         ttk.Frame.grid(self, **options)
 
     def set_toolbar_size(self, size):
-        """ set tollbar size """
+        """ set toolbar size """
         self._toolbar.configure(width=size[0], height=size[1])

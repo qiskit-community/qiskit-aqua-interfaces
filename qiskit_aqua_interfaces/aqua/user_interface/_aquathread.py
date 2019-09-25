@@ -80,7 +80,7 @@ class AquaThread(threading.Thread):
                     path = os.path.dirname(process_name)
                     files = [f for f in os.listdir(path) if f != 'pythonw.exe' and f.startswith(
                         'python') and f.endswith('.exe')]
-                    # sort reverse to have hihre python
+                    # sort reverse to find python
                     # versions first: python3.exe before python2.exe
                     files = sorted(files, key=str.lower, reverse=True)
                     new_process = None

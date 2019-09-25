@@ -30,7 +30,7 @@ def main():
         return
 
     # On MacOSX avoid possible matplotlib error in case it is imported by other imported libraries
-    import tkinter as tk
+    import tkinter as tk  # pylint: disable=import-outside-toplevel
     root = tk.Tk()
     root.withdraw()
     root.after(0, _run_delay, root)
