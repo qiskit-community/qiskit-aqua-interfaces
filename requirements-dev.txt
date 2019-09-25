@@ -3,3 +3,4 @@ parameterized
 pycodestyle
 pylint>=2.3
 pylintfileheader>=0.0.2
+pyenchant
