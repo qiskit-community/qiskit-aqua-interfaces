@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 
 class AquaThread(threading.Thread):
     """ Aqua Thread """
-    def __init__(self, model, output, queue):
+    def __init__(self, model, output, queue) -> None:
         super(AquaThread, self).__init__(name='Aqua run thread')
         self.model = model
         self._output = output
@@ -80,7 +80,7 @@ class AquaThread(threading.Thread):
                     path = os.path.dirname(process_name)
                     files = [f for f in os.listdir(path) if f != 'pythonw.exe' and f.startswith(
                         'python') and f.endswith('.exe')]
-                    # sort reverse to have hihre python
+                    # sort reverse to find python
                     # versions first: python3.exe before python2.exe
                     files = sorted(files, key=str.lower, reverse=True)
                     new_process = None

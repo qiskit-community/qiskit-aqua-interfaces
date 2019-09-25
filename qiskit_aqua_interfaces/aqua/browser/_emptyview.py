@@ -20,7 +20,7 @@ import tkinter.ttk as ttk
 
 class EmptyView(ttk.Frame):
     """ Aqua Browser Empty Frame """
-    def __init__(self, parent, **options):
+    def __init__(self, parent, **options) -> None:
         super(EmptyView, self).__init__(parent, **options)
         self._child = tk.Frame(self, background='white')
 

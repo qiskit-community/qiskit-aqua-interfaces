@@ -21,7 +21,7 @@ from ._scrollbarview import ScrollbarView
 
 class SectionPropertiesView(ScrollbarView):
     """ Aqua Browser Section Properties View """
-    def __init__(self, controller, parent, **options):
+    def __init__(self, controller, parent, **options) -> None:
         super(SectionPropertiesView, self).__init__(parent, **options)
         self._controller = controller
         self._tree = None

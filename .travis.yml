@@ -11,8 +11,7 @@
 # that they have been altered from the originals.
 
 notifications:
-  on_success: change
-  on_failure: always
+  email: false
 
 cache: pip
 os: linux
@@ -20,7 +19,9 @@ dist: xenial
 
 language: python
 python:
-  - "3.6"
+  - 3.5
+  - 3.6
+  - 3.7
 
 env: 
   - DEPENDENCY_BRANCH=$(if [[ "$TRAVIS_BRANCH" == stable* ]]; then echo "stable"; else echo "master"; fi)
@@ -49,9 +50,12 @@ before_install:
     fi
 # Test 
 install:
+  # install spell check libraries
+  - sudo apt-get -y install python3-enchant
+  - sudo apt-get -y install hunspell-en-us
   # install library and dev requirements
   - pip install -U -r requirements-dev.txt --progress-bar off
   - pip install -e $TRAVIS_BUILD_DIR --progress-bar off
 script:
-  - make style && make lint && python -m unittest discover -v test
+  - make spell && make style && make lint && python -m unittest discover -v test
     

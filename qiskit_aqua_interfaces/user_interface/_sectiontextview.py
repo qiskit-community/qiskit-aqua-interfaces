@@ -23,7 +23,7 @@ _LINESEP = '\n'
 
 class SectionTextView(ToolbarView):
     """ Section Text View """
-    def __init__(self, controller, parent, **options):
+    def __init__(self, controller, parent, **options) -> None:
         super(SectionTextView, self).__init__(parent, **options)
         self._controller = controller
         self._text_widget = TextCustom(self, wrap=tk.NONE, state=tk.NORMAL)

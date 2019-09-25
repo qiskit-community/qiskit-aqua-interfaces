@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 
 class Controller(BaseController):
     """ Chemistry Controller """
-    def __init__(self, guiprovider):
+    def __init__(self, guiprovider) -> None:
         super().__init__(guiprovider, Model())
 
     def open_file(self, filename):

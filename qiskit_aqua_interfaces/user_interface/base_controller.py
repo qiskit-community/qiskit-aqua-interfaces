@@ -34,7 +34,7 @@ class BaseController(ABC):
     """Base GUI Controller."""
 
     @abstractmethod
-    def __init__(self, guiprovider, model):
+    def __init__(self, guiprovider, model) -> None:
         self._view = None
         self._guiprovider = guiprovider
         self._model = model
@@ -235,7 +235,7 @@ class BaseController(ABC):
         pass
 
     def cb_property_select(self, section_name, property_name):
-        """ prpperty selevtion callback """
+        """ property selection callback """
         from qiskit.aqua.parser import JSONSchema
         _show_remove = property_name not in (JSONSchema.PROVIDER, JSONSchema.NAME) \
             if section_name == JSONSchema.BACKEND else property_name != JSONSchema.NAME
@@ -366,7 +366,7 @@ class BaseController(ABC):
         return True
 
     def get_combobox_parameters(self, section_name, property_name):
-        """ get combobox paramaters """
+        """ get combobox parameters """
         from qiskit.aqua.parser import JSONSchema
         values = None
         types = ['string']

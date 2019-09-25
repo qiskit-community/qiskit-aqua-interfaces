@@ -32,7 +32,7 @@ class MainView(ttk.Frame):
     """ Aqua Browser Main View """
     _HELP_LINK = 'https://qiskit.org/'
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None) -> None:
         """Create MainView object."""
         super(MainView, self).__init__(parent)
         self._controller = Controller(self)
@@ -43,7 +43,7 @@ class MainView(ttk.Frame):
             parent.protocol('WM_DELETE_WINDOW', self.quit)
 
     def _show_about_dialog(self):
-        import qiskit.aqua as qa
+        import qiskit.aqua as qa  # pylint: disable=import-outside-toplevel
         lines = ['Qiskit Aqua Interfaces',
                  'Version: {}'.format(__version__),
                  '',

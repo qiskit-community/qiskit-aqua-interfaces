@@ -1,7 +1,7 @@
 {
     "algorithm": {
         "name": "VQE",
-        "operator_mode": "matrix"
+        "initial_point": null
     },
     "backend": {
         "provider": "qiskit.BasicAer",

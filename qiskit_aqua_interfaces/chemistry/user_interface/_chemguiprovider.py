@@ -31,14 +31,14 @@ from ._controller import Controller
 class ChemistryGUIProvider(GUIProvider):
     """Chemistry GUIProvider"""
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self._save_algo_json = None
         self._controller = None
 
     @property
     def save_algo_json(self):
-        """ get save algo json flag """
+        """ get save algorithm json flag """
         if self._save_algo_json is None:
             self._save_algo_json = tk.IntVar()
             self._save_algo_json.set(0)
