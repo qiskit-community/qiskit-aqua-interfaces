@@ -23,8 +23,6 @@ from tkinter import messagebox
 import ast
 import json
 import logging
-from qiskit.aqua import AquaError
-from qiskit.chemistry import QiskitChemistryError
 from .guiprovider import GUIProvider
 from .base_model import BaseModel
 from ._customwidgets import (EntryPopup, ComboboxPopup, TextPopup)
@@ -185,13 +183,10 @@ class BaseController(ABC):
                 self.model.load_file(filename)
             except Exception as ex:  # pylint: disable=broad-except
                 messagebox.showerror("Error", str(ex))
-                # If QiskitChemistryError or AquaError only return false if no file
-                if isinstance(ex, (AquaError, QiskitChemistryError)):
-                    if str(ex) == "Missing input file":
-                        ret = False
-                # Else only return false if file not found
-                elif isinstance(ex, FileNotFoundError):
+                # Only return false if no file or if file not found
+                if self.model.get_filename() is None or isinstance(ex, FileNotFoundError):
                     ret = False
+
             self._title.set(os.path.basename(filename))
             section_names = self.model.get_section_names()
             self._sections_view.populate(section_names)
