@@ -23,11 +23,11 @@ from tkinter import messagebox
 import ast
 import json
 import logging
+from qiskit.aqua import AquaError
+from qiskit.chemistry import QiskitChemistryError
 from .guiprovider import GUIProvider
 from .base_model import BaseModel
 from ._customwidgets import (EntryPopup, ComboboxPopup, TextPopup)
-from qiskit.chemistry import QiskitChemistryError
-from qiskit.aqua import AquaError
 
 logger = logging.getLogger(__name__)
 
@@ -186,7 +186,7 @@ class BaseController(ABC):
             except Exception as ex:  # pylint: disable=broad-except
                 messagebox.showerror("Error", str(ex))
                 # If QiskitChemistryError or AquaError only return false if no file
-                if isinstance(ex, QiskitChemistryError) or isinstance(ex, AquaError):
+                if isinstance(ex, (AquaError, QiskitChemistryError)):
                     if str(ex) == "Missing input file":
                         ret = False
                 # Else only return false if file not found
