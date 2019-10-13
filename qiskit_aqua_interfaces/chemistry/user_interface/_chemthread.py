@@ -81,37 +81,7 @@ class ChemistryThread(threading.Thread):
                 temp_input = True
                 self.model.save_to_file(input_file)
 
-            startupinfo = None
-            process_name = psutil.Process().exe()
-            if not process_name:
-                process_name = 'python'
-            else:
-                if sys.platform == 'win32' and process_name.endswith('pythonw.exe'):
-                    path = os.path.dirname(process_name)
-                    files = [f for f in os.listdir(path) if f != 'pythonw.exe' and f.startswith(
-                        'python') and f.endswith('.exe')]
-                    # sort reverse to have the python versions first: python3.exe before python2.exe
-                    files = sorted(files, key=str.lower, reverse=True)
-                    new_process = None
-                    for file in files:
-                        proc = os.path.join(path, file)
-                        if os.path.isfile(proc):
-                            # python.exe takes precedence
-                            if file.lower() == 'python.exe':
-                                new_process = proc
-                                break
-
-                            # use first found
-                            if new_process is None:
-                                new_process = proc
-
-                    if new_process is not None:
-                        startupinfo = subprocess.STARTUPINFO()
-                        startupinfo.dwFlags = subprocess.STARTF_USESHOWWINDOW
-                        startupinfo.wShowWindow = subprocess.SW_HIDE
-                        process_name = new_process
-
-            input_array = [process_name, qiskit_chemistry_directory, input_file]
+            input_array = ['qiskit_chemistry_cmd', qiskit_chemistry_directory, input_file]
             if self._json_algo_file:
                 input_array.extend(['-jo', self._json_algo_file])
             else:
@@ -119,14 +89,11 @@ class ChemistryThread(threading.Thread):
                 os.close(f_d)
                 input_array.extend(['-o', output_file])
 
-            if self._output is not None and logger.getEffectiveLevel() == logging.DEBUG:
-                self._output.write('Process: {}\n'.format(process_name))
-
             self._popen = subprocess.Popen(input_array,
                                            stdin=subprocess.DEVNULL,
                                            stdout=subprocess.PIPE,
                                            stderr=subprocess.STDOUT,
-                                           startupinfo=startupinfo)
+                                           startupinfo=None)
             if self._thread_queue is not None:
                 self._thread_queue.put(GUIProvider.START)
 
