@@ -61,9 +61,6 @@ class AquaThread(threading.Thread):
         input_file = None
         temp_input = False
         try:
-            algorithms_directory = os.path.dirname(os.path.realpath(__file__))
-            algorithms_directory = os.path.abspath(
-                os.path.join(algorithms_directory, '../command_line'))
             input_file = self.model.get_filename()
             if input_file is None or self.model.is_modified():
                 f_d, input_file = tempfile.mkstemp(suffix='.in')
@@ -72,42 +69,12 @@ class AquaThread(threading.Thread):
                 self.model.save_to_file(input_file)
 
             startupinfo = None
-            process_name = psutil.Process().exe()
-            if not process_name:
-                process_name = 'python'
-            else:
-                if sys.platform == 'win32' and process_name.endswith('pythonw.exe'):
-                    path = os.path.dirname(process_name)
-                    files = [f for f in os.listdir(path) if f != 'pythonw.exe' and f.startswith(
-                        'python') and f.endswith('.exe')]
-                    # sort reverse to find python
-                    # versions first: python3.exe before python2.exe
-                    files = sorted(files, key=str.lower, reverse=True)
-                    new_process = None
-                    for file in files:
-                        proc = os.path.join(path, file)
-                        if os.path.isfile(proc):
-                            # python.exe takes precedence
-                            if file.lower() == 'python.exe':
-                                new_process = proc
-                                break
+            if sys.platform == 'win32':
+                startupinfo = subprocess.STARTUPINFO()
+                startupinfo.dwFlags = subprocess.STARTF_USESHOWWINDOW
+                startupinfo.wShowWindow = subprocess.SW_HIDE
 
-                            # use first found
-                            if new_process is None:
-                                new_process = proc
-
-                    if new_process is not None:
-                        startupinfo = subprocess.STARTUPINFO()
-                        startupinfo.dwFlags = subprocess.STARTF_USESHOWWINDOW
-                        startupinfo.wShowWindow = subprocess.SW_HIDE
-                        process_name = new_process
-
-            if self._output is not None and logger.getEffectiveLevel() == logging.DEBUG:
-                self._output.write('Process: {}\n'.format(process_name))
-
-            self._popen = subprocess.Popen([process_name,
-                                            algorithms_directory,
-                                            input_file],
+            self._popen = subprocess.Popen(['qiskit_aqua_cmd', input_file],
                                            stdin=subprocess.DEVNULL,
                                            stdout=subprocess.PIPE,
                                            stderr=subprocess.STDOUT,
