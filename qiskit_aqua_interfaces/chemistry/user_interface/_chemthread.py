@@ -16,6 +16,7 @@
 
 import threading
 import tempfile
+import sys
 import logging
 import io
 import platform
@@ -77,6 +78,12 @@ class ChemistryThread(threading.Thread):
                 temp_input = True
                 self.model.save_to_file(input_file)
 
+            startupinfo = None
+            if sys.platform == 'win32':
+                startupinfo = subprocess.STARTUPINFO()
+                startupinfo.dwFlags = subprocess.STARTF_USESHOWWINDOW
+                startupinfo.wShowWindow = subprocess.SW_HIDE
+
             input_array = ['qiskit_chemistry_cmd', input_file]
             if self._json_algo_file:
                 input_array.extend(['-jo', self._json_algo_file])
@@ -89,7 +96,7 @@ class ChemistryThread(threading.Thread):
                                            stdin=subprocess.DEVNULL,
                                            stdout=subprocess.PIPE,
                                            stderr=subprocess.STDOUT,
-                                           startupinfo=None)
+                                           startupinfo=startupinfo)
             if self._thread_queue is not None:
                 self._thread_queue.put(GUIProvider.START)
 
