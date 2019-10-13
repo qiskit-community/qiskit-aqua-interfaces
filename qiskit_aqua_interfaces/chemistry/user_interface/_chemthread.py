@@ -16,7 +16,6 @@
 
 import threading
 import tempfile
-import sys
 import logging
 import io
 import platform
@@ -71,9 +70,6 @@ class ChemistryThread(threading.Thread):
         output_file = None
         temp_input = False
         try:
-            qiskit_chemistry_directory = os.path.dirname(os.path.realpath(__file__))
-            qiskit_chemistry_directory = os.path.abspath(
-                os.path.join(qiskit_chemistry_directory, '../command_line'))
             input_file = self.model.get_filename()
             if input_file is None or self.model.is_modified():
                 f_d, input_file = tempfile.mkstemp(suffix='.in')
@@ -81,7 +77,7 @@ class ChemistryThread(threading.Thread):
                 temp_input = True
                 self.model.save_to_file(input_file)
 
-            input_array = ['qiskit_chemistry_cmd', qiskit_chemistry_directory, input_file]
+            input_array = ['qiskit_chemistry_cmd', input_file]
             if self._json_algo_file:
                 input_array.extend(['-jo', self._json_algo_file])
             else:
