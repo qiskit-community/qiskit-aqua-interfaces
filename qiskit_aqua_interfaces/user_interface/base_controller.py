@@ -183,7 +183,9 @@ class BaseController(ABC):
                 self.model.load_file(filename)
             except Exception as ex:  # pylint: disable=broad-except
                 messagebox.showerror("Error", str(ex))
-                ret = False
+                # Only return false if no file or if file not found
+                if self.model.get_filename() is None or isinstance(ex, FileNotFoundError):
+                    ret = False
 
             self._title.set(os.path.basename(filename))
             section_names = self.model.get_section_names()

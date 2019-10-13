@@ -15,6 +15,7 @@
 """ Chemistry Section Properties View """
 
 import tkinter as tk
+from tkinter import messagebox
 from qiskit_aqua_interfaces.user_interface import SectionPropertiesView, TextPopup
 
 
@@ -47,10 +48,15 @@ class ChemSectionPropertiesView(SectionPropertiesView):
             property_name = self._tree.item(item, "text")
             value_tuple = self._properties[property_name]
             if not value_tuple[1]:
-                self._popup_widget = self._controller.create_popup(self.section_name,
-                                                                   property_name,
-                                                                   self._tree,
-                                                                   value_tuple[0])
+                try:
+                    self._popup_widget = self._controller.create_popup(self.section_name,
+                                                                       property_name,
+                                                                       self._tree,
+                                                                       value_tuple[0])
+                except Exception as ex:  # pylint: disable=broad-except
+                    messagebox.showerror("Error", str(ex))
+                    return
+
                 if isinstance(self._popup_widget, TextPopup):
                     height = self._tree.winfo_height() - y
                     self._popup_widget.place(x=x, y=y, width=width, height=height)
