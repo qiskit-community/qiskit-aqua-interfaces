@@ -16,6 +16,7 @@
 
 import threading
 import tempfile
+import sys
 import logging
 import io
 import platform
@@ -67,11 +68,17 @@ class AquaThread(threading.Thread):
                 temp_input = True
                 self.model.save_to_file(input_file)
 
+            startupinfo = None
+            if sys.platform == 'win32':
+                startupinfo = subprocess.STARTUPINFO()
+                startupinfo.dwFlags = subprocess.STARTF_USESHOWWINDOW
+                startupinfo.wShowWindow = subprocess.SW_HIDE
+
             self._popen = subprocess.Popen(['qiskit_aqua_cmd', input_file],
                                            stdin=subprocess.DEVNULL,
                                            stdout=subprocess.PIPE,
                                            stderr=subprocess.STDOUT,
-                                           startupinfo=None)
+                                           startupinfo=startupinfo)
             if self._thread_queue is not None:
                 self._thread_queue.put(GUIProvider.START)
 
