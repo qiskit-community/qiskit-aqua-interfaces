@@ -68,7 +68,6 @@ class ChemistryThread(threading.Thread):
 
     def run(self):
         input_file = None
-        output_file = None
         temp_input = False
         try:
             input_file = self.model.get_filename()
@@ -87,10 +86,6 @@ class ChemistryThread(threading.Thread):
             input_array = ['qiskit_chemistry_cmd', input_file]
             if self._json_algo_file:
                 input_array.extend(['-jo', self._json_algo_file])
-            else:
-                f_d, output_file = tempfile.mkstemp(suffix='.out')
-                os.close(f_d)
-                input_array.extend(['-o', output_file])
 
             self._popen = subprocess.Popen(input_array,
                                            stdin=subprocess.DEVNULL,
@@ -116,12 +111,8 @@ class ChemistryThread(threading.Thread):
             self._popen = None
             if self._thread_queue is not None:
                 self._thread_queue.put(GUIProvider.STOP)
-            try:
-                if temp_input and input_file is not None:
-                    os.remove(input_file)
 
-                input_file = None
-            finally:
-                if output_file is not None:
-                    os.remove(output_file)
-                    output_file = None
+            if temp_input and input_file is not None:
+                os.remove(input_file)
+
+            input_file = None
