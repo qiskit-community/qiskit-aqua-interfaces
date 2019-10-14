@@ -22,10 +22,18 @@ import io
 import platform
 import os
 import subprocess
+import traceback
 import psutil
 from qiskit_aqua_interfaces.user_interface import GUIProvider
 
 logger = logging.getLogger(__name__)
+
+
+def exception_to_string(excp):
+    """ exception string formatter """
+    stack = traceback.extract_stack()[:-3] + traceback.extract_tb(excp.__traceback__)
+    pretty = traceback.format_list(stack)
+    return ''.join(pretty) + '\n  {} {}'.format(excp.__class__, excp)
 
 
 class AquaThread(threading.Thread):
@@ -93,7 +101,7 @@ class AquaThread(threading.Thread):
             self._popen.wait()
         except Exception as ex:  # pylint: disable=broad-except
             if self._output is not None:
-                self._output.write('Process has failed: {}'.format(str(ex)))
+                self._output.write('Process has failed: {}'.format(exception_to_string(ex)))
         finally:
             self._popen = None
             if self._thread_queue is not None:
