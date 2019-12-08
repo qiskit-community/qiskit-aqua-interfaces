@@ -22,12 +22,14 @@ import tkinter.filedialog as tkfd
 from tkinter import font
 import webbrowser
 import os
-from qiskit_aqua_interfaces import __version__
+from qiskit_aqua_interfaces import __version__, APP_DEPRECATION_MSG
 from ._sectionsview import SectionsView
 from ._sectiontextview import SectionTextView
 from ._threadsafeoutputview import ThreadSafeOutputView
 from ._emptyview import EmptyView
 from ._preferencesdialog import PreferencesDialog
+
+# pylint: disable=import-outside-toplevel
 
 
 class MainView(ttk.Frame):
@@ -44,7 +46,7 @@ class MainView(ttk.Frame):
             parent.protocol('WM_DELETE_WINDOW', self.quit)
 
     def _show_about_dialog(self):
-        import qiskit.aqua as qa  # pylint: disable=import-outside-toplevel
+        import qiskit.aqua as qa
         lines = ['Qiskit Aqua Interfaces',
                  'Version: {}'.format(__version__),
                  '',
@@ -244,6 +246,8 @@ class MainView(ttk.Frame):
         self._guiprovider.controller._sections_view.show_defaults_button(False)
         self._guiprovider.controller._empty_view.set_toolbar_size(
             self._guiprovider.controller._sections_view.get_toolbar_size())
+
+        self._guiprovider.controller.outputview.write_line(APP_DEPRECATION_MSG)
 
     def _set_preferences_logging(self):
         preferences = self._guiprovider.create_uipreferences()

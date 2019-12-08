@@ -28,6 +28,8 @@ from ._dialog import Dialog
 
 logger = logging.getLogger(__name__)
 
+# pylint: disable=import-outside-toplevel
+
 
 class CredentialsView(ttk.Frame):
     """ Credentials View """

@@ -29,6 +29,8 @@ from ._customwidgets import (EntryPopup, ComboboxPopup, TextPopup)
 
 logger = logging.getLogger(__name__)
 
+# pylint: disable=import-outside-toplevel
+
 
 class BaseController(ABC):
     """Base GUI Controller."""

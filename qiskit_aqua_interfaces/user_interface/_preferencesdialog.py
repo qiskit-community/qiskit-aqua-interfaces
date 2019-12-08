@@ -21,6 +21,8 @@ import logging
 from ._dialog import Dialog
 from ._credentialsview import CredentialsView
 
+# pylint: disable=import-outside-toplevel
+
 
 class PreferencesDialog(Dialog):
     """ Preferences Dialog """

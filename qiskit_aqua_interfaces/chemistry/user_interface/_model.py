@@ -22,6 +22,8 @@ from ._uipreferences import UIPreferences
 
 logger = logging.getLogger(__name__)
 
+# pylint: disable=import-outside-toplevel
+
 
 class Model(BaseModel):
     """ Chemistry Model """

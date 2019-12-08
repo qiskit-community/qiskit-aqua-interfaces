@@ -20,7 +20,10 @@ import json
 from collections import OrderedDict
 import textwrap
 import logging
+from qiskit_aqua_interfaces import APP_DEPRECATION_MSG
 from qiskit_aqua_interfaces._extras_require import _check_extra_requires
+
+# pylint: disable=import-outside-toplevel
 
 
 def main():
@@ -30,7 +33,7 @@ def main():
         return
 
     # On MacOSX avoid possible matplotlib error in case it is imported by other imported libraries
-    import tkinter as tk  # pylint: disable=import-outside-toplevel
+    import tkinter as tk
     root = tk.Tk()
     root.withdraw()
     root.after(0, _run_delay, root)
@@ -103,6 +106,7 @@ def _run():
     with open(args.input) as json_file:
         params = json.load(json_file)
 
+    print(APP_DEPRECATION_MSG)
     ret = run_algorithm(params, None, True)
 
     if args.jo is not None:

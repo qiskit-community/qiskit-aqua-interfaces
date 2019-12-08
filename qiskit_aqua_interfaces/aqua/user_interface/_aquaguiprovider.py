@@ -19,6 +19,8 @@ from ._uipreferences import UIPreferences
 from ._aquathread import AquaThread
 from ._controller import Controller
 
+# pylint: disable=import-outside-toplevel
+
 
 class AquaGUIProvider(GUIProvider):
     """Aqua GUIProvider"""
