@@ -21,6 +21,8 @@ from ._model import Model
 
 logger = logging.getLogger(__name__)
 
+# pylint: disable=import-outside-toplevel
+
 
 class Controller(BaseController):
     """ Chemistry Controller """

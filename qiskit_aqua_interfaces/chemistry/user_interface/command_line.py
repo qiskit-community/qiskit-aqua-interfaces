@@ -22,6 +22,8 @@ from qiskit_aqua_interfaces.user_interface import MainView
 from qiskit_aqua_interfaces._extras_require import _check_extra_requires
 from ._chemguiprovider import ChemistryGUIProvider
 
+# pylint: disable=import-outside-toplevel
+
 
 def set_preferences_logging():
     """Update logging setting with latest external packages"""

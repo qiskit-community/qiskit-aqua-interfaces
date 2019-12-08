@@ -27,6 +27,8 @@ from ._chemsectionpropertiesview import ChemSectionPropertiesView
 from ._chemthread import ChemistryThread
 from ._controller import Controller
 
+# pylint: disable=import-outside-toplevel
+
 
 class ChemistryGUIProvider(GUIProvider):
     """Chemistry GUIProvider"""

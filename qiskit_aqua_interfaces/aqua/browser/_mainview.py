@@ -20,12 +20,14 @@ import tkinter.messagebox as tkmb
 import tkinter.ttk as ttk
 from tkinter import font
 import webbrowser
-from qiskit_aqua_interfaces import __version__
+from qiskit_aqua_interfaces import __version__, APP_DEPRECATION_MSG
 from qiskit_aqua_interfaces.aqua.user_interface import UIPreferences
 from ._controller import Controller
 from ._sectionsview import SectionsView
 from ._sectionpropertiesview import SectionPropertiesView
 from ._emptyview import EmptyView
+
+# pylint: disable=import-outside-toplevel
 
 
 class MainView(ttk.Frame):
@@ -38,12 +40,12 @@ class MainView(ttk.Frame):
         self._controller = Controller(self)
         self.pack(expand=tk.YES, fill=tk.BOTH)
         self._create_widgets()
-        self.master.title('Qiskit Aqua Browser')
+        self.master.title('Qiskit Aqua Browser ({})'.format(APP_DEPRECATION_MSG))
         if parent is not None:
             parent.protocol('WM_DELETE_WINDOW', self.quit)
 
     def _show_about_dialog(self):
-        import qiskit.aqua as qa  # pylint: disable=import-outside-toplevel
+        import qiskit.aqua as qa
         lines = ['Qiskit Aqua Interfaces',
                  'Version: {}'.format(__version__),
                  '',

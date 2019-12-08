@@ -23,6 +23,8 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+# pylint: disable=import-outside-toplevel
+
 
 class BaseModel(ABC):
     """Base GUI Model."""

@@ -17,6 +17,8 @@
 from collections import OrderedDict
 import copy
 
+# pylint: disable=import-outside-toplevel
+
 
 class Model:
     """ Aqua Browser Model """
