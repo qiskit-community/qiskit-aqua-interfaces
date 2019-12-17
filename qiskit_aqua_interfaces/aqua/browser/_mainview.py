@@ -20,7 +20,7 @@ import tkinter.messagebox as tkmb
 import tkinter.ttk as ttk
 from tkinter import font
 import webbrowser
-from qiskit_aqua_interfaces import __version__, APP_DEPRECATION_MSG
+from qiskit_aqua_interfaces import __version__
 from qiskit_aqua_interfaces.aqua.user_interface import UIPreferences
 from ._controller import Controller
 from ._sectionsview import SectionsView
@@ -40,7 +40,7 @@ class MainView(ttk.Frame):
         self._controller = Controller(self)
         self.pack(expand=tk.YES, fill=tk.BOTH)
         self._create_widgets()
-        self.master.title('Qiskit Aqua Browser ({})'.format(APP_DEPRECATION_MSG))
+        self.master.title('Qiskit Aqua Browser')
         if parent is not None:
             parent.protocol('WM_DELETE_WINDOW', self.quit)
 
