@@ -23,7 +23,7 @@ class GUIProvider(ABC):
     START, STOP = 'Start', 'Stop'
 
     @abstractmethod
-    def __init__(self):
+    def __init__(self) -> None:
         pass
 
     @property

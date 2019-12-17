@@ -20,8 +20,11 @@ import json
 from collections import OrderedDict
 import textwrap
 import logging
+from qiskit_aqua_interfaces import APP_DEPRECATION_MSG
 from qiskit_aqua_interfaces.chemistry.user_interface import UIPreferences
 from qiskit_aqua_interfaces._extras_require import _check_extra_requires
+
+# pylint: disable=import-outside-toplevel
 
 
 def main():
@@ -134,6 +137,7 @@ def _run():
     except Exception:  # pylint: disable=broad-except
         pass
 
+    print(APP_DEPRECATION_MSG)
     if params is not None:
         _run_algorithm_from_json(params, args.o)
     else:

@@ -17,10 +17,12 @@
 from collections import OrderedDict
 import copy
 
+# pylint: disable=import-outside-toplevel
+
 
 class Model:
     """ Aqua Browser Model """
-    def __init__(self):
+    def __init__(self) -> None:
         """Create Model object."""
         self._data_loaded = False
         self._schema_property_titles = None

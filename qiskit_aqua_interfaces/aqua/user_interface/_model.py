@@ -21,6 +21,8 @@ from qiskit_aqua_interfaces.user_interface import BaseModel
 
 logger = logging.getLogger(__name__)
 
+# pylint: disable=import-outside-toplevel
+
 
 class Model(BaseModel):
     """ Aqua Model """

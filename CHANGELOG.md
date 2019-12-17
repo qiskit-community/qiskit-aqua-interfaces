@@ -16,8 +16,26 @@ Changelog](http://keepachangelog.com/en/1.0.0/).
 > -   **Security**: in case of vulnerabilities.
 
 
-[UNRELEASED](https://github.com/Qiskit/qiskit-aqua-interfaces/compare/0.2.0...HEAD)
+[UNRELEASED](https://github.com/Qiskit/qiskit-aqua-interfaces/compare/0.2.1...HEAD)
 ===================================================================================
+
+[0.2.1](https://github.com/Qiskit/qiskit-aqua-interfaces/compare/0.2.0...0.2.1) - 2019-12-17
+============================================================================================
+
+Changed
+-------
+
+-   Application deprecate message (#54)
+
+Fixed
+-----
+
+-   Do not create output file on chemistry run (#53)
+-   Change start aqua/chemistry process calls to run command line scripts (#52)
+-   Open file only return False if file not found (#51)
+-   Fix pylint errors, remove operator_mode (#49)
+
+
 
 [0.2.0](https://github.com/Qiskit/qiskit-aqua-interfaces/compare/0.1.0...0.2.0) - 2019-08-22
 ============================================================================================

@@ -21,10 +21,12 @@ from ._model import Model
 
 logger = logging.getLogger(__name__)
 
+# pylint: disable=import-outside-toplevel
+
 
 class Controller(BaseController):
     """ Aqua Controller """
-    def __init__(self, guiprovider):
+    def __init__(self, guiprovider) -> None:
         super().__init__(guiprovider, Model())
 
     def open_file(self, filename):

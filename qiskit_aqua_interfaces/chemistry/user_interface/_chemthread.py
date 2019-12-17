@@ -38,7 +38,7 @@ def exception_to_string(excp):
 
 class ChemistryThread(threading.Thread):
     """ Chemistry Thread """
-    def __init__(self, model, output, queue, filename):
+    def __init__(self, model, output, queue, filename) -> None:
         super(ChemistryThread, self).__init__(name='Chemistry run thread')
         self.model = model
         self._output = output
@@ -68,12 +68,8 @@ class ChemistryThread(threading.Thread):
 
     def run(self):
         input_file = None
-        output_file = None
         temp_input = False
         try:
-            qiskit_chemistry_directory = os.path.dirname(os.path.realpath(__file__))
-            qiskit_chemistry_directory = os.path.abspath(
-                os.path.join(qiskit_chemistry_directory, '../command_line'))
             input_file = self.model.get_filename()
             if input_file is None or self.model.is_modified():
                 f_d, input_file = tempfile.mkstemp(suffix='.in')
@@ -82,45 +78,14 @@ class ChemistryThread(threading.Thread):
                 self.model.save_to_file(input_file)
 
             startupinfo = None
-            process_name = psutil.Process().exe()
-            if not process_name:
-                process_name = 'python'
-            else:
-                if sys.platform == 'win32' and process_name.endswith('pythonw.exe'):
-                    path = os.path.dirname(process_name)
-                    files = [f for f in os.listdir(path) if f != 'pythonw.exe' and f.startswith(
-                        'python') and f.endswith('.exe')]
-                    # sort reverse to have the python versions first: python3.exe before python2.exe
-                    files = sorted(files, key=str.lower, reverse=True)
-                    new_process = None
-                    for file in files:
-                        proc = os.path.join(path, file)
-                        if os.path.isfile(proc):
-                            # python.exe takes precedence
-                            if file.lower() == 'python.exe':
-                                new_process = proc
-                                break
+            if sys.platform == 'win32':
+                startupinfo = subprocess.STARTUPINFO()
+                startupinfo.dwFlags = subprocess.STARTF_USESHOWWINDOW
+                startupinfo.wShowWindow = subprocess.SW_HIDE
 
-                            # use first found
-                            if new_process is None:
-                                new_process = proc
-
-                    if new_process is not None:
-                        startupinfo = subprocess.STARTUPINFO()
-                        startupinfo.dwFlags = subprocess.STARTF_USESHOWWINDOW
-                        startupinfo.wShowWindow = subprocess.SW_HIDE
-                        process_name = new_process
-
-            input_array = [process_name, qiskit_chemistry_directory, input_file]
+            input_array = ['qiskit_chemistry_cmd', input_file]
             if self._json_algo_file:
                 input_array.extend(['-jo', self._json_algo_file])
-            else:
-                f_d, output_file = tempfile.mkstemp(suffix='.out')
-                os.close(f_d)
-                input_array.extend(['-o', output_file])
-
-            if self._output is not None and logger.getEffectiveLevel() == logging.DEBUG:
-                self._output.write('Process: {}\n'.format(process_name))
 
             self._popen = subprocess.Popen(input_array,
                                            stdin=subprocess.DEVNULL,
@@ -146,12 +111,8 @@ class ChemistryThread(threading.Thread):
             self._popen = None
             if self._thread_queue is not None:
                 self._thread_queue.put(GUIProvider.STOP)
-            try:
-                if temp_input and input_file is not None:
-                    os.remove(input_file)
 
-                input_file = None
-            finally:
-                if output_file is not None:
-                    os.remove(output_file)
-                    output_file = None
+            if temp_input and input_file is not None:
+                os.remove(input_file)
+
+            input_file = None

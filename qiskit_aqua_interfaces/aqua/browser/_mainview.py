@@ -27,12 +27,14 @@ from ._sectionsview import SectionsView
 from ._sectionpropertiesview import SectionPropertiesView
 from ._emptyview import EmptyView
 
+# pylint: disable=import-outside-toplevel
+
 
 class MainView(ttk.Frame):
     """ Aqua Browser Main View """
     _HELP_LINK = 'https://qiskit.org/'
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None) -> None:
         """Create MainView object."""
         super(MainView, self).__init__(parent)
         self._controller = Controller(self)

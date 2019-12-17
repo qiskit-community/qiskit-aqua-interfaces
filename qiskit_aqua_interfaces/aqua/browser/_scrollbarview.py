@@ -20,7 +20,7 @@ import tkinter.ttk as ttk
 
 class ScrollbarView(ttk.Frame):
     """ Aqua Browser Scrollbar View """
-    def __init__(self, parent, **options):
+    def __init__(self, parent, **options) -> None:
         super(ScrollbarView, self).__init__(parent, **options)
         self._child = None
         self._hscrollbar = None

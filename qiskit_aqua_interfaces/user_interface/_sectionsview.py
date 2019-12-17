@@ -23,7 +23,7 @@ from ._customwidgets import SectionComboDialog
 class SectionsView(ToolbarView):
     """Sections toolbar view."""
 
-    def __init__(self, controller, parent, **options):
+    def __init__(self, controller, parent, **options) -> None:
         super(SectionsView, self).__init__(parent, **options)
         self._controller = controller
         ttk.Style().configure("SectionsView.Treeview.Heading", font=(None, 12, 'bold'))
@@ -66,7 +66,7 @@ class SectionsView(ToolbarView):
         """Checks if an entry is selected.
 
         Returns:
-            bool: True if the entry is selectec, else False.
+            bool: True if the entry is selected, else False.
         """
         return self._tree.selection()
 

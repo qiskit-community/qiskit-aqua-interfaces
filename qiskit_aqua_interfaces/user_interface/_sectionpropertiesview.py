@@ -16,13 +16,14 @@
 
 import tkinter as tk
 import tkinter.ttk as ttk
+from tkinter import messagebox
 from ._toolbarview import ToolbarView
 from ._customwidgets import PropertyComboDialog, PropertyEntryDialog, TextPopup
 
 
 class SectionPropertiesView(ToolbarView):
     """ Section Properties View """
-    def __init__(self, controller, parent, **options):
+    def __init__(self, controller, parent, **options) -> None:
         super(SectionPropertiesView, self).__init__(parent, **options)
         self._controller = controller
         ttk.Style().configure("SectionPropertiesView.Treeview.Heading", font=(None, 12, 'bold'))
@@ -98,10 +99,15 @@ class SectionPropertiesView(ToolbarView):
 
             item = self._tree.identify("item", event.x, event.y)
             property_name = self._tree.item(item, "text")
-            self._popup_widget = self._controller.create_popup(self.section_name,
-                                                               property_name,
-                                                               self._tree,
-                                                               self._properties[property_name])
+            try:
+                self._popup_widget = self._controller.create_popup(self.section_name,
+                                                                   property_name,
+                                                                   self._tree,
+                                                                   self._properties[property_name])
+            except Exception as ex:  # pylint: disable=broad-except
+                messagebox.showerror("Error", str(ex))
+                return
+
             if isinstance(self._popup_widget, TextPopup):
                 height = self._tree.winfo_height() - y
                 self._popup_widget.place(x=x, y=y, width=width, height=height)

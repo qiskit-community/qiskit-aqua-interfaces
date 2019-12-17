@@ -23,11 +23,13 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+# pylint: disable=import-outside-toplevel
+
 
 class BaseModel(ABC):
     """Base GUI Model."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Create Model object."""
         self._parser = None
         self._custom_providers = {}

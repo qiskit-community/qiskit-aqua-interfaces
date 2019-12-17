@@ -28,12 +28,14 @@ from ._dialog import Dialog
 
 logger = logging.getLogger(__name__)
 
+# pylint: disable=import-outside-toplevel
+
 
 class CredentialsView(ttk.Frame):
     """ Credentials View """
     _START, _STOP = 'Start', 'Stop'
 
-    def __init__(self, parent, **options):
+    def __init__(self, parent, **options) -> None:
         super(CredentialsView, self).__init__(parent, **options)
 
         self._thread_queue = queue.Queue()
@@ -234,7 +236,7 @@ class CredentialsView(ttk.Frame):
 
 class HGPEntryDialog(Dialog):
     """ Hub/Group/Project Entry Dialog """
-    def __init__(self, parent):
+    def __init__(self, parent) -> None:
         super(HGPEntryDialog, self).__init__(None, parent, "Chose Hub/Group/Project")
         self._hgp = []
 
@@ -260,7 +262,7 @@ class HGPEntryDialog(Dialog):
 
 class HGPThread(threading.Thread):
     """ Hub/Group/Project Thread """
-    def __init__(self, token, proxies, thread_queue):
+    def __init__(self, token, proxies, thread_queue) -> None:
         super(HGPThread, self).__init__(name='Hub/Group/Project thread')
         self._token = token
         self._proxies = proxies
@@ -297,7 +299,7 @@ class HGPThread(threading.Thread):
 
 class ProxiesPage(ToolbarView):
     """ Proxies Page View """
-    def __init__(self, parent, preferences, **options):
+    def __init__(self, parent, preferences, **options) -> None:
         super(ProxiesPage, self).__init__(parent, **options)
         size = font.nametofont('TkHeadingFont').actual('size')
         ttk.Style().configure("ProxiesPage.Treeview.Heading", font=(None, size, 'bold'))
@@ -437,7 +439,7 @@ class ProxiesPage(ToolbarView):
 
 class URLPopup(EntryCustom):
     """ URL Popup """
-    def __init__(self, controller, protocol, parent, url, **options):
+    def __init__(self, controller, protocol, parent, url, **options) -> None:
         # If relwidth is set, then width is ignored
         super(URLPopup, self).__init__(parent, **options)
         self._controller = controller
@@ -467,7 +469,7 @@ class URLPopup(EntryCustom):
 
 class ProxyEntryDialog(Dialog):
     """ Proxy Entry Dialog """
-    def __init__(self, parent, controller):
+    def __init__(self, parent, controller) -> None:
         super(ProxyEntryDialog, self).__init__(None, parent, "New Proxy")
         self._protocol = None
         self._url = None
