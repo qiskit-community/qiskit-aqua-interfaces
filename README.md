@@ -2,6 +2,9 @@
 **Qiskit** is an open-source framework for working with noisy quantum computers at the level of pulses, circuits, and algorithms.
 
 ## Note
+This project is currently deprecated and it will stop working after Qiskit Aqua 0.7.0
+
+## Note
 As of July 12, 2019 Qiskit Chemistry has been merged into Qiskit Aqua, and all the code of the
 [Qiskit Chemistry repository](https://github.com/Qiskit/qiskit-chemistry)
 has been integrated into the [Qiskit Aqua](https://github.com/Qiskit/qiskit-aqua) repository.  This change has impacted the

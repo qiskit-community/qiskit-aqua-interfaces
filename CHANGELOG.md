@@ -16,13 +16,16 @@ Changelog](http://keepachangelog.com/en/1.0.0/).
 > -   **Security**: in case of vulnerabilities.
 
 
-[UNRELEASED](https://github.com/Qiskit/qiskit-aqua-interfaces/compare/0.2.0...HEAD)
+[UNRELEASED](https://github.com/Qiskit/qiskit-aqua-interfaces/compare/0.2.1...HEAD)
 ===================================================================================
+
+[0.2.1](https://github.com/Qiskit/qiskit-aqua-interfaces/compare/0.2.0...0.2.1) - 2019-12-17
+============================================================================================
 
 Changed
 -------
 
--   Application deprecate message
+-   Application deprecate message (#54)
 
 Fixed
 -----

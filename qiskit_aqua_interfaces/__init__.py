@@ -16,6 +16,6 @@
 
 from .version import __version__
 
-APP_DEPRECATION_MSG = '##### This application will stop working after Aqua next release. #####'
+APP_DEPRECATION_MSG = '##### This application will stop working after Aqua 0.7.0 release. #####'
 
 __all__ = ['__version__']
